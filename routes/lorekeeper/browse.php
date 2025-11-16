@@ -81,6 +81,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function ()
     Route::get('{slug}/item-logs', 'CharacterController@getCharacterItemLogs');
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
     Route::get('{slug}/change-log', 'CharacterController@getCharacterLogs');
+    Route::get('{slug}/skill-logs', 'CharacterController@getCharacterSkillLogs');
     Route::get('{slug}/submissions', 'CharacterController@getCharacterSubmissions');
 
     Route::get('{slug}/gallery', 'CharacterController@getCharacterGallery');
@@ -110,7 +111,11 @@ Route::group(['prefix' => 'world'], function () {
     Route::get('items/{id}', 'WorldController@getItem');
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
+    Route::get('traits/modal/{id}', 'WorldController@getFeatureDetail')->where(['id' => '[0-9]+']);
     Route::get('character-categories', 'WorldController@getCharacterCategories');
+    Route::get('skill-categories', 'WorldController@getSkillCategories');
+    Route::get('skills', 'WorldController@getSkills');
+    Route::get('skills/{id}', 'WorldController@getSkill');
 });
 
 Route::group(['prefix' => 'prompts'], function () {
