@@ -26,7 +26,7 @@
                     <tr class="sort-item" data-id="{{ $skill->id }}">
                         <td>
                             @if (!$feature->is_visible)
-                                        <i class="fas fa-eye-slash mr-1"></i>
+                                <i class="fas fa-eye-slash mr-1"></i>
                             @endif
                             {!! $skill->displayName !!}
                         </td>

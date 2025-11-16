@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-   {{ $feature->id ? 'Edit' : 'Create' }} Skills
+    {{ $feature->id ? 'Edit' : 'Create' }} Skills
 @endsection
 
 @section('admin-content')
@@ -18,12 +18,12 @@
     <h3>Basic Information</h3>
 
     <div class="form-group">
-            {!! Form::label('Name') !!}
-            {!! Form::text('name', $skill->name, ['class' => 'form-control']) !!}
+        {!! Form::label('Name') !!}
+        {!! Form::text('name', $skill->name, ['class' => 'form-control']) !!}
     </div>
     <div class="form-group">
-            {!! Form::label('Abbreviation') !!}
-            {!! Form::text('skill_abrv', $skill->skill_abrv, ['class' => 'form-control']) !!}
+        {!! Form::label('Abbreviation') !!}
+        {!! Form::text('skill_abrv', $skill->skill_abrv, ['class' => 'form-control']) !!}
     </div>
     <div class="row">
         <div class="col-md-6 form-group">
