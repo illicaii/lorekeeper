@@ -43,33 +43,29 @@
             {!! $description !!}
         </div>
 
-        @if (isset($skill->override_default_caps) &&
-            ((isset($skill->ovr_level_cap) && ($skill->ovr_level_cap != 0)) ||
-            (isset($skill->ovr_charge_cap) && ($skill->ovr_charge_cap != 0)))
-            )
-        <hr>
-        <div class="row">
-            @if (isset($skill->ovr_level_cap) && ($skill->ovr_level_cap != 0))
-                <div class="col-md">
-                    <p><strong>Max Level:</strong> {!! $skill->ovr_level_cap !!}</p>
-                </div>
-            @endif
-            @if (isset($skill->ovr_charge_cap) && ($skill->ovr_charge_cap != 0))
-                <div class="col-md">
-                    <p><strong>Max Charges:</strong> {!! $skill->ovr_charge_cap !!}</p>
-                </div>
-            @endif
-        </div>
-        @elseif((isset($skill->category->max_level) && ($skill->category->max_level != 0)) ||
-                (isset($skill->category->max_charge) && ($skill->category->max_charge != 0)))
+        @if (isset($skill->override_default_caps) && ((isset($skill->ovr_level_cap) && $skill->ovr_level_cap != 0) || (isset($skill->ovr_charge_cap) && $skill->ovr_charge_cap != 0)))
             <hr>
             <div class="row">
-                @if (isset($skill->category->max_level) && ($skill->category->max_level != 0))
+                @if (isset($skill->ovr_level_cap) && $skill->ovr_level_cap != 0)
+                    <div class="col-md">
+                        <p><strong>Max Level:</strong> {!! $skill->ovr_level_cap !!}</p>
+                    </div>
+                @endif
+                @if (isset($skill->ovr_charge_cap) && $skill->ovr_charge_cap != 0)
+                    <div class="col-md">
+                        <p><strong>Max Charges:</strong> {!! $skill->ovr_charge_cap !!}</p>
+                    </div>
+                @endif
+            </div>
+        @elseif((isset($skill->category->max_level) && $skill->category->max_level != 0) || (isset($skill->category->max_charge) && $skill->category->max_charge != 0))
+            <hr>
+            <div class="row">
+                @if (isset($skill->category->max_level) && $skill->category->max_level != 0)
                     <div class="col-md">
                         <p><strong>Max Level:</strong> {!! $skill->category->max_level !!}</p>
                     </div>
                 @endif
-                @if (isset($skill->category->max_charge) && ($skill->category->max_charge != 0))
+                @if (isset($skill->category->max_charge) && $skill->category->max_charge != 0)
                     <div class="col-md">
                         <p><strong>Max Charges:</strong> {!! $skill->category->max_charge !!}</p>
                     </div>
