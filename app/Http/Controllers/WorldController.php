@@ -10,6 +10,8 @@ use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Rarity;
 use App\Models\Shop\Shop;
+use App\Models\Skill\Skill;
+use App\Models\Skill\SkillCategory;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
@@ -419,6 +421,104 @@ class WorldController extends Controller {
 
         return view('world.character_categories', [
             'categories' => $query->visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->orderBy('id')->paginate(20)->appends($request->query()),
+        ]);
+    }
+
+    /**
+     * Shows the skill categories page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSkillCategories(Request $request) {
+        $query = SkillCategory::query();
+        $name = $request->get('name');
+        if ($name) {
+            $query->where('name', 'LIKE', '%'.$name.'%');
+        }
+
+        return view('world.skill_categories', [
+            'categories' => $query->paginate(20)->appends($request->query()),
+        ]);
+    }
+
+    /**
+     * Shows the skills page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSkills(Request $request) {
+        $query = Skill::with('category');
+        $data = $request->only(['skill_category_id', 'species_id', 'name', 'sort']);
+        if (isset($data['skill_category_id']) && $data['skill_category_id'] != 'none') {
+            if ($data['skill_category_id'] == 'withoutOption') {
+                $query->whereNull('skill_category_id');
+            } else {
+                $query->where('skill_category_id', $data['skill_category_id']);
+            }
+        }
+        if (isset($data['species_id']) && $data['species_id'] != 'none') {
+            if ($data['species_id'] == 'withoutOption') {
+                $query->whereNull('species_id');
+            } else {
+                $query->where('species_id', $data['species_id']);
+            }
+        }
+        if (isset($data['name'])) {
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
+
+        if (isset($data['sort'])) {
+            switch ($data['sort']) {
+                case 'alpha':
+                    $query->sortAlphabetical();
+                    break;
+                case 'alpha-reverse':
+                    $query->sortAlphabetical(true);
+                    break;
+                case 'category':
+                    $query->sortCategory();
+                    break;
+                case 'species':
+                    $query->sortSpecies();
+                    break;
+                case 'newest':
+                    $query->sortNewest();
+                    break;
+                case 'oldest':
+                    $query->sortOldest();
+                    break;
+            }
+        } else {
+            $query->sortCategory();
+        }
+
+        return view('world.skills', [
+            'skills'     => $query->paginate(20)->appends($request->query()),
+            'categories' => ['none' => 'Any Category']+ ['withoutOption' => 'Without Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
+            'species'  => ['none' => 'Any Species'] + ['withoutOption' => 'Without Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+        ]);
+    }
+
+    /**
+     * Shows an individual skill's page.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSkill($id) {
+        $categories = SkillCategory::get();
+        $skill = Skill::where('id', $id)->first();
+        if (!$skill) {
+            abort(404);
+        }
+
+        return view('world.skill_page', [
+            'skill'       => $skill,
+            'imageUrl'    => $skill->imageUrl,
+            'name'        => $skill->displayName,
+            'description' => $skill->parsed_description,
+            'categories'  => $categories->keyBy('id'),
         ]);
     }
 }

@@ -9,7 +9,11 @@
 
     <h1>Skill Categories</h1>
 
-    <p></p>
+    <p>This is a list of skill categories that will be used to sort skills in the inventory.
+        Creating skill categories is entirely optional, however, using categories you can easily define max level, max charges and whether characters
+        get skills in this category by default.</p>
+
+    <p>The sorting order reflects the order in which the skill categories will be displayed in the inventory, as well as on world pages.</p>
 
     <div class="text-right mb-3">
         <a class="btn btn-primary" href="{{ url('admin/data/skills') }}"><i class="fas fa-undo"></i> Return to Skills</a>
@@ -21,7 +25,7 @@
         <table class="table table-sm category-table">
             <tbody id="sortable" class="sortable">
                 @foreach ($categories as $category)
-                    <tr class="sort-skill" data-id="{{ $category->id }}">
+                    <tr class="sort-item" data-id="{{ $category->id }}">
                         <td>
                             <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
                             @if (!$category->is_visible)

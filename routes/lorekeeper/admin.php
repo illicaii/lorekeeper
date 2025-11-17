@@ -240,7 +240,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('prompts/delete/{id}', 'PromptController@postDeletePrompt');
 
     // SKILLS
-    Route::get('skills', 'SkillController@getIndex');
+    Route::get('skills', 'SkillController@getSkillIndex');
     Route::get('skills/create', 'SkillController@getCreateSkill');
     Route::get('skills/edit/{id}', 'SkillController@getEditSkill');
     Route::get('skills/delete/{id}', 'SkillController@getDeleteSkill');
@@ -248,7 +248,6 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('skills/edit/{id?}', 'SkillController@postCreateEditSkill');
     Route::post('skills/delete/{id}', 'SkillController@postDeleteSkill');
 
-    // SKILL CATEGORIES
     Route::get('skill-categories', 'SkillController@getCategoryIndex');
     Route::get('skill-categories/create', 'SkillController@getCreateSkillCategory');
     Route::get('skill-categories/edit/{id}', 'SkillController@getEditSkillCategory');
@@ -256,6 +255,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('skill-categories/create', 'SkillController@postCreateEditSkillCategory');
     Route::post('skill-categories/edit/{id?}', 'SkillController@postCreateEditSkillCategory');
     Route::post('skill-categories/delete/{id}', 'SkillController@postDeleteSkillCategory');
+    Route::post('skill-categories/sort', 'SkillController@postSortSkillCategory');
 });
 
 // PAGES

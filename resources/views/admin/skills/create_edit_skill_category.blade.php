@@ -46,20 +46,20 @@
         {!! Form::textarea('description', $category->description, ['class' => 'form-control wysiwyg']) !!}
     </div>
     <div class="form-group">
-        {!! Form::checkbox('is_visible', 1, $category->id ? $category->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::checkbox('is_visible', 1, $category->is_visible ? $category->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the category will not be visible in the category list or available for selection in search. Permissioned staff will still be able to add traits to them, however.') !!}
     </div>
     <div class="form-group">
-        {!! Form::checkbox('is_default', 0, $category->id ? $category->is_default : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::checkbox('is_default', 1, $category->is_default ? $category->is_default : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         {!! Form::label('is_default', 'Is Default', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skills in this category will be automatically populated upon character creation') !!}
     </div>
     <div class="form-group">
         {!! Form::label('Max Level (Optional)') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
-        {!! Form::number('max_level', $skill->max_level ? $skill->max_level : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        {!! Form::number('max_level', $category->max_level ? $category->max_level : 0, ['class' => 'form-control', 'min' => 0]) !!}
     </div>
     <div class="form-group">
         {!! Form::label('Max Charges (Optional)') !!} {!! add_help('The max level of charges skills in this category can have. Leave this blank for categories with no charges') !!}
-        {!! Form::number('max_charge', $skill->max_charge ? $skill->max_charge : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        {!! Form::number('max_charge', $category->max_charge ? $category->max_charge : 0, ['class' => 'form-control', 'min' => 0]) !!}
     </div>
 
     <div class="text-right">

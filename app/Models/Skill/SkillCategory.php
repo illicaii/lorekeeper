@@ -31,8 +31,8 @@ class SkillCategory extends Model {
         'name'        => 'required|unique:skill_categories|between:3,100',
         'description' => 'nullable',
         'image'       => 'mimes:png',
-        'max_level'   => 'nullable|integer|min:0',
-        'max_charge'  => 'nullable|integer|min:0',
+        'max_level'   => 'integer|min:0',
+        'max_charge'  => 'integer|min:0',
     ];
 
     /**
@@ -44,8 +44,8 @@ class SkillCategory extends Model {
         'name'        => 'required|between:3,100',
         'description' => 'nullable',
         'image'       => 'mimes:png',
-        'max_level'   => 'nullable|integer|min:0',
-        'max_charge'  => 'nullable|integer|min:0',
+        'max_level'   => 'integer|min:0',
+        'max_charge'  => 'integer|min:0',
     ];
 
     /**********************************************************************************************

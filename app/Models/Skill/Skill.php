@@ -4,6 +4,7 @@ namespace App\Models\Skill;
 
 use App\Models\Model;
 use App\Models\Species\Species;
+use Illuminate\Support\Facades\DB;
 
 class Skill extends Model {
     /**
@@ -13,7 +14,7 @@ class Skill extends Model {
      */
     protected $fillable = [
         'name', 'skill_abrv', 'description', 'parsed_description', 'skill_category_id', 'species_id', 'has_image', 'is_visible', 'skill_type',
-        'parent_id', 'parent_level', 'prerequisite_id', 'override_default_caps', 'ovr_level_cap',
+        'parent_id', 'parent_level', 'override_default_caps', 'ovr_level_cap',
         'ovr_charge_cap', 'hash',
     ];
 
@@ -33,12 +34,12 @@ class Skill extends Model {
         'skill_category_id'     => 'nullable',
         'species_id'            => 'nullable',
         'name'                  => 'required|unique:skills|between:3,100',
-        'skill_abrv'            => 'required|unique:skills|between:3,20',
+        'skill_abrv'            => 'required|unique:skills|between:1,20',
         'description'           => 'nullable',
         'image'                 => 'mimes:png',
-        'override_default_caps' => 'nullable|boolean:strict',
-        'ovr_level_cap'         => 'nullable|integer|min:0',
-        'ovr_charge_cap'        => 'nullable|integer|min:0',
+        'override_default_caps' => 'boolean:strict',
+        'ovr_level_cap'         => 'integer|min:0',
+        'ovr_charge_cap'        => 'integer|min:0',
     ];
 
     /**
@@ -50,12 +51,12 @@ class Skill extends Model {
         'skill_category_id'     => 'nullable',
         'species_id'            => 'nullable',
         'name'                  => 'required|between:3,100',
-        'skill_abrv'            => 'required|unique:skills|between:3,20',
+        'skill_abrv'            => 'required|between:1,20',
         'description'           => 'nullable',
         'image'                 => 'mimes:png',
-        'override_default_caps' => 'nullable|boolean:strict',
-        'ovr_level_cap'         => 'nullable|integer|min:1',
-        'ovr_charge_cap'        => 'nullable|integer|min:0',
+        'override_default_caps' => 'boolean:strict',
+        'ovr_level_cap'         => 'integer|min:0',
+        'ovr_charge_cap'        => 'integer|min:0',
     ];
 
     /**********************************************************************************************
@@ -90,13 +91,6 @@ class Skill extends Model {
      */
     public function parent() {
         return $this->belongsTo(Skill::class, 'parent_id');
-    }
-
-    /**
-     * Get the prerequisite the skill belongs to.
-     */
-    public function prerequisite() {
-        return $this->belongsTo(Skill::class, 'prerequisite_id');
     }
 
     /**********************************************************************************************

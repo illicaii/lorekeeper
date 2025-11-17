@@ -17,7 +17,7 @@ class SkillController extends Controller {
     | Admin / Skill Controller
     |--------------------------------------------------------------------------
     |
-    | Handles creation/editing of character skill categories and features
+    | Handles creation/editing of character skill categories and skills
     |
     */
 
@@ -78,7 +78,7 @@ class SkillController extends Controller {
     public function postCreateEditSkillCategory(Request $request, SkillService $service, $id = null) {
         $id ? $request->validate(SkillCategory::$updateRules) : $request->validate(SkillCategory::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'is_default', 'is_visible',
+            'name', 'description', 'image', 'remove_image', 'is_default', 'is_visible', 'max_level', 'max_charge',
         ]);
         if ($id && $service->updateSkillCategory(SkillCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
@@ -160,10 +160,23 @@ class SkillController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSkillIndex() {
-        // todo add query filtering
-        return view('admin.skills.index', [
-            'skills' => Skill::orderBy('name', 'ASC')->get(),
+    public function getSkillIndex(Request $request) {
+        $query = Skill::query();
+        $data = $request->only(['skill_category_id', 'species_id', 'name']);
+        if (isset($data['skill_category_id']) && $data['skill_category_id'] != 'none') {
+            $query->where('skill_category_id', $data['skill_category_id']);
+        }
+        if (isset($data['species_id']) && $data['species_id'] != 'none') {
+            $query->where('species_id', $data['species_id']);
+        }
+        if (isset($data['name'])) {
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
+
+        return view('admin.skills.skills', [
+            'skills' => $query->paginate(20)->appends($request->query()),
+            'species'    => ['none' => 'Any Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'Any Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
         ]);
     }
 
@@ -176,8 +189,8 @@ class SkillController extends Controller {
         return view('admin.skills.create_edit_skill', [
             'skill'      => new Skill,
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'skills'     => ['none' => 'No Parent/Prerequisite'] + Skill::orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
-            'categories' => ['none' => 'Any Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
+            'skills'     => ['none' => 'No Parent'] + Skill::orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
         ]);
     }
 
@@ -197,8 +210,8 @@ class SkillController extends Controller {
         return view('admin.skills.create_edit_skill', [
             'skill'      => $skill,
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'skills'     => ['none' => 'No Parent/Prerequisite'] + Skill::where('id', '!=', $skill->id)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
-            'categories' => ['none' => 'Any Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
+            'skills'     => ['none' => 'No Parent'] + Skill::where('id', '!=', $skill->id)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
+            'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
         ]);
     }
 
@@ -214,7 +227,7 @@ class SkillController extends Controller {
         $id ? $request->validate(Skill::$updateRules) : $request->validate(Skill::$createRules);
         $data = $request->only([
             'name', 'skill_abrv', 'description', 'skill_category_id', 'species_id', 'image', 'remove_image',
-            'is_visible', 'skill_type', 'parent_id', 'parent_level', 'prerequisite_id',
+            'is_visible', 'skill_type', 'parent_id', 'parent_level',
             'override_default_caps', 'ovr_level_cap', 'ovr_charge_cap',
         ]);
         if ($id && $service->updateSkill(Skill::find($id), $data, Auth::user())) {

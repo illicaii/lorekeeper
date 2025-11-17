@@ -40,6 +40,7 @@ class SkillService extends Service {
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
+                $data['hash'] = randomString(10);
                 $image = $data['image'];
                 unset($data['image']);
             } else {
@@ -192,9 +193,6 @@ class SkillService extends Service {
             if (isset($data['parent_id']) && $data['parent_id'] == 'none') {
                 $data['parent_id'] = null;
             }
-            if (isset($data['prerequisite_id']) && $data['prerequisite_id'] == 'none') {
-                $data['prerequisite_id'] = null;
-            }
 
             if ((isset($data['skill_category_id']) && $data['skill_category_id']) && !SkillCategory::where('id', $data['skill_category_id'])->exists()) {
                 throw new \Exception('The selected skill category is invalid.');
@@ -308,11 +306,11 @@ class SkillService extends Service {
 
         try {
             // Check first if the skill is currently owned or if some other site feature uses it
-            if (DB::table('character_skills')->where([['skill_id', '=', $skill->id]])->exists()) {
-                throw new \Exception('At least one character currently owns this skill. Please remove the skill(s) before deleting it.');
-            }
+            // if (DB::table('character_skills')->where([['skill_id', '=', $skill->id]])->exists()) {
+            //     throw new \Exception('At least one character currently owns this skill. Please remove the skill(s) before deleting it.');
+            // }
 
-            DB::table('character_skills')->where('skill_id', $skill->id)->delete();
+            // DB::table('character_skills')->where('skill_id', $skill->id)->delete();
             if ($skill->has_image) {
                 $this->deleteImage($skill->imagePath, $skill->imageFileName);
             }
@@ -344,12 +342,6 @@ class SkillService extends Service {
         }
         if (!isset($data['is_default'])) {
             $data['is_default'] = 0;
-        }
-        if (!isset($data['max_level'])) {
-            $data['max_level'] = 0;
-        }
-        if (!isset($data['max_charge'])) {
-            $data['max_charge'] = 0;
         }
 
         if (isset($data['remove_image'])) {

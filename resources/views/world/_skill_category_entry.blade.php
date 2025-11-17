@@ -4,15 +4,27 @@
     @endif
     <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
         <h3>
-            @if (!$skill->is_visible)
+            @if (!$category->is_visible)
                 <i class="fas fa-eye-slash mr-1"></i>
             @endif
             {!! $name !!} @if (isset($searchUrl) && $searchUrl)
                 <a href="{{ $searchUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>
             @endif
         </h3>
-        @if ($category->is_character_owned == 1)
-            <div><strong>Characters can own {{ $category->character_limit != 0 ? $category->character_limit : '' }} skills in this category{{ $category->can_name != 0 ? ', as well as name them' : '' }}!</strong></div>
+         @if((isset($category->max_level) && ($category->max_level != 0)) ||
+                (isset($category->max_charge) && ($category->max_charge != 0)))
+            <div class="row">
+                @if (isset($category->max_level) && ($category->max_level != 0))
+                    <div class="col-md">
+                        <p><strong>Max Level:</strong> {!! $category->max_level !!}</p>
+                    </div>
+                @endif
+                @if (isset($category->max_charge) && ($category->max_charge != 0))
+                    <div class="col-md">
+                        <p><strong>Max Charges:</strong> {!! $category->max_charge !!}</p>
+                    </div>
+                @endif
+            </div>
         @endif
         <div class="world-entry-text">
             {!! $description !!}

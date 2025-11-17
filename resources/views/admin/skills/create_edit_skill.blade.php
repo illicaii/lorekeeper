@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('admin-title')
-    {{ $feature->id ? 'Edit' : 'Create' }} Skills
+    {{ $skill->id ? 'Edit' : 'Create' }} Skills
 @endsection
 
 @section('admin-content')
@@ -32,7 +32,7 @@
         </div>
         <div class="col-md-6 form-group">
             {!! Form::label('Species Restriction (Optional)') !!}
-            {!! Form::select('species_id', $species, $feature->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
+            {!! Form::select('species_id', $species, $skill->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
         </div>
     </div>
 
@@ -57,11 +57,11 @@
     </div>
 
     <div class="form-group">
-        {!! Form::checkbox('is_visible', 1, $feature->id ? $feature->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::checkbox('is_visible', 1, $skill->is_visible ? $skill->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the trait will not be visible in the trait list or available for selection in search and design updates. Permissioned staff will still be able to add them to characters, however.') !!}
     </div>
     <div class="form-group">
-        {!! Form::checkbox('override_default_caps', 0, $feature->id ? $feature->override_default_caps : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::checkbox('override_default_caps', 1, $skill->override_default_caps ? $skill->override_default_caps : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         {!! Form::label('override_default_caps', 'Override skill category defaults', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the max level and max charge fields will be used instead of the category defaults.') !!}
     </div>
     <div class="form-group">
@@ -87,12 +87,6 @@
                 {!! Form::number('parent_level', $skill->parent_level ? $skill->parent_level : 1, ['class' => 'form-control', 'min' => 1]) !!}
             </div>
         </div>
-    </div>
-
-    <div class="form-group">
-        {!! Form::label('Prerequisite (Optional)') !!} {!! add_help('Unrelated skill required to have before the character can learn this skill.') !!}
-        <p class="mb-0">A prerequisite is required to have at least level 1 in to enter any prompts with this skill reward.</p>
-        {!! Form::select('prerequisite_id', $skills, $skill->prerequisite_id, ['class' => 'form-control mb-1']) !!}
     </div>
 
     <div class="text-right">
