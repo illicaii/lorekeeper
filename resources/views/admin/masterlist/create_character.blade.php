@@ -264,9 +264,7 @@
 
         <div class="form-group">
             {!! Form::label('Skills') !!} @if ($isMyo)
-                {!! add_help(
-                    'These skills will be listed as required skills for the slot. The user will still be able to add on more skills, but not be able to remove these.',
-                ) !!}
+                {!! add_help('These skills will be listed as required skills for the slot. The user will still be able to add on more skills, but not be able to remove these.') !!}
             @endif
             <div><a href="#" class="btn btn-primary mb-2" id="add-skill">Add Skill</a></div>
             <div id="skillList">
