@@ -152,17 +152,18 @@
                                     @foreach ($group as $skill)
                                         <div class="row ml-md-2 w-100">
                                             <div class="col">{!! $skill->skill->displayName !!} @if ($skill->data)
-                                                ({{ $skill->data }})
-                                            @endif</div>
-                                            @if (isset($skill->xp))
-                                            <div class="col text-right"> LV. </div>
-                                            <div class="col-3 col-md-3 col-lg-2 text-right">{{$skill->getlevel()}}/
-                                                @if ($skill->skill->override_default_caps)
-                                                    {{$skill->skill->ovr_level_cap}}
-                                                @elseif (isset($skill->skill->category->max_level))
-                                                    {{ $skill->skill->category->max_level }}
+                                                    ({{ $skill->data }})
                                                 @endif
                                             </div>
+                                            @if (isset($skill->xp))
+                                                <div class="col text-right"> LV. </div>
+                                                <div class="col-3 col-md-3 col-lg-2 text-right">{{ $skill->getlevel() }}/
+                                                    @if ($skill->skill->override_default_caps)
+                                                        {{ $skill->skill->ovr_level_cap }}
+                                                    @elseif (isset($skill->skill->category->max_level))
+                                                        {{ $skill->skill->category->max_level }}
+                                                    @endif
+                                                </div>
                                             @endif
                                         </div>
                                     @endforeach

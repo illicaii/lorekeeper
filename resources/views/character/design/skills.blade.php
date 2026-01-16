@@ -66,7 +66,9 @@
                             <strong>{!! $skill->skill->category->displayName !!}:</strong>
                             @endif {!! $skill->skill->displayName !!} @if ($skill->data)
                                 ({{ $skill->data }})
-                            @endif @if ($skill->xp) ({{$skill->xp}}) @endif <span class="text-danger">*Required</span>
+                                @endif @if ($skill->xp)
+                                    ({{ $skill->xp }})
+                                @endif <span class="text-danger">*Required</span>
                     </div>
                 @endforeach
             @endif
@@ -77,7 +79,9 @@
                         @endif {!! $skill->skill->displayName !!} @if ($skill->data)
                             ({{ $skill->data }})
                         @endif
-                        @if ($skill->xp) ({{$skill->xp}}) @endif
+                        @if ($skill->xp)
+                            ({{ $skill->xp }})
+                        @endif
                 </div>
             @endforeach
         </div>
@@ -88,7 +92,5 @@
 @section('scripts')
     @include('widgets._image_upload_js')
 
-    <script>
-
-    </script>
+    <script></script>
 @endsection
