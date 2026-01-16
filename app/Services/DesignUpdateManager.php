@@ -6,9 +6,11 @@ use App\Facades\Notifications;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterFeature;
+use App\Models\Character\CharacterSkill;
 use App\Models\Character\CharacterImage;
 use App\Models\Currency\Currency;
 use App\Models\Feature\Feature;
+use App\Models\Skill\Skill;
 use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
@@ -79,6 +81,17 @@ class DesignUpdateManager extends Service {
                         'character_type'     => 'Update',
                         'feature_id'         => $feature->feature_id,
                         'data'               => $feature->data,
+                    ]);
+                }
+            }
+            if (!$character->is_myo_slot) {
+                foreach ($character->image->skills as $skill) {
+                    $request->skills()->create([
+                        'character_image_id' => $request->id,
+                        'character_type'     => 'Update',
+                        'skill_id'           => $skill->skill_id,
+                        'data'               => $skill->data,
+                        'xp'                 => $skill->xp,
                     ]);
                 }
             }
@@ -429,6 +442,50 @@ class DesignUpdateManager extends Service {
     }
 
     /**
+     * Saves the character skills section of a character design update request.
+     *
+     * @param array                                       $data
+     * @param \App\Models\Character\CharacterDesignUpdate $request
+     *
+     * @return bool
+     */
+    public function saveRequestSkills($data, $request) {
+        DB::beginTransaction();
+
+        try {
+            // Clear old skills
+            $request->skills()->delete();
+
+            // Attach skills
+            $skills = Skill::whereIn('id', $data['skill_id'])->get()->keyBy('id');
+            $species = $request->species_id;
+
+            foreach ($data['skill_id'] as $key => $skillId) {
+                if (!$skillId) {
+                    continue;
+                }
+
+                // Skip the skill if it's not the correct species.
+                if (isset($skills[$skillId]->species_id) && $skills[$skillId]->species_id != $species) {
+                    continue;
+                }
+
+                $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $data['skill_xp'][$key], 'character_type' => 'Update']);
+            }
+
+            // Update other stats
+            $request->has_skills = 1;
+            $request->save();
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
      * Submit a character design update request to the approval queue.
      *
      * @param \App\Models\Character\CharacterDesignUpdate $request
@@ -592,6 +649,16 @@ class DesignUpdateManager extends Service {
 
             // Shift the image features over to the new image
             $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
+
+            // Add the compulsory skills
+            if ($request->character->is_myo_slot) {
+                foreach ($request->character->image->skills as $skill) {
+                    CharacterSkills::create(['character_image_id' => $image->id, 'skill_id' => $skill->skill_id, 'data' => $skill->data, 'xp' => $skill->xp, 'character_type' => 'Character']);
+                }
+            }
+
+            // Shift the image skills over to the new image
+            $request->rawSkills()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
 
             // Make the image directory if it doesn't exist
             if (!file_exists($image->imagePath)) {

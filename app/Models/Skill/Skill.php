@@ -276,4 +276,42 @@ class Skill extends Model {
     public function getAdminUrlAttribute() {
         return url('admin/data/skills/edit/'.$this->id);
     }
+
+    /**********************************************************************************************
+
+        Other Functions
+
+    **********************************************************************************************/
+
+    public static function getDropdownItems($withHidden = 0) {
+        $visibleOnly = 1;
+        if ($withHidden) {
+            $visibleOnly = 0;
+        }
+
+        $sorted_skill_categories = collect(SkillCategory::all()->where('is_visible', '>=', $visibleOnly)->sortBy('sort')->pluck('name')->toArray());
+
+        $grouped = self::where('is_visible', '>=', $visibleOnly)->select('name', 'id', 'skill_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
+        if (isset($grouped[''])) {
+            if (!$sorted_skill_categories->contains('Miscellaneous')) {
+                $sorted_skill_categories->push('Miscellaneous');
+            }
+            $grouped['Miscellaneous'] ??= [] + $grouped[''];
+        }
+
+        $sorted_skill_categories = $sorted_skill_categories->filter(function ($value, $key) use ($grouped) {
+            return in_array($value, array_keys($grouped), true);
+        });
+
+        foreach ($grouped as $category => $skills) {
+            foreach ($skills as $id  => $skill) {
+                $grouped[$category][$id] = $skill['name'];
+            }
+        }
+        $skills_by_category = $sorted_skill_categories->map(function ($category) use ($grouped) {
+            return [$category => $grouped[$category]];
+        });
+
+        return $skills_by_category;
+    }
 }

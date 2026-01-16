@@ -7,6 +7,7 @@
             <div class="sidebar-item"><a href="{{ $request->url . '/image' }}" class="{{ set_active('designs/' . $request->id . '/image') }}">Image</a></div>
             <div class="sidebar-item"><a href="{{ $request->url . '/addons' }}" class="{{ set_active('designs/' . $request->id . '/addons') }}">Add-ons</a></div>
             <div class="sidebar-item"><a href="{{ $request->url . '/traits' }}" class="{{ set_active('designs/' . $request->id . '/traits') }}">Traits</a></div>
+            <div class="sidebar-item"><a href="{{ $request->url . '/skills' }}" class="{{ set_active('designs/' . $request->id . '/skills') }}">Skills</a></div>
         </li>
     @endif
     <li class="sidebar-section">

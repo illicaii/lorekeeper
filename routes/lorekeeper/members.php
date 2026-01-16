@@ -197,6 +197,9 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function () {
     Route::post('{id}/traits', 'DesignController@postFeatures');
     Route::get('traits/subtype', 'DesignController@getFeaturesSubtype');
 
+    Route::get('{id}/skills', 'DesignController@getSkills');
+    Route::post('{id}/skills', 'DesignController@postSkills');
+
     Route::get('{id}/confirm', 'DesignController@getConfirm');
     Route::post('{id}/submit', 'DesignController@postSubmit');
 

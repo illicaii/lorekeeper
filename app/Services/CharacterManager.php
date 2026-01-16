@@ -10,6 +10,7 @@ use App\Models\Character\CharacterCategory;
 use App\Models\Character\CharacterCurrency;
 use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterFeature;
+use App\Models\Character\CharacterSkill;
 use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Sales\SalesCharacter;
@@ -684,6 +685,57 @@ class CharacterManager extends Service {
     }
 
     /**
+     * Updates a character image with Skills.
+     *
+     * @param array                                $data
+     * @param \App\Models\Character\CharacterImage $image
+     * @param \App\Models\User\User                $user
+     *
+     * @return bool
+     */
+    public function updateImageSkills($data, $image, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (!$this->logAdminAction($user, 'Updated Image', 'Updated character image skills on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            // Log old skills
+            $old = [];
+            $old['skills'] = $this->generateSkillList($image);
+
+            // Clear old skills
+            $image->skills()->delete();
+
+            // Attach skills
+            foreach ($data['skill_id'] as $key => $skillId) {
+                if ($skillId) {
+                    $skill = CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $data['skill_xp'][$key]]);
+                }
+            }
+
+            $image->save();
+
+            $new = [];
+            $new['skills'] = $this->generateSkillList($image);
+
+            // Character also keeps track of these skills
+            $image->character->save();
+
+            // Add a log for the character
+            // This logs all the updates made to the character
+            $this->createLog($user->id, null, null, null, $image->character_id, 'Traits Updated', '#'.$image->id, 'character', true, $old, $new);
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
      * Updates image data.
      *
      * @param array                                $data
@@ -901,6 +953,7 @@ class CharacterManager extends Service {
             }
 
             $image->features()->delete();
+            $image->skills()->delete();
 
             $image->delete();
 
@@ -1376,6 +1429,7 @@ class CharacterManager extends Service {
             // Images use soft deletes
             foreach ($character->images as $image) {
                 $image->features()->delete();
+                $image->skills()->delete();
                 $image->delete();
             }
 
@@ -2018,6 +2072,13 @@ class CharacterManager extends Service {
                 }
             }
 
+            // Attach skills
+            foreach ($data['skill_id'] as $key => $skillId) {
+                if ($skillId) {
+                    $skill = CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $data['skill_xp'][$key]]);
+                }
+            }
+
             return $image;
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
@@ -2037,6 +2098,22 @@ class CharacterManager extends Service {
         $result = '';
         foreach ($image->features as $feature) {
             $result .= '<div>'.($feature->feature->category ? '<strong>'.$feature->feature->category->displayName.':</strong> ' : '').$feature->feature->displayName.'</div>';
+        }
+
+        return $result;
+    }
+
+    /**
+     * Generates a list of skills for displaying.
+     *
+     * @param \App\Models\Character\CharacterImage $image
+     *
+     * @return string
+     */
+    private function generateSkillList($image) {
+        $result = '';
+        foreach ($image->skills as $skill) {
+            $result .= '<div>'.($skill->skill->category ? '<strong>'.$skill->skill->category->displayName.':</strong> ' : '').$skill->skill->displayName.'</div>';
         }
 
         return $result;

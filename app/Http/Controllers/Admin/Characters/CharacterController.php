@@ -11,6 +11,7 @@ use App\Models\Feature\Feature;
 use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
+use App\Models\Skill\Skill;
 use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserItem;
@@ -53,6 +54,7 @@ class CharacterController extends Controller {
             'specieses'   => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'    => ['0' => 'Pick a Species First'],
             'features'    => Feature::getDropdownItems(1),
+            'skills'      => Skill::getDropdownItems(1),
             'isMyo'       => false,
         ]);
     }
@@ -69,6 +71,7 @@ class CharacterController extends Controller {
             'specieses'   => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'    => ['0' => 'Pick a Species First'],
             'features'    => Feature::getDropdownItems(1),
+            'skills'      => Skill::getDropdownItems(1),
             'isMyo'       => true,
         ]);
     }
@@ -103,7 +106,7 @@ class CharacterController extends Controller {
             'x0', 'x1', 'y0', 'y1',
             'designer_id', 'designer_url',
             'artist_id', 'artist_url',
-            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
+            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'skill_id', 'skill_data', 'skill_xp',
             'image', 'thumbnail', 'image_description',
         ]);
         if ($character = $service->createCharacter($data, Auth::user())) {
@@ -135,7 +138,7 @@ class CharacterController extends Controller {
             'x0', 'x1', 'y0', 'y1',
             'designer_id', 'designer_url',
             'artist_id', 'artist_url',
-            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
+            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'skill_id', 'skill_data', 'skill_xp',
             'image', 'thumbnail',
         ]);
         if ($character = $service->createCharacter($data, Auth::user(), true)) {

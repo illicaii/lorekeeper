@@ -118,6 +118,46 @@
             return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
         }
 
+        // Skills /////////////////////////////////////////////////////////////////////////////////////
+
+        $('.initial.skill-select').selectize({
+            render: {
+                item: skillSelectedRender
+            }
+        });
+        $('#add-skill').on('click', function(e) {
+            e.preventDefault();
+            addSkillRow();
+        });
+        $('.remove-skill').on('click', function(e) {
+            e.preventDefault();
+            removeSkillRow($(this));
+        })
+
+        function addSkillRow() {
+            var $clone = $('.skill-row').clone();
+            $('#skillList').append($clone);
+            $clone.removeClass('hide skill-row');
+            $clone.addClass('d-flex');
+            $clone.find('.remove-skill').on('click', function(e) {
+                e.preventDefault();
+                removeSkillRow($(this));
+            })
+            $clone.find('.skill-select').selectize({
+                render: {
+                    item: skillSelectedRender
+                }
+            });
+        }
+
+        function removeSkillRow($trigger) {
+            $trigger.parent().remove();
+        }
+
+        function skillSelectedRender(item, escape) {
+            return '<div><span>' + escape(item["text"].trim()) + ' (' + escape(item["optgroup"].trim()) + ')' + '</span></div>';
+        }
+
         // Croppie ////////////////////////////////////////////////////////////////////////////////////
 
         var thumbnailWidth = {{ config('lorekeeper.settings.masterlist_thumbnails.width') }};

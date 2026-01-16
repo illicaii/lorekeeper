@@ -121,6 +121,19 @@ class CharacterImage extends Model {
     }
 
     /**
+     * Get the skills attached to the character image, ordered by display order.
+     */
+    public function skills() {
+        $query = $this
+            ->hasMany(CharacterSkill::class, 'character_image_id')->where('character_skills.character_type', 'Character')
+            ->join('skills', 'skills.id', '=', 'character_skills.skill_id')
+            ->leftJoin('skill_categories', 'skill_categories.id', '=', 'skills.skill_category_id')
+            ->select(['character_skills.*', 'skills.*', 'character_skills.id AS character_skill_id', 'skill_categories.sort']);
+
+        return $query->orderByDesc('sort');
+    }
+
+    /**
      * Get the designers/artists attached to the character image.
      */
     public function creators() {

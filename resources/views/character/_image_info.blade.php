@@ -7,6 +7,9 @@
                     <a class="nav-link active" id="infoTab-{{ $image->id }}" data-toggle="tab" href="#info-{{ $image->id }}" role="tab">Info</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" id="skillTab-{{ $image->id }}" data-toggle="tab" href="#skills-{{ $image->id }}" role="tab">Skills</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" id="notesTab-{{ $image->id }}" data-toggle="tab" href="#notes-{{ $image->id }}" role="tab">Notes</a>
                 </li>
                 <li class="nav-item">
@@ -121,6 +124,59 @@
                 @if (Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div class="mt-3">
                         <a href="#" class="btn btn-outline-info btn-sm edit-features" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Skill info --}}
+            <div class="tab-pane fade show" id="skills-{{ $image->id }}">
+                <div class="mb-3">
+                    <div>
+                        <h5>Skills</h5>
+                    </div>
+                    <div>
+                        @php
+                            $skillgroup = $image
+                                ->skills()
+                                ->get()
+                                ->groupBy('skill_category_id');
+                        @endphp
+                        @if ($image->skills()->count())
+                            @foreach ($skillgroup as $key => $group)
+                                <div class="mb-2">
+                                    @if ($key)
+                                        <strong>{!! $group->first()->skill->category->displayName !!}:</strong>
+                                    @else
+                                        <strong>Miscellaneous:</strong>
+                                    @endif
+                                    @foreach ($group as $skill)
+                                        <div class="row ml-md-2 w-100">
+                                            <div class="col">{!! $skill->skill->displayName !!} @if ($skill->data)
+                                                ({{ $skill->data }})
+                                            @endif</div>
+                                            @if (isset($skill->xp))
+                                            <div class="col text-right"> LV. </div>
+                                            <div class="col-3 col-md-3 col-lg-2 text-right">{{$skill->getlevel()}}/
+                                                @if ($skill->skill->override_default_caps)
+                                                    {{$skill->skill->ovr_level_cap}}
+                                                @elseif (isset($skill->skill->category->max_level))
+                                                    {{ $skill->skill->category->max_level }}
+                                                @endif
+                                            </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        @else
+                            <div>No skills listed.</div>
+                        @endif
+                    </div>
+                </div>
+
+                @if (Auth::check() && Auth::user()->hasPower('manage_characters'))
+                    <div class="mt-3">
+                        <a href="#" class="btn btn-outline-info btn-sm edit-skills" data-id="{{ $image->id }}"><i class="fas fa-cog"></i> Edit</a>
                     </div>
                 @endif
             </div>

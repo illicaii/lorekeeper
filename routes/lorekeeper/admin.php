@@ -346,6 +346,9 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
     Route::post('image/{id}/traits', 'CharacterImageController@postEditImageFeatures');
     Route::get('image/traits/subtype', 'CharacterImageController@getEditImageSubtype');
 
+    Route::get('image/{id}/skills', 'CharacterImageController@getEditImageSkills');
+    Route::post('image/{id}/skills', 'CharacterImageController@postEditImageSkills');
+
     Route::get('image/{id}/notes', 'CharacterImageController@getEditImageNotes');
     Route::post('image/{id}/notes', 'CharacterImageController@postEditImageNotes');
 

@@ -11,6 +11,7 @@ use App\Models\Item\ItemCategory;
 use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
+use App\Models\Skill\Skill;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\DesignUpdateManager;
@@ -262,6 +263,53 @@ class DesignController extends Controller {
         }
 
         if ($service->saveRequestFeatures($request->all(), $r)) {
+            flash('Request edited successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Shows a design update request's skills section.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSkills($id) {
+        $r = CharacterDesignUpdate::find($id);
+        if (!$r || ($r->user_id != Auth::user()->id && !Auth::user()->hasPower('manage_characters'))) {
+            abort(404);
+        }
+
+        return view('character.design.skills', [
+            'request'   => $r,
+            'skills'  => Skill::getDropdownItems(),
+        ]);
+    }
+
+    /**
+     * Edits a design update request's skills section.
+     *
+     * @param App\Services\DesignUpdateManager $service
+     * @param int                              $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSkills(Request $request, DesignUpdateManager $service, $id) {
+        $r = CharacterDesignUpdate::find($id);
+        if (!$r) {
+            abort(404);
+        }
+        if ($r->user_id != Auth::user()->id) {
+            abort(404);
+        }
+
+        if ($service->saveRequestSkills($request->all(), $r)) {
             flash('Request edited successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {

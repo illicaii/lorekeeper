@@ -9,6 +9,7 @@ use App\Models\Feature\Feature;
 use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
+use App\Models\Skill\Skill;
 use App\Models\User\User;
 use App\Services\CharacterManager;
 use Illuminate\Http\Request;
@@ -44,6 +45,7 @@ class CharacterImageController extends Controller {
             'subtypes'  => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $this->character->image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'users'     => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'features'  => Feature::getDropdownItems(1),
+            'skills'    => Skill::getDropdownItems(1),
             'isMyo'     => false,
         ]);
     }
@@ -73,7 +75,7 @@ class CharacterImageController extends Controller {
      */
     public function postNewImage(Request $request, CharacterManager $service, $slug) {
         $request->validate(CharacterImage::$createRules);
-        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_id', 'designer_url', 'designer_id', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'is_valid', 'is_visible']);
+        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_id', 'designer_url', 'designer_id', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'skill_id', 'skill_data', 'skill_xp', 'is_valid', 'is_visible']);
         $this->character = Character::where('slug', $slug)->first();
         if (!$this->character) {
             abort(404);
@@ -148,6 +150,47 @@ class CharacterImageController extends Controller {
             'image'    => CharacterImage::find($id),
             'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
+    }
+
+    /**
+     * Shows the edit image skills modal.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditImageSkills($id) {
+        $image = CharacterImage::find($id);
+
+        return view('character.admin._edit_skills_modal', [
+            'image'     => $image,
+            'skills'  => Skill::getDropdownItems(1),
+        ]);
+    }
+
+    /**
+     * Edits the skills of an image.
+     *
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditImageSkills(Request $request, CharacterManager $service, $id) {
+        $data = $request->only(['skill_id', 'skill_data', 'skill_xp']);
+        $image = CharacterImage::find($id);
+        if (!$image) {
+            abort(404);
+        }
+        if ($service->updateImageSkills($data, $image, Auth::user())) {
+            flash('Character traits edited successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back()->withInput();
     }
 
     /**

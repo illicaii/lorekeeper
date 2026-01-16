@@ -24,7 +24,7 @@ class CharacterDesignUpdate extends Model {
         'use_cropper', 'x0', 'x1', 'y0', 'y1',
         'hash', 'species_id', 'subtype_id', 'rarity_id',
         'has_comments', 'has_image', 'has_addons', 'has_features',
-        'submitted_at', 'update_type', 'fullsize_hash',
+        'has_skills', 'submitted_at', 'update_type', 'fullsize_hash',
         'approval_votes', 'rejection_votes',
     ];
 
@@ -129,6 +129,26 @@ class CharacterDesignUpdate extends Model {
      */
     public function rawFeatures() {
         return $this->hasMany(CharacterFeature::class, 'character_image_id')->where('character_features.character_type', 'Update');
+    }
+
+    /**
+     * Get the skills attached to the design update, ordered by display order.
+     */
+    public function skills() {
+        $query = $this
+            ->hasMany(CharacterSkill::class, 'character_image_id')->where('character_skills.character_type', 'Update')
+            ->join('skills', 'skills.id', '=', 'character_skills.skill_id')
+            ->leftJoin('skill_categories', 'skill_categories.id', '=', 'skills.skill_category_id')
+            ->select(['character_skills.*', 'skills.*', 'character_skills.id AS character_skill_id', 'skill_categories.sort']);
+
+        return $query->orderByDesc('sort');
+    }
+
+    /**
+     * Get the skills attached to the design update with no extra sorting.
+     */
+    public function rawSkills() {
+        return $this->hasMany(CharacterSkill::class, 'character_image_id')->where('character_skills.character_type', 'Update');
     }
 
     /**
@@ -257,7 +277,7 @@ class CharacterDesignUpdate extends Model {
      * @return bool
      */
     public function getIsCompleteAttribute() {
-        return $this->has_comments && $this->has_image && $this->has_addons && $this->has_features;
+        return $this->has_comments && $this->has_image && $this->has_addons && $this->has_features && $this->has_skills;
     }
 
     /**
