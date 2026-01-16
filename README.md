@@ -1,3 +1,7 @@
+# libSkills_v3.0
+This extension is still a heavy WIP.
+I wouldn't recommend you pull this extension at this moment. It's only here for my personal use
+
 # Lorekeeper
 
 Lorekeeper is a framework for managing deviantART-based ARPGs/closed species masterlists coded using the Laravel framework. In simple terms - you will be able to make a copy of the site, do some minor setup/enter data about your species and game, and it'll provide you with the automation to keep track of your species, players and ARPG submissions.
@@ -14,7 +18,7 @@ Lorekeeper is a framework for managing deviantART-based ARPGs/closed species mas
 - Users can submit art to the submission queue, which mods can approve/reject. This dispenses rewards automagically.
 - Users can spend their hard-earned rewards immediately, without requiring mods to look over their trackers (because it's all been pre-approved).
 - Characters, items and currency can be transferred between users. Plus...secure trading between users for game items/currency/characters on-site is also a thing.
-- Logs for all transfers are kept, so it's easy to check where everything went. 
+- Logs for all transfers are kept, so it's easy to check where everything went.
 - The masterlist is king, so ownership can't be ambiguous, and the current design of a character is always easily accessible.
 - Speaking of which, you can search for characters based on traits, rarity, etc. Also, trait/item/etc. data get their own searchable lists - no need to create additional pages detailing restrictions on how a trait should be drawn/described.
 - Unless you want to, in which case you can add custom pages in HTML without touching the codebase!
@@ -54,7 +58,7 @@ $ composer install
 
 Generate app key and run database migrations:
 ```
-$ php artisan key:generate 
+$ php artisan key:generate
 $ php artisan migrate
 ```
 
