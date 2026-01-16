@@ -12,7 +12,7 @@ class SkillCategory extends Model {
      */
     protected $fillable = [
         'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_default', 'is_visible', 'hash',
-        'max_level','max_charge',
+        'max_level', 'max_charge',
     ];
 
     /**

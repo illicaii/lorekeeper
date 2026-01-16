@@ -83,14 +83,14 @@ class Skill extends Model {
      * Get the children of the skill.
      */
     public function children() {
-        return $this->hasMany(Skill::class, 'parent_id');
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     /**
      * Get the parent the skill belongs to.
      */
     public function parent() {
-        return $this->belongsTo(Skill::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id');
     }
 
     /**********************************************************************************************

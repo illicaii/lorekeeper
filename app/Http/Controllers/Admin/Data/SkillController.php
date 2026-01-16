@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin\Data;
 
 use App\Http\Controllers\Controller;
-use App\Models\Prompt\Prompt;
 use App\Models\Skill\Skill;
 use App\Models\Skill\SkillCategory;
-use App\Services\SkillService;
 use App\Models\Species\Species;
+use App\Services\SkillService;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -174,7 +173,7 @@ class SkillController extends Controller {
         }
 
         return view('admin.skills.skills', [
-            'skills' => $query->paginate(20)->appends($request->query()),
+            'skills'     => $query->paginate(20)->appends($request->query()),
             'species'    => ['none' => 'Any Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'Any Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
         ]);

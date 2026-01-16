@@ -9,9 +9,9 @@ use App\Models\Feature\Feature;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Rarity;
+use App\Models\Skill\Skill;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use App\Models\Skill\Skill;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\DesignUpdateManager;
@@ -288,7 +288,7 @@ class DesignController extends Controller {
 
         return view('character.design.skills', [
             'request'   => $r,
-            'skills'  => Skill::getDropdownItems(),
+            'skills'    => Skill::getDropdownItems(),
         ]);
     }
 

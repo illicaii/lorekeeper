@@ -7,9 +7,9 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterImage;
 use App\Models\Feature\Feature;
 use App\Models\Rarity;
+use App\Models\Skill\Skill;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use App\Models\Skill\Skill;
 use App\Models\User\User;
 use App\Services\CharacterManager;
 use Illuminate\Http\Request;
@@ -164,7 +164,7 @@ class CharacterImageController extends Controller {
 
         return view('character.admin._edit_skills_modal', [
             'image'     => $image,
-            'skills'  => Skill::getDropdownItems(1),
+            'skills'    => Skill::getDropdownItems(1),
         ]);
     }
 

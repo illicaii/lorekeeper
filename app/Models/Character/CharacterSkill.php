@@ -2,8 +2,8 @@
 
 namespace App\Models\Character;
 
-use App\Models\Skill\Skill;
 use App\Models\Model;
+use App\Models\Skill\Skill;
 
 class CharacterSkill extends Model {
     /**
@@ -23,12 +23,19 @@ class CharacterSkill extends Model {
     protected $table = 'character_skills';
 
     /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['skill'];
+
+    /**
      * Validation rules for creation.
      *
      * @var array
      */
     public static $createRules = [
-        'xp'         => 'integer|min:0',
+        'xp'             => 'integer|min:0',
         'charges'        => 'integer|min:0',
     ];
 
@@ -38,16 +45,9 @@ class CharacterSkill extends Model {
      * @var array
      */
     public static $updateRules = [
-        'xp'         => 'integer|min:0',
+        'xp'             => 'integer|min:0',
         'charges'        => 'integer|min:0',
     ];
-
-    /**
-     * The relationships that should always be loaded.
-     *
-     * @var array
-     */
-    protected $with = ['skill'];
 
     /**********************************************************************************************
 
@@ -69,19 +69,18 @@ class CharacterSkill extends Model {
         return $this->belongsTo(Skill::class, 'skill_id');
     }
 
-
     /**********************************************************************************************
 
         Other Functions
 
     **********************************************************************************************/
 
-    public function getlevel(){
+    public function getlevel() {
         $skill = $this->belongsTo(Skill::class, 'skill_id')->get()[0];
         $xp = $this->xp;
-        if ($skill->override_default_caps){
+        if ($skill->override_default_caps) {
             $max_level = $skill->ovr_level_cap;
-        } elseif (isset($skill->category->max_level)){
+        } elseif (isset($skill->category->max_level)) {
             $max_level = $skill->category->max_level;
         } else {
             $max_level = 0;
@@ -89,10 +88,11 @@ class CharacterSkill extends Model {
 
         $xp_base = 10.0;
         $multiplier = 1.25;
-        $level = floor($xp/($xp_base*$multiplier))+1.0;
-        if ($level > $max_level){
+        $level = floor($xp / ($xp_base * $multiplier)) + 1.0;
+        if ($level > $max_level) {
             return $max_level;
         }
+
         return $level;
     }
 }
