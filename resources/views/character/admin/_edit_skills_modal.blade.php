@@ -49,12 +49,12 @@
         })
         $('.remove-skill-button').on('click', function(e) {
             e.preventDefault();
-            loadModal("{{ url('admin/character/image') }}/{{$image->id}}/skills/remove", 'Remove all skills');
+            loadModal("{{ url('admin/character/image') }}/{{ $image->id }}/skills/remove", 'Remove all skills');
         });
 
         $('.reset-xp-button').on('click', function(e) {
             e.preventDefault();
-            loadModal("{{ url('admin/character/image') }}/{{$image->id}}/skills/reset", 'Reset all skill levels');
+            loadModal("{{ url('admin/character/image') }}/{{ $image->id }}/skills/reset", 'Reset all skill levels');
         });
 
         function addSkillRow() {
