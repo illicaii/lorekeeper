@@ -75,24 +75,11 @@ class CharacterSkill extends Model {
 
     **********************************************************************************************/
 
+    /**
+     * Get the level of this skill
+     */
     public function getlevel() {
         $skill = $this->belongsTo(Skill::class, 'skill_id')->get()[0];
-        $xp = $this->xp;
-        if ($skill->override_default_caps) {
-            $max_level = $skill->ovr_level_cap;
-        } elseif (isset($skill->category->max_level)) {
-            $max_level = $skill->category->max_level;
-        } else {
-            $max_level = 0;
-        }
-
-        $xp_base = 10.0;
-        $multiplier = 1.25;
-        $level = floor($xp / ($xp_base * $multiplier)) + 1.0;
-        if ($level > $max_level) {
-            return $max_level;
-        }
-
-        return $level;
+        return $skill->getlevel($this->xp);
     }
 }

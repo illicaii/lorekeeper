@@ -314,4 +314,45 @@ class Skill extends Model {
 
         return $skills_by_category;
     }
+
+    public function getXpForLevel($level) {
+        $skill = $this;
+        if ($skill->override_default_caps) {
+            $max_level = $skill->ovr_level_cap;
+        } elseif (isset($skill->category->max_level)) {
+            $max_level = $skill->category->max_level;
+        } else {
+            $max_level = 0;
+        }
+        if ($level > $max_level) {
+            $level = $max_level;
+        } else if ($level <= 0){
+            $level = 1;
+        }
+
+        $xp_base = 100.0;
+        $multiplier = 1.25;
+        $xp = floor(($level-1)*($xp_base * $multiplier));
+        return $xp;
+    }
+
+    public function getlevel($xp) {
+        $skill = $this;
+        if ($skill->override_default_caps) {
+            $max_level = $skill->ovr_level_cap;
+        } elseif (isset($skill->category->max_level)) {
+            $max_level = $skill->category->max_level;
+        } else {
+            $max_level = 0;
+        }
+
+        $xp_base = 100.0;
+        $multiplier = 1.25;
+        $level = floor($xp / ($xp_base * $multiplier)) + 1.0;
+        if ($level > $max_level) {
+            return $max_level;
+        }
+
+        return $level;
+    }
 }

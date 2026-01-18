@@ -437,4 +437,18 @@ return [
         'message' => '<a href="{sender_url}">{sender}</a> has added you as a participant on a gallery submission. (<a href="{url}">View Submission</a>)',
         'url'     => 'gallery/view/{submission_id}',
     ],
+
+    // SKILL_GRANT
+    602 => [
+        'name' => 'Skill Grant',
+        'message' => '{character_name} has learned or been awarded additional levels to {skill_name}. (<a href="{url}">View Character</a>)',
+        'url' => 'character/{character_slug}'
+    ],
+
+    // XP_GRANT
+    603 => [
+        'name' => 'XP Grant',
+        'message' => '{character_name} has received {xp_amount} xp for {skill_name}. (<a href="{url}">View Character</a>)',
+        'url' => 'character/{character_slug}'
+    ],
 ];

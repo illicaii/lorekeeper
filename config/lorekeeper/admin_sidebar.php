@@ -112,7 +112,11 @@ return [
                 'name' => 'Item Grants',
                 'url'  => 'admin/grants/items',
             ],
-        ],
+            [
+                'name' => 'Skill Grants',
+                'url' => 'admin/grants/skills'
+            ],
+        ]
     ],
     'Masterlist' => [
         'power' => 'manage_characters',

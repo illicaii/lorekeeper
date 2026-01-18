@@ -8,12 +8,14 @@ use App\Models\Character\CharacterDesignUpdate;
 use App\Models\Character\CharacterItem;
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
+use App\Models\Skill\Skill;
 use App\Models\Submission\Submission;
 use App\Models\Trade;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
+use App\Services\SkillManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,6 +81,38 @@ class GrantController extends Controller {
             }
         }
 
+        return redirect()->back();
+    }
+
+    /**
+     * Show the skill grant page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getSkills()
+    {
+        return view('admin.grants.skills', [
+            'characters' => Character::orderBy('slug', 'ASC')->get()->pluck('fullName', 'id', 'slug'),
+            'skills' => Skill::orderBy('name')->pluck('name', 'id')
+        ]);
+    }
+
+    /**
+     * Grants or removes items from multiple users.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSkills(Request $request, SkillManager $service)
+    {
+        $data = $request->only(['character_id', 'skill_ids', 'data', 'skill_xp', 'is_lvl']);
+        if($service->grantSkill($data, Auth::user())) {
+            flash('Skills granted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
         return redirect()->back();
     }
 

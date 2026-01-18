@@ -307,6 +307,9 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
     Route::get('items', 'GrantController@getItems');
     Route::post('items', 'GrantController@postItems');
 
+    Route::get('skills', 'GrantController@getSkills');
+    Route::post('skills', 'GrantController@postSkills');
+
     Route::get('item-search', 'GrantController@getItemSearch');
 });
 
