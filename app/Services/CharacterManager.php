@@ -738,7 +738,6 @@ class CharacterManager extends Service {
     /**
      * Resets a character image's skill levels.
      *
-     * @param array                                $data
      * @param \App\Models\Character\CharacterImage $image
      * @param \App\Models\User\User                $user
      *
@@ -792,7 +791,6 @@ class CharacterManager extends Service {
     /**
      * Removes a character image's skills.
      *
-     * @param array                                $data
      * @param \App\Models\Character\CharacterImage $image
      * @param \App\Models\User\User                $user
      *

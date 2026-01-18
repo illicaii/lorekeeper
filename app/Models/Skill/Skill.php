@@ -326,13 +326,14 @@ class Skill extends Model {
         }
         if ($level > $max_level) {
             $level = $max_level;
-        } else if ($level <= 0){
+        } elseif ($level <= 0) {
             $level = 1;
         }
 
         $xp_base = 100.0;
         $multiplier = 1.25;
-        $xp = floor(($level-1)*($xp_base * $multiplier));
+        $xp = floor(($level - 1) * ($xp_base * $multiplier));
+
         return $xp;
     }
 

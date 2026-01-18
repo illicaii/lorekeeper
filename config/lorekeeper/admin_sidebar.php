@@ -114,9 +114,9 @@ return [
             ],
             [
                 'name' => 'Skill Grants',
-                'url' => 'admin/grants/skills'
+                'url'  => 'admin/grants/skills',
             ],
-        ]
+        ],
     ],
     'Masterlist' => [
         'power' => 'manage_characters',

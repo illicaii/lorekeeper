@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Facades\Notifications;
-use App\Models\Character\CharacterSkill;
 use App\Models\Character\Character;
+use App\Models\Character\CharacterSkill;
 use App\Models\Skill\Skill;
 use Carbon\Carbon;
 use DB;
@@ -31,22 +31,22 @@ class SkillManager extends Service {
         DB::beginTransaction();
         try {
             $characters = Character::find($data['character_id']);
-            if (count($characters) != count($data['character_id'])){
+            if (count($characters) != count($data['character_id'])) {
                 throw new \Exception('An invalid character was selected.');
             }
             $skills = Skill::find($data['skill_ids']);
-            if (!count($skills)){
+            if (!count($skills)) {
                 throw new \Exception('An invalid skill was selected.');
             }
-            $skill_xp= $data['skill_xp'];
+            $skill_xp = $data['skill_xp'];
 
-            foreach ($characters as $character){
-                foreach ($skills as $i=> $skill){
+            foreach ($characters as $character) {
+                foreach ($skills as $i=> $skill) {
                     if (!$this->logAdminAction($staff, 'Skill Grant', 'Granted '.$skill->displayName.' to '.$character->displayname)) {
                         throw new \Exception('Failed to log admin action.');
                     }
                     if ($this->creditSkill($staff, $character, 'Staff Grant', $data['data'], $skill, $skill_xp[$i], $data['is_lvl'])) {
-                        if ($data['is_lvl']){
+                        if ($data['is_lvl']) {
                             Notifications::create('SKILL_GRANT', $character->user, [
                                 'skill_name'         => $skill->displayName,
                                 'character_slug'     => $character->slug,
@@ -65,10 +65,12 @@ class SkillManager extends Service {
                     }
                 }
             }
+
             return $this->commitReturn(true);
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
@@ -81,6 +83,7 @@ class SkillManager extends Service {
      * @param array                           $data
      * @param Skill                           $skill
      * @param int                             $quantity
+     * @param mixed                           $is_lvl
      *
      * @return bool
      */
@@ -96,24 +99,24 @@ class SkillManager extends Service {
 
             if (!$recipient_stack) {
                 //New skill grant
-                if ( $quantity < 0){
-                    throw new \Exception("Can not grant negative xp to character(s) that do not have ". $skill->displayName);
+                if ($quantity < 0) {
+                    throw new \Exception('Can not grant negative xp to character(s) that do not have '.$skill->displayName);
                 }
-                $log = 'Learned '.$skill->name.' skill. Reason:'. $data;
+                $log = 'Learned '.$skill->name.' skill. Reason:'.$data;
 
-                if($is_lvl){
+                if ($is_lvl) {
                     $quantity = $skill->getXpForLevel($quantity);
                 }
                 $recipient_stack = CharacterSkill::create(['character_image_id' => $recipient->image->id, 'skill_id' => $skill->id, 'xp' => $quantity, 'charges' => 0]);
             } else {
                 //Add levels or xp to existing skill
-                if($is_lvl && !($quantity == 0)){
-                    $truelvl = $recipient_stack->getlevel()+$quantity;
-                    $quantity = $skill->getXpForLevel($truelvl)-$recipient_stack->xp;
+                if ($is_lvl && !($quantity == 0)) {
+                    $truelvl = $recipient_stack->getlevel() + $quantity;
+                    $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
 
-                $log = 'Received '.$quantity.' xp for '.$skill->name.' skill. Reason:'. $data;
-                if ($recipient_stack->xp+$quantity >= 0){
+                $log = 'Received '.$quantity.' xp for '.$skill->name.' skill. Reason:'.$data;
+                if ($recipient_stack->xp + $quantity >= 0) {
                     $recipient_stack->xp += $quantity;
                 } else {
                     $recipient_stack->xp = 0;

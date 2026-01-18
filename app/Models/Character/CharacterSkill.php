@@ -76,10 +76,11 @@ class CharacterSkill extends Model {
     **********************************************************************************************/
 
     /**
-     * Get the level of this skill
+     * Get the level of this skill.
      */
     public function getlevel() {
         $skill = $this->belongsTo(Skill::class, 'skill_id')->get()[0];
+
         return $skill->getlevel($this->xp);
     }
 }
