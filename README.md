@@ -1,6 +1,29 @@
 # libSkills_v3.0
-This extension is still a heavy WIP.
-I wouldn't recommend you pull this extension at this moment. It's only here for my personal use
+This extension is still a heavy WIP. Most of the features listed below DO NOT EXIST YET.
+**I wouldn't recommend you pull this extension at this moment. It's only here for my personal use.**
+
+## Features
+Skills function similarly to traits and are assigned to the active image of an uploaded character. This makes it possible to have different images preserve their stats independently (when reverting an image you can choose to carry over the newer stats).
+Stats have the following features:
+- Can create Skills, Skill Categories, *Researching Tasks
+- Skill Categories can be marked as default skills which allows them to be auto added to MYOs or new character with the set level (or random level range)
+- Skill Categories can define skill cap, skill charges (uses), max skill level and variables related to the level curve (xp base and multiplier)
+- Skills can be set to override Skill Category defaults for skill cap, skill charges (uses), max skill level and variables related to the level curve (xp base and multiplier)
+- Skills can be awarded through Grants, Items, Prompts/Claims, Loot tables, Researching*
+- Skills can gain xp or levels through Grants, Items, Prompts/Claims, Loot tables, Training*
+- Skills can be three types: Cosmetic, Consumable, Item Granter
+⋅⋅⋅⋅* Cosmetic: Mostly for RP but may also be used for RNG events or as parent skills for other skills
+⋅⋅⋅⋅* Consumable: Has a set number of charges which can be linked to activities like prompt entry (think Stamina). These skills can be set to reset hourly/daily/monthly/yearly/never
+⋅⋅⋅⋅* Item Granter: Can be used to grant the user x items. This action can be set to reset hourly/daily/monthly/yearly/never
+- Skills can be reset, added, or removed by staff with character editing privileges on a per character basis from the skill edit menu on the character page
+- Skills can be added to character uploads by staff or on MYO submissions by users.
+
+- *Researching is a new activity where you can assign characters to it for x amount of time learn y skill. Researching tasks can be set up by admin with duration and reward. These can also be used to award items/currency/loot tables (or possibly linked other extensions to award themes, recipes, achievements). Recipes can be given level, item, or cost requirements. Number of concurrent researches can be set in the site settings.
+- *Training is a new activity where you can assign characters to a slot for x amount of time to earn y amount of xp, levels, items, or currency. Amount of free training slots and purchasable training slots can be set in site settings. (Training slots are awarded through slot items or manual grants)
+
+## Concerns
+- libskills may conflict with character transformations or other extensions which rely on using different character images. Its likely you'll have to do some work to get them to work properly. Similarly if you want to integrate skills in to other extensions you will have to do so yourself.
+- This extension is untested on LARGE character databases. It should be fine, however if you encounter issues or slowness please reach out to Vilagyent on discord.
 
 # Lorekeeper
 

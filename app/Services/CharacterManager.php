@@ -725,7 +725,105 @@ class CharacterManager extends Service {
 
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, null, null, null, $image->character_id, 'Traits Updated', '#'.$image->id, 'character', true, $old, $new);
+            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Updated', '#'.$image->id, 'character', true, $old, $new);
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Resets a character image's skill levels.
+     *
+     * @param array                                $data
+     * @param \App\Models\Character\CharacterImage $image
+     * @param \App\Models\User\User                $user
+     *
+     * @return bool
+     */
+    public function resetCharacterSkills($image, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (!$this->logAdminAction($user, 'Updated Image', 'Reset character image skill levels on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            // Log old skills
+            $old = [];
+            $old['skills'] = $this->generateSkillList($image);
+
+            // Grab old skills before we delete
+            $data = $image->skills()->get();
+
+            // Clear old skills
+            $image->skills()->delete();
+
+            // Attach skills
+            foreach ($data as $skill) {
+                if ($skill) {
+                    $reskill = CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skill->id, 'data' => $skill->data, 'xp' => 0]);
+                }
+            }
+
+            $image->save();
+
+            $new = [];
+            $new['skills'] = $this->generateSkillList($image);
+
+            // Character also keeps track of these skills
+            $image->character->save();
+
+            // Add a log for the character
+            // This logs all the updates made to the character
+            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Updated', '#'.$image->id, 'character', true, $old, $new);
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Removes a character image's skills.
+     *
+     * @param array                                $data
+     * @param \App\Models\Character\CharacterImage $image
+     * @param \App\Models\User\User                $user
+     *
+     * @return bool
+     */
+    public function removeCharacterSkills($image, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (!$this->logAdminAction($user, 'Updated Image', 'Remove character image skills on <a href="'.$image->character->url.'">#'.$image->id.'</a>')) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            // Log old skills
+            $old = [];
+            $old['skills'] = $this->generateSkillList($image);
+
+            // Clear old skills
+            $image->skills()->delete();
+
+            $image->save();
+
+            $new = [];
+            $new['skills'] = $this->generateSkillList($image);
+
+            // Character also keeps track of these skills
+            $image->character->save();
+
+            // Add a log for the character
+            // This logs all the updates made to the character
+            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Deleted', '#'.$image->id, 'character', true, $old, $new);
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {

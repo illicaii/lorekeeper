@@ -194,6 +194,86 @@ class CharacterImageController extends Controller {
     }
 
     /**
+     * Gets the reset character skill modal.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getResetImageSkills($id) {
+        $image = CharacterImage::find($id);
+
+        return view('admin.skills._reset_character_skills', [
+            'image' => $image,
+        ]);
+    }
+
+    /**
+     * Resets all character skills to 0 xp.
+     *
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postResetImageSkills(Request $request, CharacterManager $service, $id) {
+        $image = CharacterImage::find($id);
+        if (!$image) {
+            abort(404);
+        }
+
+        if ($id && $service->resetCharacterSkills($image, Auth::user())) {
+            flash('Character Skills reset successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->to('character/'.$image->character->slug);
+    }
+
+    /**
+     * Gets the remove character skill modal.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getRemoveImageSkills($id) {
+        $image = CharacterImage::find($id);
+
+        return view('admin.skills._remove_character_skills', [
+            'image' => $image,
+        ]);
+    }
+
+    /**
+     * Removes all character skills.
+     *
+     * @param App\Services\CharacterManager $service
+     * @param int                           $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postRemoveImageSkills(Request $request, CharacterManager $service, $id) {
+        $image = CharacterImage::find($id);
+        if (!$image) {
+            abort(404);
+        }
+
+        if ($id && $service->removeCharacterSkills($image, Auth::user())) {
+            flash('Character Skills removed successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->to('character/'.$image->character->slug);
+    }
+
+    /**
      * Shows the edit image notes modal.
      *
      * @param int $id

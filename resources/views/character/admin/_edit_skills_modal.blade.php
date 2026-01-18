@@ -20,10 +20,16 @@
         <a href="#" class="remove-skill btn btn-danger mb-2">×</a>
     </div>
 </div>
-
-<div class="text-right">
-    {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+<div class="row">
+    <div class="col">
+        <a href="#" class="btn btn-danger remove-skill-button">Remove Skill</a>
+        <a href="#" class="btn btn-danger reset-xp-button">Reset XP</a>
+    </div>
+    <div class="col text-right">
+        {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+    </div>
 </div>
+
 {!! Form::close() !!}
 
 <script>
@@ -41,6 +47,15 @@
             e.preventDefault();
             removeSkillRow($(this));
         })
+        $('.remove-skill-button').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url('admin/character/image') }}/{{$image->id}}/skills/remove", 'Remove all skills');
+        });
+
+        $('.reset-xp-button').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url('admin/character/image') }}/{{$image->id}}/skills/reset", 'Reset all skill levels');
+        });
 
         function addSkillRow() {
             var $clone = $('.skill-row').clone();
