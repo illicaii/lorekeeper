@@ -12,14 +12,14 @@ Stats have the following features:
 - Skills can be awarded through Grants, Items, Prompts/Claims, Loot tables, Researching*
 - Skills can gain xp or levels through Grants, Items, Prompts/Claims, Loot tables, Training*
 - Skills can be three types: Cosmetic, Consumable, Item Granter
-⋅⋅⋅⋅* Cosmetic: Mostly for RP but may also be used for RNG events or as parent skills for other skills
-⋅⋅⋅⋅* Consumable: Has a set number of charges which can be linked to activities like prompt entry (think Stamina). These skills can be set to reset hourly/daily/monthly/yearly/never
-⋅⋅⋅⋅* Item Granter: Can be used to grant the user x items. This action can be set to reset hourly/daily/monthly/yearly/never
+    - Cosmetic: Mostly for RP but may also be used for RNG events or as parent skills for other skills
+    - Consumable: Has a set number of charges which can be linked to activities like prompt entry (think Stamina). These skills can be set to reset hourly/daily/monthly/yearly/never
+    -   Item Granter: Can be used to grant the user x items. This action can be set to reset hourly/daily/monthly/yearly/never
 - Skills can be reset, added, or removed by staff with character editing privileges on a per character basis from the skill edit menu on the character page
 - Skills can be added to character uploads by staff or on MYO submissions by users.
 
-- *Researching is a new activity where you can assign characters to it for x amount of time learn y skill. Researching tasks can be set up by admin with duration and reward. These can also be used to award items/currency/loot tables (or possibly linked other extensions to award themes, recipes, achievements). Recipes can be given level, item, or cost requirements. Number of concurrent researches can be set in the site settings.
-- *Training is a new activity where you can assign characters to a slot for x amount of time to earn y amount of xp, levels, items, or currency. Amount of free training slots and purchasable training slots can be set in site settings. (Training slots are awarded through slot items or manual grants)
+- *Researching is a new activity where you can assign characters to it for x amount of time to learn y skill. Researching tasks can be set up by admin with duration and reward. These can also be used to award items/currency/loot tables (or possibly linked to other extensions to award themes, recipes, achievements). Research Tasks can be given level, item, or cost requirements. Number of concurrent researches can be set in the site settings.
+- *Training is a new activity where you can assign characters to a slot for x amount of time to earn y amount of xp, levels, items, or currency. Amount of free training slots and purchasable training slots can be set in site settings. (Training slots are awarded through slot items or manual grants) This is built off the extension: Assignable Character Slots (which does not exist yet)
 
 ## Concerns
 - libskills may conflict with character transformations or other extensions which rely on using different character images. Its likely you'll have to do some work to get them to work properly. Similarly if you want to integrate skills in to other extensions you will have to do so yourself.
