@@ -25,7 +25,7 @@ class SkillService extends Service {
      * @return array
      */
     public function getEditData() {
-        $item_types = ['0' => 'Skill/XP/Level Grant','1' => 'XP or Level Set', '2' => 'XP/level Reset', '3' => 'Skill Remove'];
+        $item_types = ['0' => 'Skill Grant or Add XP/Level','1' => 'Set XP/Level', '2' => 'Reset XP/level', '3' => 'Remove Skill'];
         $grant_types = ['0' => 'Grant Single (Selector)','1' => 'Grant Random','2' => 'Grant All'];
 
         return [
@@ -200,36 +200,46 @@ class SkillService extends Service {
                 }
 
                 //Try to delete the box item. If successful, we can start distributing rewards.
+                $total_rewards = [];
                 if ((new InventoryManager)->debitStack($stack->user, 'Skill Item Redeemed', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
-                            // Distribute character
-                            if($firstData['grant_type'] == 0 && count($firstData['skills']) > 1){           //grant skill that was selected
-                                $skillOption['skills'] = [$data['selected_skill'] => $firstData['skills'][$data['selected_skill']]];
-                            } elseif ($firstData['grant_type'] == 1) {                                      //grant random skill
-                                if (!$firstData['error_on_missing']){  // if we are granting the skill as well, we can pull from the whole list
-                                    $random = array_rand($firstData['skills']);
-                                } else {
-                                    $random = array_rand($learned_skills);
-                                }
-                                $skillOption['skills'] = [$random => $firstData['skills'][$random]];
-                            } else {                                                                        //grant all skills
-                                $skillOption = $stacks->first()->item->tag('skill')->data;
+                        // Pick skills to give to character based on grant type
+                        if($firstData['grant_type'] == 0 && count($firstData['skills']) > 1){
+                            //grant skill that was selected
+                            $skillOption['skills'] = [$data['selected_skill'] => $firstData['skills'][$data['selected_skill']]];
+                        } elseif ($firstData['grant_type'] == 1) {
+                            //grant random skill
+                            if (!$firstData['error_on_missing']){
+                                // if we are granting the skill as well, we can pull from the whole list
+                                $random = array_rand($firstData['skills']);
+                            } else {
+                                $random = array_rand($learned_skills);
                             }
-                            if (!$rewards = fillCharacterAssets(parseAssetData($skillOption), $stack->user, $character, 'Skill Redemption', [
-                                'data' => 'Redeemed from '.$stack->item->name,
-                            ])) {
-                                throw new \Exception("Failed to redeem skill. Check that this item would not put your character's skill level in the negative or over the max");
-                            }
-                        flash($this->getSkillRewardsString($rewards));
+                            $skillOption['skills'] = [$random => $firstData['skills'][$random]];
+                        } else {
+                            //grant all skills
+                            $skillOption = $stacks->first()->item->tag('skill')->data;
+                        }
+
+                        if (!$rewards = fillCharacterAssets(parseAssetData($skillOption), $stack->user, $character, 'Skill Redemption', [
+                            'data' => 'Redeemed from '.$stack->item->name,
+                            'is_lvl' => $firstData['is_lvl'],
+                        ])) {
+                            throw new \Exception("Failed to redeem skill Items. Can not decrease character's skill level below 0 or increase above max");
+                        } else {
+                            $total_rewards[$q] = $rewards;
+                        }
                     }
                 }
+                //Flash all rewards now that we know stack operation succeeds
+                foreach ($total_rewards as $reward) {
+                    flash($this->getSkillRewardsString($reward));
+                }
             }
-
             return $this->commitReturn(true);
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
-
         return $this->rollbackReturn(false);
     }
 

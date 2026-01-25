@@ -93,6 +93,16 @@ class Skill extends Model {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    /**
+     * Get the max skill level.
+     */
+    public function maxLevel() {
+        if ($this->override_default_caps){
+            return $this->ovr_level_cap;
+        }
+        return $this->category->max_level;
+    }
+
     /**********************************************************************************************
 
         SCOPES

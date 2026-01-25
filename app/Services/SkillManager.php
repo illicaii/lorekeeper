@@ -109,17 +109,19 @@ class SkillManager extends Service {
                 $recipient_stack = CharacterSkill::create(['character_image_id' => $recipient->image->id, 'skill_id' => $skill->id, 'xp' => $quantity, 'charges' => 0]);
             } else {
                 //Add levels or xp to existing skill
-
                 if ($is_lvl && !($quantity == 0)) {
                     $truelvl = $recipient_stack->getlevel() + $quantity;
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
 
                 $log_data = 'Received '.$quantity.' xp for '.$skill->name.' skill. Reason:';
-                if ($recipient_stack->xp + $quantity >= 0) {
-                    $recipient_stack->xp += $quantity;
-                } else {
+
+                if (($recipient_stack->xp + $quantity) > $skill->getXpForLevel($skill->maxLevel())) {
+                    throw new \Exception("Can not grant xp that would increase a character's level more than max");
+                } else if ($recipient_stack->xp + $quantity <= 0) {
                     throw new \Exception("Can not grant xp that would make a character's level negative");
+                } else {
+                    $recipient_stack->xp += $quantity;
                 }
                 $recipient_stack->save();
             }

@@ -50,7 +50,7 @@
     </div>
     <div class="mt-2 mb-2">
         {!! Form::hidden('error_on_missing', 0) !!}
-        {!! Form::checkbox('error_on_missing', 1, isset($tag->getData()['error_on_missing']) ? $tag->getData()['error_on_missing'] : 0, [
+        {!! Form::checkbox('error_on_missing', 1, isset($tag->getData()['error_on_missing']) ? $tag->getData()['error_on_missing'] : 1, [
             'class' => 'form-check-input',
             'data-toggle' => 'toggle',
             'data-on' => 'Error for unlearned skill',

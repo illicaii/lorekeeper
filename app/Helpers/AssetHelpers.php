@@ -397,8 +397,7 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
         } elseif ($key == 'skills' && count($contents)) {
             $service = new \App\Services\SkillManager;
             foreach ($contents as $asset) {
-                // dd($recipient);
-                if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], false)) {
+                if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], $data['is_lvl'])) {
                     return false;
                 }
             }
