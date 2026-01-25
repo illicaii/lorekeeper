@@ -118,7 +118,7 @@ class SkillManager extends Service {
 
                 if (($recipient_stack->xp + $quantity) > $skill->getXpForLevel($skill->maxLevel())) {
                     throw new \Exception("Can not grant xp that would increase a character's level more than max");
-                } else if ($recipient_stack->xp + $quantity <= 0) {
+                } elseif ($recipient_stack->xp + $quantity <= 0) {
                     throw new \Exception("Can not grant xp that would make a character's level negative");
                 } else {
                     $recipient_stack->xp += $quantity;
