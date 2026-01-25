@@ -371,6 +371,11 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware'
 
     Route::post('{slug}/images/sort', 'CharacterImageController@postSortImages');
 
+    Route::get('image/{id}/skills/reset', 'CharacterImageController@getResetImageSkills');
+    Route::post('image/{id}/skills/reset', 'CharacterImageController@postResetImageSkills');
+    Route::get('image/{id}/skills/remove', 'CharacterImageController@getRemoveImageSkills');
+    Route::post('image/{id}/skills/remove', 'CharacterImageController@postRemoveImageSkills');
+
     // CHARACTER
     Route::get('{slug}/stats', 'CharacterController@getEditCharacterStats');
     Route::post('{slug}/stats', 'CharacterController@postEditCharacterStats');

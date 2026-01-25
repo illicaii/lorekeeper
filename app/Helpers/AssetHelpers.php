@@ -74,7 +74,7 @@ function getAssetKeys($isCharacter = false) {
     if (!$isCharacter) {
         return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters'];
     } else {
-        return ['currencies', 'items', 'character_items', 'loot_tables'];
+        return ['currencies', 'items', 'character_items', 'loot_tables', 'skills', 'character_skills'];
     }
 }
 
@@ -142,6 +142,21 @@ function getAssetModelString($type, $namespaced = true) {
                 return '\App\Models\Character\CharacterItem';
             } else {
                 return 'CharacterItem';
+            }
+            break;
+
+        case 'skills':
+            if ($namespaced) {
+                return '\App\Models\Skill\Skill';
+            } else {
+                return 'Skill';
+            }
+            break;
+        case 'character_skills':
+            if ($namespaced) {
+                return '\App\Models\Skill\CharacterSkill';
+            } else {
+                return 'CharacterSkill';
             }
             break;
     }
@@ -350,7 +365,7 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
  * @return array
  */
 function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $submitter = null) {
-    if (!config('lorekeeper.extensions.character_reward_expansion.default_recipient') && $recipient->user) {
+    if (!config('lorekeeper.extensions.character_reward_expansion.default_recipient') && isset($recipient->user)) {
         $item_recipient = $recipient->user;
     } else {
         $item_recipient = $submitter;
@@ -376,6 +391,14 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
             $service = new \App\Services\InventoryManager;
             foreach ($contents as $asset) {
                 if (!$service->creditItem($sender, (($asset['asset']->category && $asset['asset']->category->is_character_owned) ? $recipient : $item_recipient), $logType, $data, $asset['asset'], $asset['quantity'])) {
+                    return false;
+                }
+            }
+        } elseif ($key == 'skills' && count($contents)) {
+            $service = new \App\Services\SkillManager;
+            foreach ($contents as $asset) {
+                // dd($recipient);
+                if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], false)) {
                     return false;
                 }
             }

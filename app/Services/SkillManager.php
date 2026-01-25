@@ -95,36 +95,36 @@ class SkillManager extends Service {
                 ['character_image_id', '=', $recipient->image->id],
                 ['skill_id', '=', $skill->id],
             ])->first();
-            $skills = Skill::find($skill->id);
 
             if (!$recipient_stack) {
                 //New skill grant
                 if ($quantity < 0) {
                     throw new \Exception('Can not grant negative xp to character(s) that do not have '.$skill->displayName);
                 }
-                $log = 'Learned '.$skill->name.' skill. Reason:'.$data;
 
+                $log_data = 'Learned '.$skill->name.' skill. Reason:';
                 if ($is_lvl) {
                     $quantity = $skill->getXpForLevel($quantity);
                 }
                 $recipient_stack = CharacterSkill::create(['character_image_id' => $recipient->image->id, 'skill_id' => $skill->id, 'xp' => $quantity, 'charges' => 0]);
             } else {
                 //Add levels or xp to existing skill
+
                 if ($is_lvl && !($quantity == 0)) {
                     $truelvl = $recipient_stack->getlevel() + $quantity;
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
 
-                $log = 'Received '.$quantity.' xp for '.$skill->name.' skill. Reason:'.$data;
+                $log_data = 'Received '.$quantity.' xp for '.$skill->name.' skill. Reason:';
                 if ($recipient_stack->xp + $quantity >= 0) {
                     $recipient_stack->xp += $quantity;
                 } else {
-                    $recipient_stack->xp = 0;
+                    throw new \Exception("Can not grant xp that would make a character's level negative");
                 }
                 $recipient_stack->save();
             }
 
-            if ($type && !$this->createLog($recipient->id, $sender->id, $type, $log)) {
+            if ($type && !$this->createLog($recipient->id, $sender->id, $type, $log_data)) {
                 throw new \Exception('Failed to create log.');
             }
 
