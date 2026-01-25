@@ -166,11 +166,10 @@ class SkillService extends Service {
 
             // Check if character has selected skill
             if($firstData['grant_type'] == 0 && count($firstData['skills']) > 1 && $firstData['error_on_missing']){
-                $character_skill = CharacterSkill::where([
+                if(!$character_skill = CharacterSkill::where([
                     ['character_image_id', '=', $character->image->id],
                     ['skill_id', '=', $data['selected_skill']],
-                ])->first();
-                if (!isset($character_skill)){
+                ])->first()){
                     throw new \Exception('Character does not know selected skill');
                 }
             }
@@ -180,11 +179,10 @@ class SkillService extends Service {
             $has_option = !$firstData['error_on_missing'];
             $learned_skills = [];
             foreach ($options as $skill){
-                $character_skill = CharacterSkill::where([
+                if (!$character_skill = CharacterSkill::where([
                     ['character_image_id', '=', $character->image->id],
                     ['skill_id', '=', $skill],
-                ])->first();
-                if ($character_skill){
+                ])->first()){
                     $has_option = true;
                     $learned_skills += [$skill => $firstData['skills'][$skill]];
                 }
