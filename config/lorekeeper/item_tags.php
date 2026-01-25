@@ -26,8 +26,8 @@ return [
     ],
 
     'skill' => [
-        'name' => 'Skill',
-        'text_color' => '#ffffff',
-        'background_color' => '#1845a7ff'
+        'name'             => 'Skill',
+        'text_color'       => '#ffffff',
+        'background_color' => '#1845a7ff',
     ],
 ];

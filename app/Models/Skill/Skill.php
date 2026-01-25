@@ -97,9 +97,10 @@ class Skill extends Model {
      * Get the max skill level.
      */
     public function maxLevel() {
-        if ($this->override_default_caps){
+        if ($this->override_default_caps) {
             return $this->ovr_level_cap;
         }
+
         return $this->category->max_level;
     }
 

@@ -2,9 +2,9 @@
 
 namespace App\Services\Item;
 
-use App\Models\Skill\Skill;
-use App\Models\Character\CharacterSkill;
 use App\Models\Character\Character;
+use App\Models\Character\CharacterSkill;
+use App\Models\Skill\Skill;
 use App\Services\InventoryManager;
 use App\Services\Service;
 use Illuminate\Support\Facades\DB;
@@ -25,12 +25,12 @@ class SkillService extends Service {
      * @return array
      */
     public function getEditData() {
-        $item_types = ['0' => 'Skill Grant or Add XP/Level','1' => 'Set XP/Level', '2' => 'Reset XP/level', '3' => 'Remove Skill'];
-        $grant_types = ['0' => 'Grant Single (Selector)','1' => 'Grant Random','2' => 'Grant All'];
+        $item_types = ['0' => 'Skill Grant or Add XP/Level', '1' => 'Set XP/Level', '2' => 'Reset XP/level', '3' => 'Remove Skill'];
+        $grant_types = ['0' => 'Grant Single (Selector)', '1' => 'Grant Random', '2' => 'Grant All'];
 
         return [
-            'skills' => Skill::orderBy('id')->pluck('name', 'id'),
-            'item_types' => $item_types,
+            'skills'      => Skill::orderBy('id')->pluck('name', 'id'),
+            'item_types'  => $item_types,
             'grant_types' => $grant_types,
         ];
     }
@@ -43,7 +43,7 @@ class SkillService extends Service {
      * @return mixed
      */
     public function getTagData($tag) {
-        if (!isset($tag->data)){
+        if (!isset($tag->data)) {
             return null;
         }
 
@@ -64,12 +64,12 @@ class SkillService extends Service {
         }
 
         return [
-            'skill_item_type' => $tag->data['skill_item_type'],
-            'grant_level' => $tag->data['is_lvl'],
-            'grant_type' => $tag->data['grant_type'],
+            'skill_item_type'  => $tag->data['skill_item_type'],
+            'grant_level'      => $tag->data['is_lvl'],
+            'grant_type'       => $tag->data['grant_type'],
             'error_on_missing' => $tag->data['error_on_missing'],
-            'rewards' => $rewards,
-            'skill_opt' => $skill_opt,
+            'rewards'          => $rewards,
+            'skill_opt'        => $skill_opt,
         ];
     }
 
@@ -101,7 +101,7 @@ class SkillService extends Service {
                         addAsset($assets, $asset, $data['quantity'][$key]);
                     }
                     $assets = getDataReadyAssets($assets);
-                    if (isset($data['grant_level'])){
+                    if (isset($data['grant_level'])) {
                         $assets += ['is_lvl' => $data['grant_level']];
                     }
                     break;
@@ -165,7 +165,7 @@ class SkillService extends Service {
             }
 
             // Check if character has selected skill
-            if($firstData['grant_type'] == 0 && count($firstData['skills']) > 1 && $firstData['error_on_missing']){
+            if ($firstData['grant_type'] == 0 && count($firstData['skills']) > 1 && $firstData['error_on_missing']) {
                 if(!$character_skill = CharacterSkill::where([
                     ['character_image_id', '=', $character->image->id],
                     ['skill_id', '=', $data['selected_skill']],
@@ -187,7 +187,7 @@ class SkillService extends Service {
                     $learned_skills += [$skill => $firstData['skills'][$skill]];
                 }
             }
-            if (!$has_option){
+            if (!$has_option) {
                 throw new \Exception('Character has none of the applicable skills');
             }
 
@@ -202,12 +202,12 @@ class SkillService extends Service {
                 if ((new InventoryManager)->debitStack($stack->user, 'Skill Item Redeemed', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
                         // Pick skills to give to character based on grant type
-                        if($firstData['grant_type'] == 0 && count($firstData['skills']) > 1){
+                        if ($firstData['grant_type'] == 0 && count($firstData['skills']) > 1) {
                             //grant skill that was selected
                             $skillOption['skills'] = [$data['selected_skill'] => $firstData['skills'][$data['selected_skill']]];
                         } elseif ($firstData['grant_type'] == 1) {
                             //grant random skill
-                            if (!$firstData['error_on_missing']){
+                            if (!$firstData['error_on_missing']) {
                                 // if we are granting the skill as well, we can pull from the whole list
                                 $random = array_rand($firstData['skills']);
                             } else {
@@ -220,7 +220,7 @@ class SkillService extends Service {
                         }
 
                         if (!$rewards = fillCharacterAssets(parseAssetData($skillOption), $stack->user, $character, 'Skill Redemption', [
-                            'data' => 'Redeemed from '.$stack->item->name,
+                            'data'   => 'Redeemed from '.$stack->item->name,
                             'is_lvl' => $firstData['is_lvl'],
                         ])) {
                             throw new \Exception("Failed to redeem skill Items. Can not decrease character's skill level below 0 or increase above max");
@@ -234,10 +234,12 @@ class SkillService extends Service {
                     flash($this->getSkillRewardsString($reward));
                 }
             }
+
             return $this->commitReturn(true);
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
+
         return $this->rollbackReturn(false);
     }
 
