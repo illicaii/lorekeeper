@@ -9,97 +9,103 @@
         </p>
         <div class="form-group">
             {!! Form::label('character_id', 'Characters') !!} {!! add_help('Select Character') !!}
-            {!! Form::select('character_id', $user->characters->pluck('fullName','id', 'image'), null, ['class' => 'form-control default skill-select']) !!}
+            {!! Form::select('character_id', $user->characters->pluck('fullName', 'id', 'image'), null, ['class' => 'form-control default skill-select']) !!}
         </div>
 
         <!-- Skill Learn -->
         @if ($tag->getData()['skill_item_type'] == 0 && !$tag->getData()['error_on_missing'])
-        <div>
-            @if (count($tag->getData()['rewards']) == 1)
-                <p class="mb-0"><strong>Skill Learned:</strong></p>
-            @elseif ($tag->getData()['grant_type']== 2)
-                <p class="mb-0"><strong>Skills Learned:</strong></p>
-            @else
-                <p class="mb-0"><strong>Skill Pool:</strong></p>
-            @endif
-            <div class="row mb-2">
-                @if (count($tag->getData()['rewards']))
-                    <div class="col" ><ul>
-                        @foreach($tag->getData()['rewards'] as $loot)
-                            <li >{!! App\Models\Skill\Skill::find($loot->rewardable_id)->displayName !!}</li>
-                        @endforeach
-                    </ul></div>
+            <div>
+                @if (count($tag->getData()['rewards']) == 1)
+                    <p class="mb-0"><strong>Skill Learned:</strong></p>
+                @elseif ($tag->getData()['grant_type'] == 2)
+                    <p class="mb-0"><strong>Skills Learned:</strong></p>
+                @else
+                    <p class="mb-0"><strong>Skill Pool:</strong></p>
+                @endif
+                <div class="row mb-2">
+                    @if (count($tag->getData()['rewards']))
+                        <div class="col">
+                            <ul>
+                                @foreach ($tag->getData()['rewards'] as $loot)
+                                    <li>{!! App\Models\Skill\Skill::find($loot->rewardable_id)->displayName !!}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+                @if ($tag->getData()['grant_type'] == 0 && count($tag->getData()['rewards']) > 1)
+                    <div class="form-group">
+                        {!! Form::label('selected_skill', 'Select Skill') !!} {!! add_help('Select the skill affect you would like to add to this character') !!}
+                        {!! Form::select('selected_skill', App\Models\Skill\Skill::find($tag->getData()['skill_opt'])->pluck('name', 'id'), null, ['class' => 'form-control default skill-select']) !!}
+                    </div>
+                @elseif (count($tag->getData()['rewards']) > 1 && !$tag->getData()['grant_type'] == 2)
+                    <p>You will receive a random skill from this list. If your character already has all the skills in this list, the item will not be consumed.</p>
                 @endif
             </div>
-            @if($tag->getData()['grant_type'] == 0 && count($tag->getData()['rewards']) > 1)
-                <div class="form-group">
-                    {!! Form::label('selected_skill', 'Select Skill') !!} {!! add_help('Select the skill affect you would like to add to this character') !!}
-                    {!! Form::select('selected_skill', App\Models\Skill\Skill::find($tag->getData()['skill_opt'])->pluck('name','id'), null, ['class' => 'form-control default skill-select']) !!}
-                </div>
-            @elseif (count($tag->getData()['rewards']) > 1 && !$tag->getData()['grant_type'] == 2)
-                <p>You will receive a random skill from this list. If your character already has all the skills in this list, the item will not be consumed.</p>
-            @endif
-        </div>
 
-        <!-- ADD XP or level -->
+            <!-- ADD XP or level -->
         @elseif ($tag->getData()['skill_item_type'] == 0)
-        <div>
-            @if ($tag->getData()['grant_type']== 2 || count($tag->getData()['rewards']) == 1)
-                <p class="mb-0"><strong>Skill XP Added:</strong></p>
-            @else
-                <p class="mb-0"><strong>Skill XP Pool:</strong></p>
-            @endif
-            <div class="row mb-2">
-                @if (count($tag->getData()['rewards']))
-                <div class="col" ><ul>
-                    @foreach($tag->getData()['rewards'] as $loot)
-                        <li >{!! App\Models\Skill\Skill::find($loot->rewardable_id)->displayName !!} +{!! $loot->quantity !!}xp</li>
-                    @endforeach
-                </ul></div>
+            <div>
+                @if ($tag->getData()['grant_type'] == 2 || count($tag->getData()['rewards']) == 1)
+                    <p class="mb-0"><strong>Skill XP Added:</strong></p>
+                @else
+                    <p class="mb-0"><strong>Skill XP Pool:</strong></p>
+                @endif
+                <div class="row mb-2">
+                    @if (count($tag->getData()['rewards']))
+                        <div class="col">
+                            <ul>
+                                @foreach ($tag->getData()['rewards'] as $loot)
+                                    <li>{!! App\Models\Skill\Skill::find($loot->rewardable_id)->displayName !!} +{!! $loot->quantity !!}xp</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+                @if ($tag->getData()['grant_type'] == 0 && count($tag->getData()['rewards']) > 1)
+                    <div class="form-group">
+                        {!! Form::label('selected_skill', 'Select Skill') !!} {!! add_help('Select the skill affect you would like to add to this character') !!}
+                        {!! Form::select('selected_skill', App\Models\Skill\Skill::find($tag->getData()['skill_opt'])->pluck('name', 'id'), null, ['class' => 'form-control default skill-select']) !!}
+                    </div>
+                @else
+                    <p>
+                        Skills can not be applied to characters which lack any skill the xp is granting. If your character does not have any skill in this list, this item it will not be consumed.
+                        <strong>The item will still be consumed if your character has any skill on this list.</strong>
+                    </p>
                 @endif
             </div>
-            @if($tag->getData()['grant_type'] == 0 && count($tag->getData()['rewards']) > 1)
-                <div class="form-group">
-                    {!! Form::label('selected_skill', 'Select Skill') !!} {!! add_help('Select the skill affect you would like to add to this character') !!}
-                    {!! Form::select('selected_skill', App\Models\Skill\Skill::find($tag->getData()['skill_opt'])->pluck('name','id'), null, ['class' => 'form-control default skill-select']) !!}
-                </div>
-            @else
-            <p>
-                Skills can not be applied to characters which lack any skill the xp is granting. If your character does not have any skill in this list, this item it will not be consumed.
-                <strong>The item will still be consumed if your character has any skill on this list.</strong>
-            </p>
-            @endif
-        </div>
 
-        <!-- SET XP or level -->
+            <!-- SET XP or level -->
         @elseif ($tag->getData()['skill_item_type'] == 1)
-        <div>
-            @if ($tag->getData()['grant_type']== 2 || count($tag->getData()['rewards']) == 1)
-                <p class="mb-0"><strong>Skill Added:</strong></p>
-            @else
-                <p class="mb-0"><strong>Skill Pool:</strong></p>
-            @endif
-            <div class="row mb-2">
-                @if (count($tag->getData()['rewards']))
-                <div class="col" ><ul>
-                    @foreach($tag->getData()['rewards'] as $loot)
-                        <li >{!! App\Models\Skill\Skill::find($loot->rewardable_id)->displayName !!} set lv {!! $loot->quantity !!}</li>
-                    @endforeach
-                </ul></div>
+            <div>
+                @if ($tag->getData()['grant_type'] == 2 || count($tag->getData()['rewards']) == 1)
+                    <p class="mb-0"><strong>Skill Added:</strong></p>
+                @else
+                    <p class="mb-0"><strong>Skill Pool:</strong></p>
+                @endif
+                <div class="row mb-2">
+                    @if (count($tag->getData()['rewards']))
+                        <div class="col">
+                            <ul>
+                                @foreach ($tag->getData()['rewards'] as $loot)
+                                    <li>{!! App\Models\Skill\Skill::find($loot->rewardable_id)->displayName !!} set lv {!! $loot->quantity !!}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+                @if ($tag->getData()['grant_type'] == 0 && count($tag->getData()['rewards']) > 1)
+                    <div class="form-group">
+                        {!! Form::label('selected_skill', 'Select Skill') !!} {!! add_help('Select the skill affect you would like to add to this character') !!}
+                        {!! Form::select('selected_skill', App\Models\Skill\Skill::find($tag->getData()['skill_opt'])->pluck('name', 'id'), null, ['class' => 'form-control default skill-select']) !!}
+                    </div>
+                @else
+                    <p>
+                        Skills can not be applied to characters which lack any skill the item is setting. If your character does not have any skill in this list, this item it will not be consumed.
+                        <strong>The item will still be consumed if your character has any skill on this list.</strong>
+                    </p>
                 @endif
             </div>
-            @if($tag->getData()['grant_type'] == 0 && count($tag->getData()['rewards']) > 1)
-                <div class="form-group">
-                    {!! Form::label('selected_skill', 'Select Skill') !!} {!! add_help('Select the skill affect you would like to add to this character') !!}
-                    {!! Form::select('selected_skill', App\Models\Skill\Skill::find($tag->getData()['skill_opt'])->pluck('name','id'), null, ['class' => 'form-control default skill-select']) !!}
-                </div>
-            @else
-            <p>
-                Skills can not be applied to characters which lack any skill the item is setting. If your character does not have any skill in this list, this item it will not be consumed.
-                <strong>The item will still be consumed if your character has any skill on this list.</strong>
-            </p>
-            @endif
-        </div>
         @endif
 
         <div class="text-right">

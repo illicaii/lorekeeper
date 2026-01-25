@@ -1,7 +1,7 @@
 <h3>Skills</h3>
 <div class="mt-2 mb-2">
     {!! Form::label('skill_item_type', 'Select Skill Item Type') !!}
-    {!! Form::select('skill_item_type', $item_types, (isset($tag->getData()['skill_item_type'])) ? $tag->getData()['skill_item_type'] : '0', ['class' => 'form-control skill-select selectize']) !!}
+    {!! Form::select('skill_item_type', $item_types, isset($tag->getData()['skill_item_type']) ? $tag->getData()['skill_item_type'] : '0', ['class' => 'form-control skill-select selectize']) !!}
 </div>
 <hr>
 <!-- Skill/Lvl/XP Grant -->
@@ -9,8 +9,8 @@
     <div class="card card-body">
         <div class="row">
             <div class="mb-3 col-sm-auto">
-                {!! Form::hidden('grant_level', 0,)!!}
-                {!! Form::checkbox('grant_level', 1, (isset($tag->getData()['grant_level'])) ? $tag->getData()['grant_level'] : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Add level', 'data-off' => 'Add XP']) !!}
+                {!! Form::hidden('grant_level', 0) !!}
+                {!! Form::checkbox('grant_level', 1, isset($tag->getData()['grant_level']) ? $tag->getData()['grant_level'] : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Add level', 'data-off' => 'Add XP']) !!}
                 {!! add_help('Add selected skills as level or XP points') !!}
             </div>
             <div class="text-right mb-3 col" id="Data">
@@ -27,8 +27,8 @@
                     </tr>
                 </thead>
                 <tbody id="lootTableBody">
-                    @if(is_array($tag->getData()) && isset($tag->getData()['rewards']))
-                        @foreach($tag->getData()['rewards'] as $loot)
+                    @if (is_array($tag->getData()) && isset($tag->getData()['rewards']))
+                        @foreach ($tag->getData()['rewards'] as $loot)
                             <tr class="loot-row">
                                 <td class="loot-row-select">
                                     {!! Form::select('rewardable_id[]', $skills, $loot->rewardable_id, ['class' => 'form-control skill-select selectize', 'placeholder' => 'Select Skill']) !!}
@@ -46,11 +46,16 @@
     <h3>Grant Rules</h3>
     <p> Choose whether this item will grant one, all, or random skills from the pool and if the skill needs to be known by the character beforehand.</p>
     <div class="mt-2 mb-2">
-        {!! Form::select('grant_type', $grant_types,  (isset($tag->getData()['grant_type'])) ? $tag->getData()['grant_type'] : 0, ['class' => 'form-control skill-select selectize']) !!}
+        {!! Form::select('grant_type', $grant_types, isset($tag->getData()['grant_type']) ? $tag->getData()['grant_type'] : 0, ['class' => 'form-control skill-select selectize']) !!}
     </div>
     <div class="mt-2 mb-2">
-        {!! Form::hidden('error_on_missing', 0,)!!}
-        {!! Form::checkbox('error_on_missing', 1, (isset($tag->getData()['error_on_missing'])) ? $tag->getData()['error_on_missing'] : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Error for unlearned skill', 'data-off' => 'Consume and grant regardless of learned status']) !!}
+        {!! Form::hidden('error_on_missing', 0) !!}
+        {!! Form::checkbox('error_on_missing', 1, isset($tag->getData()['error_on_missing']) ? $tag->getData()['error_on_missing'] : 0, [
+            'class' => 'form-check-input',
+            'data-toggle' => 'toggle',
+            'data-on' => 'Error for unlearned skill',
+            'data-off' => 'Consume and grant regardless of learned status',
+        ]) !!}
     </div>
 </div>
 
