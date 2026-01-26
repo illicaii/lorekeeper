@@ -103,6 +103,7 @@ class Skill extends Model {
         if (isset($this->category->max_level)) {
             return $this->category->max_level;
         }
+
         return 0;
     }
 

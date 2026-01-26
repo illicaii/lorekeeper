@@ -101,7 +101,7 @@ class SkillManager extends Service {
                     throw new \Exception('Can not grant negative xp to character(s) that do not have '.$skill->displayName);
                 }
 
-                $log_data = 'Learned '.$skill->name.' skill. '.(isset($data)? $data : '');
+                $log_data = 'Learned '.$skill->name.' skill. '.($data ?? '');
                 if ($is_lvl) {
                     $quantity = $skill->getXpForLevel($quantity);
                 }
@@ -113,7 +113,7 @@ class SkillManager extends Service {
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
 
-                $log_data = 'Received '.$quantity.' xp for '.$skill->name.' skill. '.(isset($data)? $data : '');
+                $log_data = 'Received '.$quantity.' xp for '.$skill->name.' skill. '.($data ?? '');
 
                 if (($recipient_stack->xp + $quantity) > $skill->getXpForLevel($skill->maxLevel())) {
                     if ($type === 'Staff Grant') {

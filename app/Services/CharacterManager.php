@@ -14,7 +14,6 @@ use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterSkill;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Sales\SalesCharacter;
-use App\Models\Skill\SkillLog;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
 use Carbon\Carbon;
@@ -506,18 +505,20 @@ class CharacterManager extends Service {
      * @return bool
      */
     public function createLog($senderId, $senderUrl, $recipientId, $recipientUrl, $characterId, $type, $data, $logType, $isUpdate = false, $oldData = null, $newData = null) {
-        if ($logType == 'skill'){
+        if ($logType == 'skill') {
             return DB::table('skill_log')->insert(
-            [
-                'character_id'  => $characterId,
-                'sender_id'  => $senderId,
-                'log'           => $type.($data ? ' ('.$data.')' : ''),
-                'log_type'      => $type,
-                'data'          => 'Manual Edit',
-                'created_at'    => Carbon::now(),
-                'updated_at'    => Carbon::now(),
-            ]);
+                [
+                    'character_id'  => $characterId,
+                    'sender_id'     => $senderId,
+                    'log'           => $type.($data ? ' ('.$data.')' : ''),
+                    'log_type'      => $type,
+                    'data'          => 'Manual Edit',
+                    'created_at'    => Carbon::now(),
+                    'updated_at'    => Carbon::now(),
+                ]
+            );
         }
+
         return DB::table($logType == 'character' ? 'character_log' : 'user_character_log')->insert(
             [
                 'sender_id'     => $senderId,
