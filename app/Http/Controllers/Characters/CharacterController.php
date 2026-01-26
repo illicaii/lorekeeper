@@ -386,6 +386,21 @@ class CharacterController extends Controller {
     }
 
     /**
+     * Shows a character's item logs.
+     *
+     * @param mixed $slug
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterSkillLogs($slug) {
+        return view('character.skill_logs', [
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/skill-logs',
+            'logs'                  => $this->character->getSkillLogs(0),
+        ]);
+    }
+
+    /**
      * Shows a character's ownership logs.
      *
      * @param string $slug

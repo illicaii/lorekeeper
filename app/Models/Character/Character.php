@@ -10,6 +10,7 @@ use App\Models\Item\Item;
 use App\Models\Item\ItemLog;
 use App\Models\Model;
 use App\Models\Rarity;
+use App\Models\Skill\SkillLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Trade;
@@ -464,6 +465,25 @@ class Character extends Model {
         })->orWhere(function ($query) use ($character) {
             $query->with('recipient.rank')->where('recipient_type', 'Character')->where('recipient_id', $character->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
+
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+    }
+
+    /**
+     * Get the character's skill logs.
+     *
+     * @param int $limit
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Support\Collection
+     */
+    public function getSkillLogs($limit = 10) {
+        $character = $this;
+
+        $query = SkillLog::with('sender.rank')->where('character_id', $this->id)->orderBy('id', 'DESC');
 
         if ($limit) {
             return $query->take($limit)->get();

@@ -100,8 +100,10 @@ class Skill extends Model {
         if ($this->override_default_caps) {
             return $this->ovr_level_cap;
         }
-
-        return $this->category->max_level;
+        if (isset($this->category->max_level)) {
+            return $this->category->max_level;
+        }
+        return 0;
     }
 
     /**********************************************************************************************

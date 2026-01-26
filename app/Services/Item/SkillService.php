@@ -179,7 +179,7 @@ class SkillService extends Service {
             $has_option = !$firstData['error_on_missing'];
             $learned_skills = [];
             foreach ($options as $skill) {
-                if (!$character_skill = CharacterSkill::where([
+                if ($character_skill = CharacterSkill::where([
                     ['character_image_id', '=', $character->image->id],
                     ['skill_id', '=', $skill],
                 ])->first()) {

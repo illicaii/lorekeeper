@@ -89,7 +89,7 @@ class SkillManager extends Service {
      */
     public function creditSkill($sender, $recipient, $type, $data, $skill, $quantity, $is_lvl) {
         DB::beginTransaction();
-
+        // dd($data);
         try {
             $recipient_stack = CharacterSkill::where([
                 ['character_image_id', '=', $recipient->image->id],
@@ -101,7 +101,7 @@ class SkillManager extends Service {
                     throw new \Exception('Can not grant negative xp to character(s) that do not have '.$skill->displayName);
                 }
 
-                $log_data = 'Learned '.$skill->name.' skill. Reason:';
+                $log_data = 'Learned '.$skill->name.' skill. '.(isset($data)? $data : '');
                 if ($is_lvl) {
                     $quantity = $skill->getXpForLevel($quantity);
                 }
@@ -113,7 +113,7 @@ class SkillManager extends Service {
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
 
-                $log_data = 'Received '.$quantity.' xp for '.$skill->name.' skill. Reason:';
+                $log_data = 'Received '.$quantity.' xp for '.$skill->name.' skill. '.(isset($data)? $data : '');
 
                 if (($recipient_stack->xp + $quantity) > $skill->getXpForLevel($skill->maxLevel())) {
                     if ($type === 'Staff Grant') {
@@ -154,7 +154,7 @@ class SkillManager extends Service {
      * @param string $data
      */
     public function createLog($recipientId, $senderId, $type, $data) {
-        return DB::table('character_log')->insert(
+        return DB::table('skill_log')->insert(
             [
                 'character_id' => $recipientId,
                 'sender_id'    => $senderId,

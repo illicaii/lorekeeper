@@ -14,6 +14,7 @@ use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterSkill;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Sales\SalesCharacter;
+use App\Models\Skill\SkillLog;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
 use Carbon\Carbon;
@@ -505,6 +506,18 @@ class CharacterManager extends Service {
      * @return bool
      */
     public function createLog($senderId, $senderUrl, $recipientId, $recipientUrl, $characterId, $type, $data, $logType, $isUpdate = false, $oldData = null, $newData = null) {
+        if ($logType == 'skill'){
+            return DB::table('skill_log')->insert(
+            [
+                'character_id'  => $characterId,
+                'sender_id'  => $senderId,
+                'log'           => $type.($data ? ' ('.$data.')' : ''),
+                'log_type'      => $type,
+                'data'          => 'Manual Edit',
+                'created_at'    => Carbon::now(),
+                'updated_at'    => Carbon::now(),
+            ]);
+        }
         return DB::table($logType == 'character' ? 'character_log' : 'user_character_log')->insert(
             [
                 'sender_id'     => $senderId,
@@ -725,7 +738,7 @@ class CharacterManager extends Service {
 
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Updated', '#'.$image->id, 'character', true, $old, $new);
+            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Updated', '#'.$image->id, 'skill', true, $old, $new);
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {
@@ -778,7 +791,8 @@ class CharacterManager extends Service {
 
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Updated', '#'.$image->id, 'character', true, $old, $new);
+
+            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Reset', '#'.$image->id, 'skill', true, $old, $new);
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {
@@ -821,7 +835,7 @@ class CharacterManager extends Service {
 
             // Add a log for the character
             // This logs all the updates made to the character
-            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Deleted', '#'.$image->id, 'character', true, $old, $new);
+            $this->createLog($user->id, null, null, null, $image->character_id, 'Skills Deleted', '#'.$image->id, 'skill', true, $old, $new);
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {
