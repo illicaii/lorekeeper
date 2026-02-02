@@ -36,7 +36,8 @@
                     {!! Form::select('selected_skill', App\Models\Skill\Skill::find($tag->getData()['skill_opt'])->pluck('name', 'id'), null, ['class' => 'form-control default skill-select']) !!}
                 </div>
             @endif
-            @if ($tag->getData()['skill_item_type'] == App\Enums\Skill\ItemType::REVOKE->value) <!-- REVOKE Skill -->
+            @if ($tag->getData()['skill_item_type'] == App\Enums\Skill\ItemType::REVOKE->value)
+                <!-- REVOKE Skill -->
                 <p><strong>This item will remove the skill from your character regardless of the current level.</strong></p>
             @else
                 <p><strong>This item will reset the skill level of your character to lv 1 regardless of the current level.</strong></p>

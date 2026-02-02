@@ -1,4 +1,3 @@
-
 @include('js._loot_js', ['showLootTables' => true, 'showRaffles' => false])
 
 <h3>Skill Remove</h3>
