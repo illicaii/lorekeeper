@@ -1,4 +1,7 @@
-<h3>Skills</h3>
+
+@include('js._loot_js', ['showLootTables' => true, 'showRaffles' => false])
+
+<h3>Skill Grant Item</h3>
 <div class="mt-2 mb-2">
     {!! Form::label('skill_item_type', 'Select Skill Item Type') !!}
     {!! Form::select('skill_item_type', $item_types, isset($tag->getData()['skill_item_type']) ? $tag->getData()['skill_item_type'] : '0', ['class' => 'form-control skill-select selectize']) !!}
@@ -11,7 +14,7 @@
             <div class="mb-3 col-sm-auto">
                 {!! Form::hidden('grant_level', 0) !!}
                 {!! Form::checkbox('grant_level', 1, isset($tag->getData()['grant_level']) ? $tag->getData()['grant_level'] : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Add level', 'data-off' => 'Add XP']) !!}
-                {!! add_help('Add selected skills as level or XP points') !!}
+                {!! add_help('Add selected skills as level or XP points. This option does nothing for the "Set level Skill" Item Type.') !!}
             </div>
             <div class="text-right mb-3 col" id="Data">
                 <a href="#" class="btn btn-outline-info" id="addLoot">Add Reward</a>

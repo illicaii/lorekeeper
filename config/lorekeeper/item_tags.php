@@ -25,8 +25,14 @@ return [
         'background_color' => '#1fd1a7',
     ],
 
-    'skill' => [
-        'name'             => 'Skill',
+    'skill_grant' => [
+        'name'             => 'Skill Grant',
+        'text_color'       => '#ffffff',
+        'background_color' => '#1845a7ff',
+    ],
+
+    'skill_revoke' => [
+        'name'             => 'Skill Reset',
         'text_color'       => '#ffffff',
         'background_color' => '#1845a7ff',
     ],

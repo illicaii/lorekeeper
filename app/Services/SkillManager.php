@@ -45,7 +45,7 @@ class SkillManager extends Service {
                     if (!$this->logAdminAction($staff, 'Skill Grant', 'Granted '.$skill->displayName.' to '.$character->displayname)) {
                         throw new \Exception('Failed to log admin action.');
                     }
-                    if ($this->creditSkill($staff, $character, 'Staff Grant', $data['data'], $skill, $skill_xp[$i], $data['is_lvl'])) {
+                    if ($this->creditSkill($staff, $character, 'Staff Grant', $data['data'], $skill, $skill_xp[$i], $data['is_lvl'], false)) {
                         if ($data['is_lvl']) {
                             Notifications::create('SKILL_GRANT', $character->user, [
                                 'skill_name'         => $skill->displayName,
@@ -83,13 +83,13 @@ class SkillManager extends Service {
      * @param array                           $data
      * @param Skill                           $skill
      * @param int                             $quantity
-     * @param mixed                           $is_lvl
+     * @param bool                            $is_lvl
+     * @param bool                            $is_set
      *
      * @return bool
      */
-    public function creditSkill($sender, $recipient, $type, $data, $skill, $quantity, $is_lvl) {
+    public function creditSkill($sender, $recipient, $type, $data, $skill, $quantity, $is_lvl, $is_set) {
         DB::beginTransaction();
-        // dd($data);
         try {
             $recipient_stack = CharacterSkill::where([
                 ['character_image_id', '=', $recipient->image->id],
@@ -100,20 +100,30 @@ class SkillManager extends Service {
                 if ($quantity < 0) {
                     throw new \Exception('Can not grant negative xp to character(s) that do not have '.$skill->displayName);
                 }
+                $log_data = 'Learned '.$skill->displayName.' skill. '.($data ?? '');
 
-                $log_data = 'Learned '.$skill->name.' skill. '.($data ?? '');
-                if ($is_lvl) {
+                if (!($type === 'Staff Grant')){
+                    $type = 'Item based Redemption';
+                }
+                if ($is_lvl || $is_set) {
                     $quantity = $skill->getXpForLevel($quantity);
                 }
                 $recipient_stack = CharacterSkill::create(['character_image_id' => $recipient->image->id, 'skill_id' => $skill->id, 'xp' => $quantity, 'charges' => 0]);
             } else {
-                //Add levels or xp to existing skill
-                if ($is_lvl && !($quantity == 0)) {
+                //Character already knows skill
+                if ($is_set){
+                    //Set level
+                    $quantity = $skill->getXpForLevel($quantity) - $recipient_stack->xp;
+                } else if ($is_lvl && !($quantity == 0)) {
+                    //Add levels or xp to existing skill
                     $truelvl = $recipient_stack->getlevel() + $quantity;
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
-
-                $log_data = 'Received '.$quantity.' xp for '.$skill->name.' skill. '.($data ?? '');
+                if ($quantity <= 0){
+                    $log_data = 'Removed '.abs($quantity).' xp from '.$skill->displayName.' skill. '.($data ?? '');
+                } else {
+                    $log_data = 'Received '.$quantity.' xp for '.$skill->displayName.' skill. '.($data ?? '');
+                }
 
                 if (($recipient_stack->xp + $quantity) > $skill->getXpForLevel($skill->maxLevel())) {
                     if ($type === 'Staff Grant') {
@@ -146,6 +156,52 @@ class SkillManager extends Service {
     }
 
     /**
+     * Revokes (deletes) a skill from a character.
+     *
+     * @param \App\Models\Character\Character $sender
+     * @param \App\Models\Character\Character $recipient
+     * @param string                          $type
+     * @param array                           $data
+     * @param Skill                           $skill
+     *
+     * @return bool
+     */
+    public function revokeSkill($sender, $recipient, $type, $data, $skill) {
+        DB::beginTransaction();
+        try {
+            $recipient_stack = CharacterSkill::where([
+                ['character_image_id', '=', $recipient->image->id],
+                ['skill_id', '=', $skill->id],
+            ])->first();
+            if (!$recipient_stack) {
+                throw new \Exception('Can not remove '.$skill->displayName.' from a character that does not know it.');
+            } else {
+                // Log old skills
+                $image = $recipient->image;
+
+                // Clear old skills
+                $recipient_stack->delete();
+
+                // Image and Character keep track of these skills
+                $image->save();
+                $image->character->save();
+                $log_data = 'Forgot '.$skill->displayName.' skill. '.($data ?? '');
+            }
+
+            // Create log
+            if ($type && !$this->createLog($recipient->id, $sender->id, $type, $log_data)) {
+                throw new \Exception('Failed to create log.');
+            }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
      * Creates a log for the skill awarding.
      *
      * @param int    $recipientId
@@ -154,12 +210,26 @@ class SkillManager extends Service {
      * @param string $data
      */
     public function createLog($recipientId, $senderId, $type, $data) {
+        $msg = 'Granted';
+        if ($type === 'Item based Reset'){
+            $msg = 'Reset';
+            $type = 'Item Use';
+        } else if ($type === 'Item based Revoked'){
+            $msg = 'Deleted';
+            $type = 'Item Use';
+        } else if ($type === 'Item based Redemption'){
+            $msg = 'Added';
+            $type = 'Item Use';
+        } else if ($type === 'Item based Modification'){
+            $msg = 'Edited';
+            $type = 'Item Use';
+        }
         return DB::table('skill_log')->insert(
             [
                 'character_id' => $recipientId,
                 'sender_id'    => $senderId,
-                'log'          => 'Skill Awarded ('.$type.')',
-                'log_type'     => 'Skill Awarded',
+                'log'          => 'Skill '.$msg.' ('.$type.')',
+                'log_type'     => 'Skill '.$msg,
                 'data'         => $data,
                 'created_at'   => Carbon::now(),
                 'updated_at'   => Carbon::now(),
