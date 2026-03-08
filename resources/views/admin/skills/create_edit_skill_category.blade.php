@@ -59,7 +59,7 @@
             {!! Form::label('is_levelable', 'Has Levels', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skills in this category will have levels') !!}
         </a>
     </div>
-    <div class="collapse {{  $category->is_levelable ? 'show' : '' }} card p-3 mb-3" id="collapseLevel">
+    <div class="collapse {{ $category->is_levelable ? 'show' : '' }} card p-3 mb-3" id="collapseLevel">
         <div class="form-group">
             <h5>Level Curve</h5>
             <p>The level curve is the mathematical formula that dictates the rate at which skills level up. This extension uses a simple exponential level curve: <br> Current Level = floor((Current xp) / (Base XP * Multiplier)) + 1.0 </p>
@@ -73,7 +73,7 @@
             {!! Form::label('Max Level') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
             {!! Form::number('max_level', $category->max_level ? $category->max_level : 0, ['class' => 'form-control', 'min' => 0]) !!}
         </div>
-            <h5>Randomized Starting Level (Optional)</h5>
+        <h5>Randomized Starting Level (Optional)</h5>
         <div class="form-group">
             {!! Form::checkbox('randomize_firstLevel', 1, $category->randomize_firstLevel ? $category->randomize_firstLevel : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
             {!! Form::label('randomize_firstLevel', 'Random Starting Level', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skill will be assigned a random level between the MIN and MAX entered below upon character creation') !!}

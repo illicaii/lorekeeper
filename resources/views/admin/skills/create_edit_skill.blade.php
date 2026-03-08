@@ -75,7 +75,7 @@
             {!! Form::label('override_default_caps', 'Override skill category defaults', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the max level and max charge fields will be used instead of the category defaults.') !!}
         </a>
     </div>
-    <div class="collapse {{  $skill->override_default_caps ? 'show' : '' }} card p-3 mb-3" id="collapseOverride">
+    <div class="collapse {{ $skill->override_default_caps ? 'show' : '' }} card p-3 mb-3" id="collapseOverride">
         <div class="form-group">
             {!! Form::label('Max Level (Optional)') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
             {!! Form::number('ovr_level_cap', $skill->ovr_level_cap ? $skill->ovr_level_cap : 0, ['class' => 'form-control', 'min' => 0]) !!}
@@ -111,12 +111,14 @@
         <h3>Preview</h3>
         <div class="card mb-3">
             <div class="card-body">
-                @include('world._skill_entry', ['imageUrl' => $skill->imageUrl,
-                                                'name' => $skill->displayName,
-                                                'description' => $skill->description,
-                                                'searchUrl' => $skill->searchUrl,
-                                                'is_visible' => $skill->is_visible,
-                                                'is_backend' => $skill->is_backend,])
+                @include('world._skill_entry', [
+                    'imageUrl' => $skill->imageUrl,
+                    'name' => $skill->displayName,
+                    'description' => $skill->description,
+                    'searchUrl' => $skill->searchUrl,
+                    'is_visible' => $skill->is_visible,
+                    'is_backend' => $skill->is_backend,
+                ])
             </div>
         </div>
     @endif
