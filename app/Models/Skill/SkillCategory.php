@@ -11,8 +11,9 @@ class SkillCategory extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_default', 'is_visible', 'hash',
-        'max_level', 'max_charge',
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_default', 'is_visible', 'is_levelable',
+        'hash', 'max_level', 'max_charge', 'level_base', 'level_multiplier', 'randomize_firstLevel', 'random_level_min',
+        'random_level_max',
     ];
 
     /**
@@ -28,11 +29,15 @@ class SkillCategory extends Model {
      * @var array
      */
     public static $createRules = [
-        'name'        => 'required|unique:skill_categories|between:3,100',
-        'description' => 'nullable',
-        'image'       => 'mimes:png',
-        'max_level'   => 'integer|min:0',
-        'max_charge'  => 'integer|min:0',
+        'name'              => 'required|unique:skill_categories|between:3,100',
+        'description'       => 'nullable',
+        'image'             => 'mimes:jpeg,jpg,png|max:2048',
+        'max_level'         => 'integer|min:0',
+        'max_charge'        => 'integer|min:0',
+        'level_base'        => 'integer|min:10',
+        'level_multiplier'  => 'decimal:1,4|min:1.0',
+        'random_level_min'  => 'integer|min:0',
+        'random_level_max'  => 'integer|min:0',
     ];
 
     /**
@@ -41,11 +46,15 @@ class SkillCategory extends Model {
      * @var array
      */
     public static $updateRules = [
-        'name'        => 'required|between:3,100',
-        'description' => 'nullable',
-        'image'       => 'mimes:png',
-        'max_level'   => 'integer|min:0',
-        'max_charge'  => 'integer|min:0',
+        'name'              => 'required|between:3,100',
+        'description'       => 'nullable',
+        'image'             => 'mimes:jpeg,jpg,png|max:2048',
+        'max_level'         => 'integer|min:0',
+        'max_charge'        => 'integer|min:0',
+        'level_base'        => 'integer|min:10',
+        'level_multiplier'  => 'decimal:1,4|min:1.0',
+        'random_level_min'  => 'integer|min:0',
+        'random_level_max'  => 'integer|min:0',
     ];
 
     /**********************************************************************************************

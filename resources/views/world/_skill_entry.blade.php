@@ -8,10 +8,18 @@
             @if (!$skill->is_visible)
                 <i class="fas fa-eye-slash mr-1"></i>
             @endif
+            @if ($skill->is_backend)
+                <i class="fas fa-key mr-1"></i>
+            @endif
             {!! $name !!} @if (isset($idUrl) && $idUrl)
                 <a href="{{ $idUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>
             @endif
         </h3>
+        @if ($skill->is_backend)
+            <hr>
+            <strong>!! This is a backend skill. Regular users will not be able to see this skill regardless of visibility !!</strong>
+            <hr>
+        @endif
         <div class="row">
             @if (isset($skill->category) && $skill->category)
                 <div class="col-md">

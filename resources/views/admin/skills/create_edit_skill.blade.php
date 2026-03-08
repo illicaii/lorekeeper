@@ -35,6 +35,11 @@
             {!! Form::select('species_id', $species, $skill->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
         </div>
     </div>
+    <div class="form-group">
+        <p>This needs to be removed when skill tags are implemented</p>
+        {!! Form::label('skill_type', 'Select Skill Item Type') !!}
+        {!! Form::select('skill_type', $skill_types, isset($skill->skill_type) ? $skill->skill_type : '0', ['class' => 'form-control skill-select selectize']) !!}
+    </div>
 
     <div class="form-group">
         {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
@@ -61,29 +66,36 @@
         {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the trait will not be visible in the trait list or available for selection in search and design updates. Permissioned staff will still be able to add them to characters, however.') !!}
     </div>
     <div class="form-group">
-        {!! Form::checkbox('override_default_caps', 1, $skill->override_default_caps ? $skill->override_default_caps : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-        {!! Form::label('override_default_caps', 'Override skill category defaults', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the max level and max charge fields will be used instead of the category defaults.') !!}
+        {!! Form::checkbox('is_backend', 1, $skill->is_backend ? $skill->is_backend : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::label('is_backend', 'Is Backend', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the trait will not be visible to players. This is meant to be used for hidden RNG based skills.') !!}
     </div>
     <div class="form-group">
-        {!! Form::label('Max Level (Optional)') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
-        {!! Form::number('ovr_level_cap', $skill->ovr_level_cap ? $skill->ovr_level_cap : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        <a data-toggle="collapse" href="#collapseOverride" role="button" aria-expanded="false" aria-controls="collapseOverride">
+            {!! Form::checkbox('override_default_caps', 1, $skill->override_default_caps ? $skill->override_default_caps : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('override_default_caps', 'Override skill category defaults', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the max level and max charge fields will be used instead of the category defaults.') !!}
+        </a>
     </div>
-    <div class="form-group">
-        {!! Form::label('Max Charges (Optional)') !!} {!! add_help('The max level of charges skills in this category can have. Leave this blank for categories with no charges') !!}
-        {!! Form::number('ovr_charge_cap', $skill->ovr_charge_cap ? $skill->ovr_charge_cap : 0, ['class' => 'form-control', 'min' => 0]) !!}
+    <div class="collapse {{  $skill->override_default_caps ? 'show' : '' }} card p-3 mb-3" id="collapseOverride">
+        <div class="form-group">
+            {!! Form::label('Max Level (Optional)') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
+            {!! Form::number('ovr_level_cap', $skill->ovr_level_cap ? $skill->ovr_level_cap : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        </div>
+        <div class="form-group">
+            {!! Form::label('Max Charges (Optional)') !!} {!! add_help('The max level of charges skills in this category can have. Leave this blank for categories with no charges') !!}
+            {!! Form::number('ovr_charge_cap', $skill->ovr_charge_cap ? $skill->ovr_charge_cap : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        </div>
     </div>
 
     <div class="row">
         <div class="col-md">
             <div class="form-group">
-                {!! Form::label('Parent (Optional)') !!} {!! add_help('Related skill that transforms into this skill.') !!}
-                <p class="mb-0">A parent locks this skill and all prompts associated with this skill until the parent level is reached. It is also in the same tree as the skill.</p>
+                {!! Form::label('Parent (Optional)') !!} {!! add_help('The skill that must be present in order to learn this skill.') !!}
                 {!! Form::select('parent_id', $skills, $skill->parent_id, ['class' => 'form-control mb-1']) !!}
             </div>
         </div>
         <div class="col-md">
             <div class="form-group">
-                {!! Form::label('Parent Level (Optional)') !!} {!! add_help('Related skill that transforms into this skill.') !!}
+                {!! Form::label('Parent Level (Optional)') !!} {!! add_help('Parent Skill level that must be reached before this skill can be learned.') !!}
                 {!! Form::number('parent_level', $skill->parent_level ? $skill->parent_level : 1, ['class' => 'form-control', 'min' => 1]) !!}
             </div>
         </div>
@@ -99,7 +111,12 @@
         <h3>Preview</h3>
         <div class="card mb-3">
             <div class="card-body">
-                @include('world._skill_entry', ['imageUrl' => $skill->imageUrl, 'name' => $skill->displayName, 'description' => $skill->description, 'searchUrl' => $skill->searchUrl])
+                @include('world._skill_entry', ['imageUrl' => $skill->imageUrl,
+                                                'name' => $skill->displayName,
+                                                'description' => $skill->description,
+                                                'searchUrl' => $skill->searchUrl,
+                                                'is_visible' => $skill->is_visible,
+                                                'is_backend' => $skill->is_backend,])
             </div>
         </div>
     @endif

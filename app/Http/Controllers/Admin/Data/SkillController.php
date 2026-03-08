@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Data;
 
+use App\Enums\Skill\SkillType;
 use App\Http\Controllers\Controller;
 use App\Models\Skill\Skill;
 use App\Models\Skill\SkillCategory;
@@ -77,7 +78,9 @@ class SkillController extends Controller {
     public function postCreateEditSkillCategory(Request $request, SkillService $service, $id = null) {
         $id ? $request->validate(SkillCategory::$updateRules) : $request->validate(SkillCategory::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'is_default', 'is_visible', 'max_level', 'max_charge',
+            'name', 'description', 'image', 'remove_image', 'is_default', 'is_visible', 'is_levelable',
+            'max_level', 'max_charge', 'level_base', 'level_multiplier', 'randomize_firstLevel', 'random_level_min',
+            'random_level_max',
         ]);
         if ($id && $service->updateSkillCategory(SkillCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
@@ -190,6 +193,8 @@ class SkillController extends Controller {
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'skills'     => ['none' => 'No Parent'] + Skill::orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
+            'skill_types'=> [skillType::COSMETIC->value => 'Cosmetic', skillType::CONSUMABLE->value => 'Consumable',
+                             skillType::ITEM_GRANTER->value => 'Item Granter'],
         ]);
     }
 
@@ -211,11 +216,13 @@ class SkillController extends Controller {
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'skills'     => ['none' => 'No Parent'] + Skill::where('id', '!=', $skill->id)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
+            'skill_types'=> [skillType::COSMETIC->value => 'Cosmetic', skillType::CONSUMABLE->value => 'Consumable',
+                             skillType::ITEM_GRANTER->value => 'Item Granter'],
         ]);
     }
 
     /**
-     * Creates or edits an skill.
+     * Creates or edits a skill.
      *
      * @param App\Services\SkillService $service
      * @param int|null                  $id
@@ -226,7 +233,7 @@ class SkillController extends Controller {
         $id ? $request->validate(Skill::$updateRules) : $request->validate(Skill::$createRules);
         $data = $request->only([
             'name', 'skill_abrv', 'description', 'skill_category_id', 'species_id', 'image', 'remove_image',
-            'is_visible', 'skill_type', 'parent_id', 'parent_level',
+            'is_visible', 'skill_type', 'parent_id', 'parent_level', 'is_backend',
             'override_default_caps', 'ovr_level_cap', 'ovr_charge_cap',
         ]);
         if ($id && $service->updateSkill(Skill::find($id), $data, Auth::user())) {

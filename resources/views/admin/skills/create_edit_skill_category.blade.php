@@ -54,8 +54,36 @@
         {!! Form::label('is_default', 'Is Default', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skills in this category will be automatically populated upon character creation') !!}
     </div>
     <div class="form-group">
-        {!! Form::label('Max Level (Optional)') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
-        {!! Form::number('max_level', $category->max_level ? $category->max_level : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        <a data-toggle="collapse" href="#collapseLevel" role="button" aria-expanded="false" aria-controls="collapseLevel">
+            {!! Form::checkbox('is_levelable', 1, $category->is_levelable ? $category->is_levelable : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('is_levelable', 'Has Levels', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skills in this category will have levels') !!}
+        </a>
+    </div>
+    <div class="collapse {{  $category->is_levelable ? 'show' : '' }} card p-3 mb-3" id="collapseLevel">
+        <div class="form-group">
+            <h5>Level Curve</h5>
+            <p>The level curve is the mathematical formula that dictates the rate at which skills level up. This extension uses a simple exponential level curve: <br> Current Level = floor((Current xp) / (Base XP * Multiplier)) + 1.0 </p>
+            {!! Form::label('Base XP') !!} {!! add_help('The XP needed to go from level 1 to level 2.') !!}
+            {!! Form::number('level_base', $category->level_base ? $category->level_base : 10, ['class' => 'form-control', 'min' => 10]) !!}
+            {!! Form::label('Multiplier') !!} {!! add_help('The multiplier used when determining how much XP is needed to get to the next level.') !!}
+            {!! Form::text('level_multiplier', $category->level_multiplier ? $category->level_multiplier : 1.0, ['class' => 'form-control', 'min' => 1.0]) !!}
+        </div>
+        <div class="form-group">
+            <h5>Level Limits</h5>
+            {!! Form::label('Max Level') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
+            {!! Form::number('max_level', $category->max_level ? $category->max_level : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        </div>
+            <h5>Randomized Starting Level (Optional)</h5>
+        <div class="form-group">
+            {!! Form::checkbox('randomize_firstLevel', 1, $category->randomize_firstLevel ? $category->randomize_firstLevel : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('randomize_firstLevel', 'Random Starting Level', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skill will be assigned a random level between the MIN and MAX entered below upon character creation') !!}
+        </div>
+        <div class="form-group">
+            {!! Form::label('Min Starting Level (Must be less than max level)') !!} {!! add_help('The min level skills in this category can roll on creation') !!}
+            {!! Form::number('random_level_min', $category->random_level_min ? $category->random_level_min : 0, ['class' => 'form-control', 'min' => 0]) !!}
+            {!! Form::label('Max Starting Level (Must be greater than min level)') !!} {!! add_help('The max level skills in this category can roll on creation') !!}
+            {!! Form::number('random_level_max', $category->random_level_max ? $category->random_level_max : 0, ['class' => 'form-control', 'min' => 0]) !!}
+        </div>
     </div>
     <div class="form-group">
         {!! Form::label('Max Charges (Optional)') !!} {!! add_help('The max level of charges skills in this category can have. Leave this blank for categories with no charges') !!}

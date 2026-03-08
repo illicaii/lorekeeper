@@ -13,9 +13,9 @@ class Skill extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'skill_abrv', 'description', 'parsed_description', 'skill_category_id', 'species_id', 'has_image', 'is_visible', 'skill_type',
-        'parent_id', 'parent_level', 'override_default_caps', 'ovr_level_cap',
-        'ovr_charge_cap', 'hash',
+        'name', 'skill_abrv', 'description', 'parsed_description', 'skill_category_id', 'species_id',
+        'has_image', 'hash', 'is_visible', 'is_backend', 'skill_type', 'parent_id', 'parent_level',
+        'override_default_caps', 'ovr_level_cap', 'ovr_charge_cap',
     ];
 
     /**
@@ -36,7 +36,7 @@ class Skill extends Model {
         'name'                  => 'required|unique:skills|between:3,100',
         'skill_abrv'            => 'required|unique:skills|between:1,20',
         'description'           => 'nullable',
-        'image'                 => 'mimes:png',
+        'image'                 => 'mimes:jpeg,jpg,png|max:2048',
         'override_default_caps' => 'boolean:strict',
         'ovr_level_cap'         => 'integer|min:0',
         'ovr_charge_cap'        => 'integer|min:0',
@@ -53,7 +53,7 @@ class Skill extends Model {
         'name'                  => 'required|between:3,100',
         'skill_abrv'            => 'required|between:1,20',
         'description'           => 'nullable',
-        'image'                 => 'mimes:png',
+        'image'                 => 'mimes:jpeg,jpg,png|max:2048',
         'override_default_caps' => 'boolean:strict',
         'ovr_level_cap'         => 'integer|min:0',
         'ovr_charge_cap'        => 'integer|min:0',
@@ -329,6 +329,9 @@ class Skill extends Model {
         return $skills_by_category;
     }
 
+    /**
+     * Get the xp needed to reach given skill level.
+     */
     public function getXpForLevel($level) {
         $skill = $this;
         if ($skill->override_default_caps) {
@@ -351,6 +354,9 @@ class Skill extends Model {
         return $xp;
     }
 
+    /**
+     * Get the level of the skill based on the xp given.
+     */
     public function getlevel($xp) {
         $skill = $this;
         if ($skill->override_default_caps) {

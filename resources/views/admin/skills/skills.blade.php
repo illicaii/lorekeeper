@@ -11,7 +11,8 @@
 
     <p>
         Skills are abilities that characters can have. They can be used to represent anything and can be worked in to different mechanics on site.
-        Skills can be grouped into categories, are a similar to traits (with levels)!
+        They can be grouped into categories, and are a similar to traits (with levels)! Skill Categories are important to the functionality of
+        skills, a range of different options can be defined category wide, rather than skill by skill.
     </p>
 
     <div class="text-right mb-3">
