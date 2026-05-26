@@ -437,4 +437,29 @@ return [
         'message' => '<a href="{sender_url}">{sender}</a> has added you as a participant on a gallery submission. (<a href="{url}">View Submission</a>)',
         'url'     => 'gallery/view/{submission_id}',
     ],
+
+    // PET_REMOVAL
+    241 => [
+        'name'    => 'Pet Removal',
+        'message' => '{pet_name} (×{pet_quantity}) was removed from your inventory by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Pets</a>)',
+        'url'     => 'pets',
+    ],
+    // PET_TRANSFER
+    242 => [
+        'name'    => 'Pet Transfer',
+        'message' => 'You have received {pet_name} (×{pet_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Pets</a>)',
+        'url'     => 'pets',
+    ],
+    // FORCED_PET_TRANSFER
+    243 => [
+        'name'    => 'Forced Pet Transfer',
+        'message' => '{pet_name} (×{pet_quantity}) was transferred out of your inventory by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Pets</a>)',
+        'url'     => 'pets',
+    ],
+    // PET_GRANT
+    244 => [
+        'name'    => 'Pet Grant',
+        'message' => 'You have received a staff grant of {pet_name} (×{pet_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Pets</a>)',
+        'url'     => 'pets',
+    ],
 ];
