@@ -20,8 +20,10 @@ return new class extends Migration {
      */
     public function down(): void {
         //
-        Schema::table('pet_variants', function (Blueprint $table) {
-            $table->dropColumn('description');
-        });
+        if (Schema::hasTable('pet_variants')) {
+            Schema::table('pet_variants', function (Blueprint $table) {
+                $table->dropColumn('description');
+            });
+        }
     }
 };
