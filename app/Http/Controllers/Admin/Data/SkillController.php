@@ -193,8 +193,8 @@ class SkillController extends Controller {
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'skills'     => ['none' => 'No Parent'] + Skill::orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
-            'skill_types'=> [skillType::COSMETIC->value => 'Cosmetic', skillType::CONSUMABLE->value => 'Consumable',
-                             skillType::ITEM_GRANTER->value => 'Item Granter'],
+            'skill_types'=> [SkillType::COSMETIC->value => 'Cosmetic', SkillType::CONSUMABLE->value => 'Consumable',
+                SkillType::ITEM_GRANTER->value          => 'Item Granter'],
         ]);
     }
 
@@ -216,8 +216,8 @@ class SkillController extends Controller {
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'skills'     => ['none' => 'No Parent'] + Skill::where('id', '!=', $skill->id)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
-            'skill_types'=> [skillType::COSMETIC->value => 'Cosmetic', skillType::CONSUMABLE->value => 'Consumable',
-                             skillType::ITEM_GRANTER->value => 'Item Granter'],
+            'skill_types'=> [SkillType::COSMETIC->value => 'Cosmetic', SkillType::CONSUMABLE->value => 'Consumable',
+                SkillType::ITEM_GRANTER->value          => 'Item Granter'],
         ]);
     }
 

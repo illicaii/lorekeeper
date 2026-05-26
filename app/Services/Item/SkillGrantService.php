@@ -2,8 +2,8 @@
 
 namespace App\Services\Item;
 
-use App\Enums\Skill\ItemType;
 use App\Enums\Skill\ItemGrantType;
+use App\Enums\Skill\ItemType;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterSkill;
 use App\Models\Skill\Skill;
@@ -29,8 +29,8 @@ class SkillGrantService extends Service {
     public function getEditData() {
         $item_types = [ItemType::GRANT->value => 'Skill Grant', ItemType::ADD->value => 'Add XP/Level', ItemType::SET->value => 'Set Level'];
         $grant_types = [ItemGrantType::SELECTOR->value => 'Grant Single (Selector)',
-                        ItemGrantType::RANDOM->value => 'Grant Random',
-                        ItemGrantType::ALL->value => 'Grant All'];
+            ItemGrantType::RANDOM->value               => 'Grant Random',
+            ItemGrantType::ALL->value                  => 'Grant All'];
 
         return [
             'skills'      => Skill::orderBy('id')->pluck('name', 'id'),
@@ -164,30 +164,30 @@ class SkillGrantService extends Service {
                     throw new \Exception('This item does not belong to you.');
                 }
 
-                //Try to delete the box item. If successful, we can start distributing rewards.
+                // Try to delete the box item. If successful, we can start distributing rewards.
                 $total_rewards = [];
                 if ((new InventoryManager)->debitStack($stack->user, 'Skill Item Redeemed', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
-                        if ($firstData['skill_item_type'] == ItemType::GRANT->value){
-                            if (count($unlearned_skills) == 0){
+                        if ($firstData['skill_item_type'] == ItemType::GRANT->value) {
+                            if (count($unlearned_skills) == 0) {
                                 throw new \Exception('Character knows all applicable skills already');
-                            } else if ($data['quantities'][$key] > count($unlearned_skills)){
+                            } elseif ($data['quantities'][$key] > count($unlearned_skills)) {
                                 throw new \Exception('You can not use more items than skills to learn');
-                            } else if ($firstData['grant_type'] == ItemGrantType::ALL->value && $data['quantities'][$key] > 1) {
+                            } elseif ($firstData['grant_type'] == ItemGrantType::ALL->value && $data['quantities'][$key] > 1) {
                                 throw new \Exception('You can not use more than one of these items at a time');
-                            } else if ($firstData['grant_type'] == ItemGrantType::SELECTOR->value && count($firstData['skills']) > 1){
-                                if (!array_key_exists($data['selected_skill'], $unlearned_skills)){
+                            } elseif ($firstData['grant_type'] == ItemGrantType::SELECTOR->value && count($firstData['skills']) > 1) {
+                                if (!array_key_exists($data['selected_skill'], $unlearned_skills)) {
                                     throw new \Exception('Character knows selected skill already');
                                 }
-                                $skillOption = $this->pickSkill($firstData['skill_item_type'], $firstData['grant_type'], $character, $firstData, $unlearned_skills,  $data['selected_skill']);
+                                $skillOption = $this->pickSkill($firstData['skill_item_type'], $firstData['grant_type'], $character, $firstData, $unlearned_skills, $data['selected_skill']);
                             } else {
                                 $skillOption = $this->pickSkill($firstData['skill_item_type'], $firstData['grant_type'], $character, $firstData, $unlearned_skills);
                             }
                         } else {
-                            if (count($learned_skills) == 0){
+                            if (count($learned_skills) == 0) {
                                 throw new \Exception('Character does not know any applicable skills');
-                            } else if ($firstData['grant_type'] == ItemGrantType::SELECTOR->value && count($firstData['skills']) > 1){
-                                if (!array_key_exists($data['selected_skill'], $learned_skills)){
+                            } elseif ($firstData['grant_type'] == ItemGrantType::SELECTOR->value && count($firstData['skills']) > 1) {
+                                if (!array_key_exists($data['selected_skill'], $learned_skills)) {
                                     throw new \Exception("Character doesn't know selected skill");
                                 }
                                 $skillOption = $this->pickSkill($firstData['skill_item_type'], $firstData['grant_type'], $character, $firstData, $learned_skills, $data['selected_skill']);
@@ -207,7 +207,7 @@ class SkillGrantService extends Service {
                         }
                     }
                 }
-                //Flash all rewards now that we know stack operation succeeds
+                // Flash all rewards now that we know stack operation succeeds
                 foreach ($total_rewards as $reward) {
                     flash($this->getSkillRewardsString($reward));
                 }
@@ -222,36 +222,36 @@ class SkillGrantService extends Service {
     }
 
     /**
-     * Picks the skill, dependant on grant type
+     * Picks the skill, dependant on grant type.
      *
-     * @param App\Enums\Skill\ItemType          $itemType
-     * @param App\Enums\Skill\ItemGrantType     $grantType
-     * @param \App\Models\Character\Character   $character
-     * @param array                             $itemData
-     * @param array                             $skillPool
-     * @param int                               $selected_skill
+     * @param App\Enums\Skill\ItemType      $itemType
+     * @param App\Enums\Skill\ItemGrantType $grantType
+     * @param Character                     $character
+     * @param array                         $itemData
+     * @param array                         $skillPool
+     * @param int                           $selected_skill
      *
      * @return array
      */
     private function pickSkill($itemType, $grantType, $character, $itemData, $skillPool, $selected_skill = null) {
         // Pick skills to give to character based on grant type
-        switch ($grantType){
+        switch ($grantType) {
             case ItemGrantType::SELECTOR->value:
-                if (count($itemData['skills']) > 1 ){
+                if (count($itemData['skills']) > 1) {
                     $skillOption['skills'] = [$selected_skill => $itemData['skills'][$selected_skill]];
                 } else {
                     $skillOption['skills'] = $itemData['skills'];
                 }
                 break;
             case ItemGrantType::RANDOM->value:
-                //grant random skill
+                // grant random skill
                 if ($itemType == ItemType::GRANT->value) {
                     do {
                         $random = array_rand($skillPool);
                         $character_skill = CharacterSkill::where([
-                                                        ['character_image_id', '=', $character->image->id],
-                                                        ['skill_id', '=', $random],
-                                                        ])->first();
+                            ['character_image_id', '=', $character->image->id],
+                            ['skill_id', '=', $random],
+                        ])->first();
                     } while ($character_skill);
                 } else {
                     $random = array_rand($skillPool);
@@ -260,12 +260,13 @@ class SkillGrantService extends Service {
                 $skillOption['skills'] = [$random => $itemData['skills'][$random]];
                 break;
             case ItemGrantType::ALL->value:
-                    $skillOption['skills'] = $skillPool;
+                $skillOption['skills'] = $skillPool;
                 break;
             default:
                 throw new \Exception('No Skill Item Type Selected.');
                 break;
         }
+
         return $skillOption;
     }
 

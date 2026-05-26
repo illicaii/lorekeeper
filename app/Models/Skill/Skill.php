@@ -331,6 +331,8 @@ class Skill extends Model {
 
     /**
      * Get the xp needed to reach given skill level.
+     *
+     * @param mixed $level
      */
     public function getXpForLevel($level) {
         $skill = $this;
@@ -356,6 +358,8 @@ class Skill extends Model {
 
     /**
      * Get the level of the skill based on the xp given.
+     *
+     * @param mixed $xp
      */
     public function getlevel($xp) {
         $skill = $this;

@@ -444,8 +444,8 @@ class DesignUpdateManager extends Service {
     /**
      * Saves the character skills section of a character design update request.
      *
-     * @param array                                       $data
-     * @param \App\Models\Character\CharacterDesignUpdate $request
+     * @param array                 $data
+     * @param CharacterDesignUpdate $request
      *
      * @return bool
      */

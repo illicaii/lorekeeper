@@ -701,9 +701,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character image with Skills.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -752,8 +752,8 @@ class CharacterManager extends Service {
     /**
      * Resets a character image's skill levels.
      *
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -806,8 +806,8 @@ class CharacterManager extends Service {
     /**
      * Removes a character image's skills.
      *
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -2217,7 +2217,7 @@ class CharacterManager extends Service {
     /**
      * Generates a list of skills for displaying.
      *
-     * @param \App\Models\Character\CharacterImage $image
+     * @param CharacterImage $image
      *
      * @return string
      */

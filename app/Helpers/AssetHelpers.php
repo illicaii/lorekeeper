@@ -395,9 +395,9 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
                 }
             }
         } elseif ($key == 'skills' && count($contents)) {
-            $service = new \App\Services\SkillManager;
+            $service = new App\Services\SkillManager;
             foreach ($contents as $asset) {
-                if(isset($data['is_revoke']) && $data['is_revoke']){
+                if (isset($data['is_revoke']) && $data['is_revoke']) {
                     if (!$service->revokeSkill($sender, $recipient, $logType, $data['data'], $asset['asset'])) {
                         return false;
                     }

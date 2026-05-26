@@ -2,8 +2,8 @@
 
 namespace App\Services\Item;
 
-use App\Enums\Skill\ItemType;
 use App\Enums\Skill\ItemGrantType;
+use App\Enums\Skill\ItemType;
 use App\Models\Character\Character;
 use App\Models\Character\CharacterSkill;
 use App\Models\Skill\Skill;
@@ -97,7 +97,7 @@ class SkillRevokeService extends Service {
                 addAsset($assets, $asset, 0);
             }
             $assets = getDataReadyAssets($assets);
-            $assets += ['remove' => ($data['skill_item_type'] == ItemType::REVOKE->value)]; //True if REVOKE, False if RESET
+            $assets += ['remove' => ($data['skill_item_type'] == ItemType::REVOKE->value)]; // True if REVOKE, False if RESET
             $assets += ['skill_item_type' => $data['skill_item_type']];
             $assets += ['grant_type' => $data['grant_type']];
 
@@ -134,8 +134,8 @@ class SkillRevokeService extends Service {
                 throw new \Exception('You do not own this character');
             }
 
-            //set reason to be passed to logging
-            if($firstData['skill_item_type'] == ItemType::RESET->value){
+            // set reason to be passed to logging
+            if ($firstData['skill_item_type'] == ItemType::RESET->value) {
                 $reason = 'Item based Reset';
             } else {
                 $reason = 'Item based Removal';
@@ -145,29 +145,29 @@ class SkillRevokeService extends Service {
                 // Check to make sure the owner of the box is the one opening it
                 if ($stack->user_id != $user->id) {
                     throw new \Exception('This item does not belong to you.');
-                } else if ($data['quantities'][$key] > 1){
+                } elseif ($data['quantities'][$key] > 1) {
                     throw new \Exception('You can not use more than one of this item at a time.');
                 }
 
-                //Try to delete the box item. If successful, we can start distributing rewards.
+                // Try to delete the box item. If successful, we can start distributing rewards.
                 $total_rewards = [];
                 if ((new InventoryManager)->debitStack($stack->user, 'Skill Reset Item Redeemed', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
                         // Pick skills to give to character based on grant type
                         if ($firstData['grant_type'] == ItemGrantType::SELECTOR->value && count($firstData['skills']) > 1) {
-                            //revoke skill that was selected
+                            // revoke skill that was selected
                             $character_skill = CharacterSkill::where([
                                 ['character_image_id', '=', $character->image->id],
                                 ['skill_id', '=', $data['selected_skill']],
                             ])->first();
                             if (!$character_skill) {
                                 throw new \Exception('Character does not know selected skill');
-                            } else if($character_skill->xp <= 0 && $firstData['skill_item_type'] == ItemType::RESET->value){
+                            } elseif ($character_skill->xp <= 0 && $firstData['skill_item_type'] == ItemType::RESET->value) {
                                 throw new \Exception('Skill is already at level 1.');
                             }
                             $skillOption['skills'] = [$data['selected_skill'] => $firstData['skills'][$data['selected_skill']]];
                         } else {
-                            //revoke all skills
+                            // revoke all skills
                             $skillOption = $stacks->first()->item->tag('skill_revoke')->data;
                             $skill_pool = Skill::find(array_keys($skillOption['skills']))->pluck('id');
                             $skillOption['skills'] = [];
@@ -177,9 +177,9 @@ class SkillRevokeService extends Service {
                                     ['character_image_id', '=', $character->image->id],
                                     ['skill_id', '=', $skill],
                                 ])->first()) {
-                                    if ($firstData['skill_item_type'] == ItemType::REVOKE->value){
+                                    if ($firstData['skill_item_type'] == ItemType::REVOKE->value) {
                                         $skillOption['skills'] += [$skill => 0];
-                                    } else if ($character_skill->xp > 0){
+                                    } elseif ($character_skill->xp > 0) {
                                         $skillOption['skills'] += [$skill => 0];
                                     }
                                 }
@@ -190,18 +190,18 @@ class SkillRevokeService extends Service {
                         }
 
                         if (!$rewards = fillCharacterAssets(parseAssetData($skillOption), $stack->user, $character, $reason, [
-                            'data'      => 'Used '.$stack->item->displayName.'.',
+                            'data'       => 'Used '.$stack->item->displayName.'.',
                             'is_revoke'  => ($firstData['skill_item_type'] == ItemType::REVOKE->value),
-                            'is_lvl'    => false,
-                            'is_set'    => true,
+                            'is_lvl'     => false,
+                            'is_set'     => true,
                         ])) {
-                            throw new \Exception("Failed to redeem skill item.");
+                            throw new \Exception('Failed to redeem skill item.');
                         } else {
                             $total_rewards[$q] = $rewards;
                         }
                     }
                 }
-                //Flash all rewards now that we know stack operation succeeds
+                // Flash all rewards now that we know stack operation succeeds
                 foreach ($total_rewards as $reward) {
                     flash($this->getSkillRewardsString($reward));
                 }

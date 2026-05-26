@@ -77,14 +77,14 @@ class SkillManager extends Service {
     /**
      * Credits an skill to a character.
      *
-     * @param \App\Models\Character\Character $sender
-     * @param \App\Models\Character\Character $recipient
-     * @param string                          $type
-     * @param array                           $data
-     * @param Skill                           $skill
-     * @param int                             $quantity
-     * @param bool                            $is_lvl
-     * @param bool                            $is_set
+     * @param Character $sender
+     * @param Character $recipient
+     * @param string    $type
+     * @param array     $data
+     * @param Skill     $skill
+     * @param int       $quantity
+     * @param bool      $is_lvl
+     * @param bool      $is_set
      *
      * @return bool
      */
@@ -96,13 +96,13 @@ class SkillManager extends Service {
                 ['skill_id', '=', $skill->id],
             ])->first();
             if (!$recipient_stack) {
-                //New skill grant
+                // New skill grant
                 if ($quantity < 0) {
                     throw new \Exception('Can not grant negative xp to character(s) that do not have '.$skill->displayName);
                 }
                 $log_data = 'Learned '.$skill->displayName.' skill. '.($data ?? '');
 
-                if (!($type === 'Staff Grant')){
+                if (!($type === 'Staff Grant')) {
                     $type = 'Item based Redemption';
                 }
                 if ($is_lvl || $is_set) {
@@ -110,16 +110,16 @@ class SkillManager extends Service {
                 }
                 $recipient_stack = CharacterSkill::create(['character_image_id' => $recipient->image->id, 'skill_id' => $skill->id, 'xp' => $quantity, 'charges' => 0]);
             } else {
-                //Character already knows skill
-                if ($is_set){
-                    //Set level
+                // Character already knows skill
+                if ($is_set) {
+                    // Set level
                     $quantity = $skill->getXpForLevel($quantity) - $recipient_stack->xp;
-                } else if ($is_lvl && !($quantity == 0)) {
-                    //Add levels or xp to existing skill
+                } elseif ($is_lvl && !($quantity == 0)) {
+                    // Add levels or xp to existing skill
                     $truelvl = $recipient_stack->getlevel() + $quantity;
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
-                if ($quantity <= 0){
+                if ($quantity <= 0) {
                     $log_data = 'Removed '.abs($quantity).' xp from '.$skill->displayName.' skill. '.($data ?? '');
                 } else {
                     $log_data = 'Received '.$quantity.' xp for '.$skill->displayName.' skill. '.($data ?? '');
@@ -158,11 +158,11 @@ class SkillManager extends Service {
     /**
      * Revokes (deletes) a skill from a character.
      *
-     * @param \App\Models\Character\Character $sender
-     * @param \App\Models\Character\Character $recipient
-     * @param string                          $type
-     * @param array                           $data
-     * @param Skill                           $skill
+     * @param Character $sender
+     * @param Character $recipient
+     * @param string    $type
+     * @param array     $data
+     * @param Skill     $skill
      *
      * @return bool
      */
@@ -211,19 +211,20 @@ class SkillManager extends Service {
      */
     public function createLog($recipientId, $senderId, $type, $data) {
         $msg = 'Granted';
-        if ($type === 'Item based Reset'){
+        if ($type === 'Item based Reset') {
             $msg = 'Reset';
             $type = 'Item Use';
-        } else if ($type === 'Item based Revoked'){
+        } elseif ($type === 'Item based Revoked') {
             $msg = 'Deleted';
             $type = 'Item Use';
-        } else if ($type === 'Item based Redemption'){
+        } elseif ($type === 'Item based Redemption') {
             $msg = 'Added';
             $type = 'Item Use';
-        } else if ($type === 'Item based Modification'){
+        } elseif ($type === 'Item based Modification') {
             $msg = 'Edited';
             $type = 'Item Use';
         }
+
         return DB::table('skill_log')->insert(
             [
                 'character_id' => $recipientId,
