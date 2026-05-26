@@ -31,7 +31,7 @@ class PromptService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Prompt\PromptCategory|bool
+     * @return bool|PromptCategory
      */
     public function createPromptCategory($data, $user) {
         DB::beginTransaction();
@@ -66,11 +66,11 @@ class PromptService extends Service {
     /**
      * Update a category.
      *
-     * @param \App\Models\Prompt\PromptCategory $category
-     * @param array                             $data
-     * @param \App\Models\User\User             $user
+     * @param PromptCategory        $category
+     * @param array                 $data
+     * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Prompt\PromptCategory|bool
+     * @return bool|PromptCategory
      */
     public function updatePromptCategory($category, $data, $user) {
         DB::beginTransaction();
@@ -93,7 +93,7 @@ class PromptService extends Service {
 
             $category->update($data);
 
-            if ($category) {
+            if ($image) {
                 $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
             }
 
@@ -108,7 +108,7 @@ class PromptService extends Service {
     /**
      * Delete a category.
      *
-     * @param \App\Models\Prompt\PromptCategory $category
+     * @param PromptCategory $category
      *
      * @return bool
      */
@@ -172,7 +172,7 @@ class PromptService extends Service {
      * @param array                 $data
      * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Prompt\Prompt|bool
+     * @return bool|Prompt
      */
     public function createPrompt($data, $user) {
         DB::beginTransaction();
@@ -221,11 +221,11 @@ class PromptService extends Service {
     /**
      * Updates a prompt.
      *
-     * @param \App\Models\Prompt\Prompt $prompt
-     * @param array                     $data
-     * @param \App\Models\User\User     $user
+     * @param Prompt                $prompt
+     * @param array                 $data
+     * @param \App\Models\User\User $user
      *
-     * @return \App\Models\Prompt\Prompt|bool
+     * @return bool|Prompt
      */
     public function updatePrompt($prompt, $data, $user) {
         DB::beginTransaction();
@@ -262,7 +262,7 @@ class PromptService extends Service {
 
             $prompt->update(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions', 'staff_only', 'hash']));
 
-            if ($prompt) {
+            if ($image) {
                 $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
             }
 
@@ -279,7 +279,7 @@ class PromptService extends Service {
     /**
      * Deletes a prompt.
      *
-     * @param \App\Models\Prompt\Prompt $prompt
+     * @param Prompt $prompt
      *
      * @return bool
      */
@@ -309,8 +309,8 @@ class PromptService extends Service {
     /**
      * Handle category data.
      *
-     * @param array                                  $data
-     * @param \App\Models\Prompt\PromptCategory|null $category
+     * @param array               $data
+     * @param PromptCategory|null $category
      *
      * @return array
      */
@@ -335,8 +335,8 @@ class PromptService extends Service {
     /**
      * Processes user input for creating/updating a prompt.
      *
-     * @param array                     $data
-     * @param \App\Models\Prompt\Prompt $prompt
+     * @param array  $data
+     * @param Prompt $prompt
      *
      * @return array
      */
@@ -372,8 +372,8 @@ class PromptService extends Service {
     /**
      * Processes user input for creating/updating prompt rewards.
      *
-     * @param array                     $data
-     * @param \App\Models\Prompt\Prompt $prompt
+     * @param array  $data
+     * @param Prompt $prompt
      */
     private function populateRewards($data, $prompt) {
         // Clear the old rewards...
