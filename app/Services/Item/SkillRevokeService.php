@@ -190,10 +190,10 @@ class SkillRevokeService extends Service {
                         }
 
                         if (!$rewards = fillCharacterAssets(parseAssetData($skillOption), $stack->user, $character, $reason, [
-                            'data'       => 'Used '.$stack->item->displayName.'.',
-                            'is_revoke'  => ($firstData['skill_item_type'] == ItemType::REVOKE->value),
-                            'is_lvl'     => false,
-                            'is_set'     => true,
+                            'data'         => 'Used '.$stack->item->displayName.'.',
+                            'is_revoke'    => ($firstData['skill_item_type'] == ItemType::REVOKE->value),
+                            'is_lvl'       => false,
+                            'is_set'       => true,
                             'random_level' => false,
                         ])) {
                             throw new \Exception('Failed to redeem skill item.');

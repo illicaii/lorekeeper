@@ -375,7 +375,7 @@ class Skill extends Model {
         $xp_base = 100.0;
         $multiplier = 1.25;
         // Override default with category defined level curve
-        if (isset($this->category)){
+        if (isset($this->category)) {
             $xp_base = $this->category->level_base;
             $multiplier = $this->category->level_multiplier;
         }
@@ -404,7 +404,7 @@ class Skill extends Model {
         $xp_base = 100.0;
         $multiplier = 1.25;
         // Override default with category defined level curve
-        if (isset($this->category)){
+        if (isset($this->category)) {
             $xp_base = $this->category->level_base;
             $multiplier = $this->category->level_multiplier;
         }

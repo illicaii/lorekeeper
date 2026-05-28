@@ -85,6 +85,7 @@ class SkillManager extends Service {
      * @param int       $quantity
      * @param bool      $is_lvl
      * @param bool      $is_set
+     * @param mixed     $random_level
      *
      * @return bool
      */
@@ -95,7 +96,7 @@ class SkillManager extends Service {
                 ['character_image_id', '=', $recipient->image->id],
                 ['skill_id', '=', $skill->id],
             ])->first();
-            if ($random_level){
+            if ($random_level) {
                 $quantity = $skill->getRandomStartingLevel();
             }
             if (!$recipient_stack) {
@@ -119,7 +120,7 @@ class SkillManager extends Service {
                 // the random_level from 0 which would max level every time
                 if ($is_set) {
                     // Set level
-                    if($random_level){
+                    if ($random_level) {
                         $quantity = $quantity - $recipient_stack->xp;
                     } else {
                         $quantity = $skill->getXpForLevel($quantity) - $recipient_stack->xp;

@@ -199,9 +199,9 @@ class SkillGrantService extends Service {
                         }
 
                         if (!$rewards = fillCharacterAssets(parseAssetData($skillOption), $stack->user, $character, 'Item based Modification', [
-                            'data'   => 'Used '.$stack->item->displayName.'.',
-                            'is_lvl' => $firstData['is_lvl'],
-                            'is_set' => ($firstData['skill_item_type'] == ItemType::SET->value),
+                            'data'         => 'Used '.$stack->item->displayName.'.',
+                            'is_lvl'       => $firstData['is_lvl'],
+                            'is_set'       => ($firstData['skill_item_type'] == ItemType::SET->value),
                             'random_level' => $firstData['populate_start_level'],
                         ])) {
                             throw new \Exception("Failed to redeem skill Items. Can not decrease character's skill level below 0 or increase above max");
