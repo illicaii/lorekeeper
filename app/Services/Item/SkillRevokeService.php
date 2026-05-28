@@ -194,6 +194,7 @@ class SkillRevokeService extends Service {
                             'is_revoke'  => ($firstData['skill_item_type'] == ItemType::REVOKE->value),
                             'is_lvl'     => false,
                             'is_set'     => true,
+                            'random_level' => false,
                         ])) {
                             throw new \Exception('Failed to redeem skill item.');
                         } else {

@@ -402,7 +402,7 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
                         return false;
                     }
                 } else {
-                    if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], $data['is_lvl'], $data['is_set'])) {
+                    if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], $data['is_lvl'], $data['is_set'], $data['random_level'])) {
                         return false;
                     }
                 }

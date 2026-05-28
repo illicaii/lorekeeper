@@ -371,8 +371,15 @@ class Skill extends Model {
             $level = 1;
         }
 
+        // Default level curve if category is not defined
         $xp_base = 100.0;
         $multiplier = 1.25;
+        // Override default with category defined level curve
+        if (isset($this->category)){
+            $xp_base = $this->category->level_base;
+            $multiplier = $this->category->level_multiplier;
+        }
+
         $xp = floor(($level - 1) * ($xp_base * $multiplier));
 
         return $xp;
@@ -393,8 +400,15 @@ class Skill extends Model {
             $max_level = 0;
         }
 
+        // Default level curve if category is not defined
         $xp_base = 100.0;
         $multiplier = 1.25;
+        // Override default with category defined level curve
+        if (isset($this->category)){
+            $xp_base = $this->category->level_base;
+            $multiplier = $this->category->level_multiplier;
+        }
+
         $level = floor($xp / ($xp_base * $multiplier)) + 1.0;
         if ($level > $max_level) {
             return $max_level;
@@ -405,6 +419,8 @@ class Skill extends Model {
 
     /**
      * Get starting XP for randomly generated level of the skill based on the category.
+     *
+     * @return int xp needed for random level between MIN and MAX starting level as defined by the category or 0 if no category
      */
     public function getRandomStartingLevel() {
         if (isset($this->category) && $this->category->randomize_firstLevel) {

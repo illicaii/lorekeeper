@@ -51,7 +51,7 @@
     </div>
     <div class="form-group">
         {!! Form::checkbox('is_default', 1, $category->is_default ? $category->is_default : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-        {!! Form::label('is_default', 'Is Default', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skills in this category will be automatically populated upon character creation') !!}
+        {!! Form::label('is_default', 'Is Default', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned on, the skills in this category will be automatically populated upon character creation.') !!}
     </div>
     <div class="form-group">
         <a data-toggle="collapse" href="#collapseLevel" role="button" aria-expanded="false" aria-controls="collapseLevel">
@@ -64,13 +64,13 @@
             <h5>Level Curve</h5>
             <p>The level curve is the mathematical formula that dictates the rate at which skills level up. This extension uses a simple exponential level curve: <br> Current Level = floor((Current xp) / (Base XP * Multiplier)) + 1.0 </p>
             {!! Form::label('Base XP') !!} {!! add_help('The XP needed to go from level 1 to level 2.') !!}
-            {!! Form::number('level_base', $category->level_base ? $category->level_base : 10, ['class' => 'form-control', 'min' => 10]) !!}
+            {!! Form::number('level_base', $category->level_base ? $category->level_base : 100, ['class' => 'form-control', 'min' => 10]) !!}
             {!! Form::label('Multiplier') !!} {!! add_help('The multiplier used when determining how much XP is needed to get to the next level.') !!}
             {!! Form::text('level_multiplier', $category->level_multiplier ? $category->level_multiplier : 1.25, ['class' => 'form-control', 'min' => 1.0]) !!}
         </div>
         <div class="form-group">
             <h5>Level Limits</h5>
-            {!! Form::label('Max Level') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Leave blank if you do not wish to have levels') !!}
+            {!! Form::label('Max Level') !!} {!! add_help('The max level this skills in this category can be leveled to. (aka. The level cap.) Setting to zero effectively caps the skill at lv 0 (No levels)') !!}
             {!! Form::number('max_level', $category->max_level ? $category->max_level : 0, ['class' => 'form-control', 'min' => 0]) !!}
         </div>
         <h5>Randomized Starting Level (Optional)</h5>

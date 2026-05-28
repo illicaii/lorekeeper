@@ -83,7 +83,7 @@
                                 <strong>{!! $skill->skill->category->displayName !!}:</strong>
                                 @endif {!! $skill->skill->displayName !!} @if ($skill->data)
                                     ({{ $skill->data }})
-                                    @endif @if ($skill->xp)
+                                    @endif @if ($skill->xp && (Auth::check() && Auth::user()->hasPower('manage_characters')))
                                         ({{ $skill->xp }})
                                     @endif <span class="text-danger">*Required</span>
                         </div>
@@ -99,7 +99,7 @@
                                 @if ($skill->data)
                                     ({{ $skill->data }})
                                 @endif
-                                @if ($skill->xp)
+                                @if ($skill->xp && (Auth::check() && Auth::user()->hasPower('manage_characters')))
                                     ({{ $skill->xp }})
                                 @endif
                                 <span class="text-danger">*Default</span>
@@ -121,7 +121,7 @@
                         @if ($skill->data)
                             ({{ $skill->data }})
                         @endif
-                        @if ($skill->xp)
+                        @if ($skill->xp && (Auth::check() && Auth::user()->hasPower('manage_characters')))
                             (XP: {{ $skill->xp }})
                         @endif
                     </div>

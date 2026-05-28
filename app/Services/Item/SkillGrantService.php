@@ -68,12 +68,13 @@ class SkillGrantService extends Service {
         }
 
         return [
-            'skill_item_type'  => $tag->data['skill_item_type'],
-            'grant_level'      => $tag->data['is_lvl'],
-            'grant_type'       => $tag->data['grant_type'],
-            'error_on_missing' => $tag->data['error_on_missing'],
-            'rewards'          => $rewards,
-            'skill_opt'        => $skill_opt,
+            'skill_item_type'       => $tag->data['skill_item_type'],
+            'grant_level'           => $tag->data['is_lvl'],
+            'grant_type'            => $tag->data['grant_type'],
+            'error_on_missing'      => $tag->data['error_on_missing'],
+            'populate_start_level'  => $tag->data['populate_start_level'],
+            'rewards'               => $rewards,
+            'skill_opt'             => $skill_opt,
         ];
     }
 
@@ -108,6 +109,7 @@ class SkillGrantService extends Service {
             $assets += ['error_on_missing' => $data['error_on_missing']];
             $assets += ['skill_item_type' => $data['skill_item_type']];
             $assets += ['grant_type' => $data['grant_type']];
+            $assets += ['populate_start_level' => $data['populate_start_level']];
 
             $tag->update(['data' => json_encode($assets)]);
 
@@ -200,6 +202,7 @@ class SkillGrantService extends Service {
                             'data'   => 'Used '.$stack->item->displayName.'.',
                             'is_lvl' => $firstData['is_lvl'],
                             'is_set' => ($firstData['skill_item_type'] == ItemType::SET->value),
+                            'random_level' => $firstData['populate_start_level'],
                         ])) {
                             throw new \Exception("Failed to redeem skill Items. Can not decrease character's skill level below 0 or increase above max");
                         } else {

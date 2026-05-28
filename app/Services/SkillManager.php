@@ -45,7 +45,7 @@ class SkillManager extends Service {
                     if (!$this->logAdminAction($staff, 'Skill Grant', 'Granted '.$skill->displayName.' to '.$character->displayname)) {
                         throw new \Exception('Failed to log admin action.');
                     }
-                    if ($this->creditSkill($staff, $character, 'Staff Grant', $data['data'], $skill, $skill_xp[$i], $data['is_lvl'], false)) {
+                    if ($this->creditSkill($staff, $character, 'Staff Grant', $data['data'], $skill, $skill_xp[$i], $data['is_lvl'], false, false)) {
                         if ($data['is_lvl']) {
                             Notifications::create('SKILL_GRANT', $character->user, [
                                 'skill_name'         => $skill->displayName,
@@ -88,13 +88,16 @@ class SkillManager extends Service {
      *
      * @return bool
      */
-    public function creditSkill($sender, $recipient, $type, $data, $skill, $quantity, $is_lvl, $is_set) {
+    public function creditSkill($sender, $recipient, $type, $data, $skill, $quantity, $is_lvl, $is_set, $random_level) {
         DB::beginTransaction();
         try {
             $recipient_stack = CharacterSkill::where([
                 ['character_image_id', '=', $recipient->image->id],
                 ['skill_id', '=', $skill->id],
             ])->first();
+            if ($random_level){
+                $quantity = $skill->getRandomStartingLevel();
+            }
             if (!$recipient_stack) {
                 // New skill grant
                 if ($quantity < 0) {
@@ -105,34 +108,41 @@ class SkillManager extends Service {
                 if (!($type === 'Staff Grant')) {
                     $type = 'Item based Redemption';
                 }
-                if ($is_lvl || $is_set) {
+                if (($is_lvl || $is_set) && !$random_level) {
+                    // Note: we don't need to do this when random_level is set because that already makes quantity the xp needed to get to the random_level
                     $quantity = $skill->getXpForLevel($quantity);
                 }
                 $recipient_stack = CharacterSkill::create(['character_image_id' => $recipient->image->id, 'skill_id' => $skill->id, 'xp' => $quantity, 'charges' => 0]);
             } else {
                 // Character already knows skill
+                // Note: we don't calculate XP when random_level is set because that already calculates the quantity needed to get to
+                // the random_level from 0 which would max level every time
                 if ($is_set) {
                     // Set level
-                    $quantity = $skill->getXpForLevel($quantity) - $recipient_stack->xp;
-                } elseif ($is_lvl && !($quantity == 0)) {
+                    if($random_level){
+                        $quantity = $quantity - $recipient_stack->xp;
+                    } else {
+                        $quantity = $skill->getXpForLevel($quantity) - $recipient_stack->xp;
+                    }
+                } elseif ($is_lvl && !($quantity == 0) && !$random_level) {
                     // Add levels or xp to existing skill
                     $truelvl = $recipient_stack->getlevel() + $quantity;
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
                 }
-                if ($quantity <= 0) {
+                if ($quantity < 0) {
                     $log_data = 'Removed '.abs($quantity).' xp from '.$skill->displayName.' skill. '.($data ?? '');
                 } else {
                     $log_data = 'Received '.$quantity.' xp for '.$skill->displayName.' skill. '.($data ?? '');
                 }
 
                 if (($recipient_stack->xp + $quantity) > $skill->getXpForLevel($skill->maxLevel())) {
-                    if ($type === 'Staff Grant') {
+                    if ($type === 'Staff Grant' || $random_level) {
                         $recipient_stack->xp = $skill->getXpForLevel($skill->maxLevel());
                     } else {
                         throw new \Exception("Can not grant xp that would increase a character's level more than max");
                     }
                 } elseif ($recipient_stack->xp + $quantity < 0) {
-                    if ($type === 'Staff Grant') {
+                    if ($type === 'Staff Grant' || $random_level) {
                         $recipient_stack->xp = 0;
                     } else {
                         throw new \Exception("Can not grant xp that would make a character's level negative");
