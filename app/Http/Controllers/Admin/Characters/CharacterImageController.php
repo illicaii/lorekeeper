@@ -45,7 +45,7 @@ class CharacterImageController extends Controller {
             'subtypes'  => ['0' => 'Select Subtype'] + Subtype::where('species_id', '=', $this->character->image->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'users'     => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'features'  => Feature::getDropdownItems(1),
-            'skills'    => Skill::getDropdownItems(1,1),
+            'skills'    => Skill::getDropdownItems(1, 1),
             'isMyo'     => false,
         ]);
     }
@@ -164,7 +164,7 @@ class CharacterImageController extends Controller {
 
         return view('character.admin._edit_skills_modal', [
             'image'     => $image,
-            'skills'    => Skill::getDropdownItems(1,1),
+            'skills'    => Skill::getDropdownItems(1, 1),
         ]);
     }
 

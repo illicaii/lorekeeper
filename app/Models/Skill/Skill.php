@@ -315,6 +315,9 @@ class Skill extends Model {
 
     /**
      * Get the xp needed to reach given skill level.
+     *
+     * @param mixed $withHidden
+     * @param mixed $withBackend
      */
     public static function getDropdownItems($withHidden = 0, $withBackend = 0) {
         $visibleOnly = 1;
@@ -404,8 +407,9 @@ class Skill extends Model {
      * Get starting XP for randomly generated level of the skill based on the category.
      */
     public function getRandomStartingLevel() {
-        if (isset($this->category) && $this->category->randomize_firstLevel){
+        if (isset($this->category) && $this->category->randomize_firstLevel) {
             $random_level = rand($this->category->random_level_min, $this->category->random_level_max);
+
             return $this->getXpForLevel($random_level);
         }
 

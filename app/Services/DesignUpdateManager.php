@@ -12,7 +12,6 @@ use App\Models\Currency\Currency;
 use App\Models\Feature\Feature;
 use App\Models\Rarity;
 use App\Models\Skill\Skill;
-use App\Models\Skill\SkillCategory;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
@@ -461,14 +460,14 @@ class DesignUpdateManager extends Service {
             $skills = Skill::whereIn('id', $data['skill_id'])->get()->keyBy('id');
             $species = $request->species_id;
             $oldSkills = CharacterSkill::where('character_image_id', $request->character->image->id)->where('character_type', 'Character')
-                        ->get()->keyBy('skill_id')->toArray();
+                ->get()->keyBy('skill_id')->toArray();
 
             foreach ($data['skill_id'] as $key => $skillId) {
                 if (!$skillId) {
                     continue;
                 }
 
-                if (isset($oldSkills[$skillId])){
+                if (isset($oldSkills[$skillId])) {
                     $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $oldSkills[$skillId]['xp'], 'character_type' => 'Update']);
                 } else {
                     $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => 0, 'character_type' => 'Update']);
@@ -658,7 +657,7 @@ class DesignUpdateManager extends Service {
                     CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skill->skill_id, 'data' => $skill->data, 'xp' => $skill->xp, 'character_type' => 'Character']);
                 }
 
-                foreach (Species::where('id', $request->species_id)->first()->getDefaultSkills(1,1) as $skill){
+                foreach (Species::where('id', $request->species_id)->first()->getDefaultSkills(1, 1) as $skill) {
                     $startingXP = $skill->getRandomStartingLevel();
                     CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skill->id, 'data' => $skill->data, 'xp' => $startingXP, 'character_type' => 'Character']);
                 }
