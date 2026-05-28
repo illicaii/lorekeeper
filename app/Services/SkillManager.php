@@ -109,7 +109,7 @@ class SkillManager extends Service {
                 if (!($type === 'Staff Grant')) {
                     $type = 'Item based Redemption';
                 }
-                if (($is_lvl || $is_set) && !$random_level) {
+                if (!$random_level && ($is_lvl || $is_set)) {
                     // Note: we don't need to do this when random_level is set because that already makes quantity the xp needed to get to the random_level
                     $quantity = $skill->getXpForLevel($quantity);
                 }
@@ -125,7 +125,7 @@ class SkillManager extends Service {
                     } else {
                         $quantity = $skill->getXpForLevel($quantity) - $recipient_stack->xp;
                     }
-                } elseif ($is_lvl && !($quantity == 0) && !$random_level) {
+                } elseif (!$random_level && $is_lvl && !($quantity == 0)) {
                     // Add levels or xp to existing skill
                     $truelvl = $recipient_stack->getlevel() + $quantity;
                     $quantity = $skill->getXpForLevel($truelvl) - $recipient_stack->xp;
