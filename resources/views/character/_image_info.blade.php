@@ -151,7 +151,7 @@
                                         <strong>Miscellaneous:</strong>
                                     @endif
                                     @foreach ($group as $skill)
-                                        @if (!$skill->is_backend || Auth::check() && Auth::user()->hasPower('manage_characters'))
+                                        @if (!$skill->is_backend || (Auth::check() && Auth::user()->hasPower('manage_characters')))
                                             <div class="row ml-md-2 w-100">
                                                 <div class="col">
                                                     @if ($skill->is_backend)
@@ -161,7 +161,7 @@
                                                         ({{ $skill->data }})
                                                     @endif
                                                 </div>
-                                                @if (isset($skill->xp) && ($skill->skill->override_default_caps && $skill->skill->ovr_level_cap > 0 || $skill->skill->category->is_levelable))
+                                                @if (isset($skill->xp) && (($skill->skill->override_default_caps && $skill->skill->ovr_level_cap > 0) || $skill->skill->category->is_levelable))
                                                     <div class="col text-right"> LV. </div>
                                                     <div class="col-3 col-md-3 col-lg-2 text-right">{{ $skill->getlevel() }}/
                                                         @if ($skill->skill->override_default_caps)
