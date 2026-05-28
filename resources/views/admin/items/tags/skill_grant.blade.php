@@ -17,8 +17,15 @@
             </div>
             <div class="mb-3 col-sm-auto">
                 {!! Form::hidden('populate_start_level', 0) !!}
-                {!! Form::checkbox('populate_start_level', 1, isset($tag->getData()['populate_start_level']) ? $tag->getData()['populate_start_level'] : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'data-on' => 'Override quantity with random level from category range', 'data-off' => 'Use Quantity Value Below']) !!}
-                {!! add_help('If turned on, the skill quantity will be assigned a random xp value corresponding to a level between the MIN and MAX level from the skill category, ignoring the quantity set below. Take caution using this option with the add level toggle and/or "add" item types') !!}
+                {!! Form::checkbox('populate_start_level', 1, isset($tag->getData()['populate_start_level']) ? $tag->getData()['populate_start_level'] : 0, [
+                    'class' => 'form-check-input',
+                    'data-toggle' => 'toggle',
+                    'data-on' => 'Override quantity with random level from category range',
+                    'data-off' => 'Use Quantity Value Below',
+                ]) !!}
+                {!! add_help(
+                    'If turned on, the skill quantity will be assigned a random xp value corresponding to a level between the MIN and MAX level from the skill category, ignoring the quantity set below. Take caution using this option with the add level toggle and/or "add" item types',
+                ) !!}
             </div>
             <div class="text-right mb-3 col" id="Data">
                 <a href="#" class="btn btn-outline-info" id="addLoot">Add Reward</a>
