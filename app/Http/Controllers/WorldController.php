@@ -437,7 +437,7 @@ class WorldController extends Controller {
         }
 
         return view('world.skill_categories', [
-            'categories' => $query->paginate(20)->appends($request->query()),
+            'categories' => $query->visible(Auth::check() ? Auth::user() : null)->paginate(20)->appends($request->query()),
         ]);
     }
 
@@ -493,7 +493,7 @@ class WorldController extends Controller {
         }
 
         return view('world.skills', [
-            'skills'     => $query->paginate(20)->appends($request->query()),
+            'skills'     => $query->visible(Auth::check() ? Auth::user() : null)->frontEnd(Auth::check() ? Auth::user() : null)->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ['withoutOption' => 'Without Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
             'species'    => ['none' => 'Any Species'] + ['withoutOption' => 'Without Species'] + Species::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
         ]);

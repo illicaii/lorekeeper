@@ -138,6 +138,7 @@
                         @php
                             $skillgroup = $image
                                 ->skills()
+                                ->where('skills.is_visible', 1)
                                 ->get()
                                 ->groupBy('skill_category_id');
                         @endphp
@@ -150,22 +151,28 @@
                                         <strong>Miscellaneous:</strong>
                                     @endif
                                     @foreach ($group as $skill)
-                                        <div class="row ml-md-2 w-100">
-                                            <div class="col">{!! $skill->skill->displayName !!} @if ($skill->data)
-                                                    ({{ $skill->data }})
-                                                @endif
-                                            </div>
-                                            @if (isset($skill->xp))
-                                                <div class="col text-right"> LV. </div>
-                                                <div class="col-3 col-md-3 col-lg-2 text-right">{{ $skill->getlevel() }}/
-                                                    @if ($skill->skill->override_default_caps)
-                                                        {{ $skill->skill->ovr_level_cap }}
-                                                    @elseif (isset($skill->skill->category->max_level))
-                                                        {{ $skill->skill->category->max_level }}
+                                        @if (!$skill->is_backend || Auth::check() && Auth::user()->hasPower('manage_characters'))
+                                            <div class="row ml-md-2 w-100">
+                                                <div class="col">
+                                                    @if ($skill->is_backend)
+                                                        <i class="fas fa-key mr-1"></i>
+                                                    @endif
+                                                    {!! $skill->skill->displayName !!} @if ($skill->data)
+                                                        ({{ $skill->data }})
                                                     @endif
                                                 </div>
-                                            @endif
-                                        </div>
+                                                @if (isset($skill->xp) && ($skill->skill->override_default_caps && $skill->skill->ovr_level_cap > 0 || $skill->skill->category->is_levelable))
+                                                    <div class="col text-right"> LV. </div>
+                                                    <div class="col-3 col-md-3 col-lg-2 text-right">{{ $skill->getlevel() }}/
+                                                        @if ($skill->skill->override_default_caps)
+                                                            {{ $skill->skill->ovr_level_cap }}
+                                                        @elseif (isset($skill->skill->category->max_level))
+                                                            {{ $skill->skill->category->max_level }}
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             @endforeach

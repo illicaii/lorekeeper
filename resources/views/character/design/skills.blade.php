@@ -22,33 +22,49 @@
             <div><a href="#" class="btn btn-primary mb-2" id="add-skill">Add Skill</a></div>
             <div id="skillList">
                 {{-- Add in the compulsory skills for MYO slots --}}
-                @if ($request->character->is_myo_slot && $request->character->image->skills)
-                    @foreach ($request->character->image->skills as $skill)
-                        <div class="mb-2 d-flex align-items-center">
-                            {!! Form::text('', $skill->name, ['class' => 'form-control mr-2', 'disabled']) !!}
-                            {!! Form::text('', $skill->data, ['class' => 'form-control mr-2', 'disabled']) !!}
-                            {!! Form::number('', $skill->xp, ['class' => 'form-control mr-2', 'disabled']) !!}
-                            <div>{!! add_help('This skill is required.') !!}</div>
-                        </div>
-                    @endforeach
+                @if ($request->character->is_myo_slot)
+                    @if ($request->character->image->skills)
+                        @foreach ($request->character->image->skills as $skill)
+                            <div class="mb-2 d-flex align-items-center">
+                                {!! Form::text('', $skill->name, ['class' => 'form-control mr-2', 'disabled']) !!}
+                                {!! Form::text('', $skill->data, ['class' => 'form-control mr-2', 'disabled']) !!}
+                                <div>{!! add_help('This skill is required.') !!}</div>
+                            </div>
+                        @endforeach
+                    @endif
+                    @if ($request->character->image->species->getDefaultSkills())
+                        <p>These are skills all characters will start with. They can not be removed or edited.</p>
+                        @foreach ($request->character->image->species->getDefaultSkills() as $skill)
+                            <div class="mb-2 d-flex align-items-center">
+                                {!! Form::text('', $skill->name, ['class' => 'form-control mr-2', 'disabled']) !!}
+                                <div>{!! add_help('This skill is required.') !!}</div>
+                            </div>
+                        @endforeach
+                    @endif
                 @endif
 
+                <p>Additional Skills:</p>
                 {{-- Add in the ones that currently exist --}}
                 @if ($request->skills)
                     @foreach ($request->skills as $skill)
+                        @if(!$skill->is_backend)
                         <div class="mb-2 d-flex">
                             {!! Form::select('skill_id[]', $skills, $skill->skill_id, ['class' => 'form-control mr-2 initial skill-select', 'placeholder' => 'Select Skill']) !!}
                             {!! Form::text('skill_data[]', $skill->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
-                            {!! Form::number('skill_xp[]', $skill->xp ? $skill->xp : 0, ['class' => 'form-control mr-2', 'disabled']) !!}
                             <a href="#" class="remove-skill btn btn-danger mb-2">×</a>
                         </div>
+                        @else
+                        <div class="mb-2 d-flex" style="display: none !important;">
+                            {!! Form::select('skill_id[]', $skills, $skill->skill_id, ['class' => 'form-control mr-2 initial skill-select']) !!}
+                            {!! Form::text('skill_data[]', $skill->data, ['class' => 'form-control mr-2']) !!}
+                        </div>
+                        @endif
                     @endforeach
                 @endif
             </div>
             <div class="skill-row hide mb-2">
                 {!! Form::select('skill_id[]', $skills, null, ['class' => 'form-control mr-2 skill-select', 'placeholder' => 'Select Skill']) !!}
                 {!! Form::text('skill_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
-                {!! Form::text('skill_xp[]', 0, ['class' => 'form-control mr-2', 'disabled']) !!}
                 <a href="#" class="remove-skill btn btn-danger mb-2">×</a>
             </div>
         </div>
@@ -59,30 +75,57 @@
     @else
         <h5>Skills</h5>
         <div>
-            @if ($request->character && $request->character->is_myo_slot && $request->character->image->skills)
-                @foreach ($request->character->image->skills as $skill)
+            @if ($request->character && $request->character->is_myo_slot)
+                @if ($request->character->image->skills)
+                    @foreach ($request->character->image->skills as $skill)
+                        <div>
+                            @if ($skill->skill->skill_category_id)
+                                <strong>{!! $skill->skill->category->displayName !!}:</strong>
+                                @endif {!! $skill->skill->displayName !!} @if ($skill->data)
+                                    ({{ $skill->data }})
+                                    @endif @if ($skill->xp)
+                                        ({{ $skill->xp }})
+                                    @endif <span class="text-danger">*Required</span>
+                        </div>
+                    @endforeach
+                @endif
+                @if ($request->character->image->species->getDefaultSkills())
+                    @foreach ($request->character->image->species->getDefaultSkills(1,1) as $skill)
+                        @if (!$skill->is_backend || Auth::check() && Auth::user()->hasPower('manage_characters'))
+                        <div>
+                            @if ($skill->skill_category_id)
+                                <strong>{!! $skill->category->displayName !!}:</strong>
+                            @endif {!! $skill->displayName !!}
+                            @if ($skill->data)
+                                ({{ $skill->data }})
+                            @endif
+                            @if ($skill->xp)
+                                ({{ $skill->xp }})
+                            @endif
+                            <span class="text-danger">*Default</span>
+                        </div>
+                        @endif
+                    @endforeach
+                @endif
+            @endif
+            @foreach ($request->skills as $skill)
+                @if (!$skill->is_backend || Auth::check() && Auth::user()->hasPower('manage_characters'))
                     <div>
                         @if ($skill->skill->skill_category_id)
                             <strong>{!! $skill->skill->category->displayName !!}:</strong>
-                            @endif {!! $skill->skill->displayName !!} @if ($skill->data)
-                                ({{ $skill->data }})
-                                @endif @if ($skill->xp)
-                                    ({{ $skill->xp }})
-                                @endif <span class="text-danger">*Required</span>
-                    </div>
-                @endforeach
-            @endif
-            @foreach ($request->skills as $skill)
-                <div>
-                    @if ($skill->skill->skill_category_id)
-                        <strong>{!! $skill->skill->category->displayName !!}:</strong>
-                        @endif {!! $skill->skill->displayName !!} @if ($skill->data)
+                        @endif
+                        @if ($skill->is_backend)
+                            <i class="fas fa-key mr-1"></i>
+                        @endif
+                        {!! $skill->skill->displayName !!}
+                        @if ($skill->data)
                             ({{ $skill->data }})
                         @endif
                         @if ($skill->xp)
-                            ({{ $skill->xp }})
+                            (XP: {{ $skill->xp }})
                         @endif
-                </div>
+                    </div>
+                @endif
             @endforeach
         </div>
     @endif

@@ -4,6 +4,8 @@ namespace App\Models\Species;
 
 use App\Models\Character\Sublist;
 use App\Models\Feature\Feature;
+use App\Models\Skill\Skill;
+use App\Models\Skill\SkillCategory;
 use App\Models\Model;
 
 class Species extends Model {
@@ -69,6 +71,36 @@ class Species extends Model {
      */
     public function features() {
         return $this->hasMany(Feature::class);
+    }
+
+    /**
+     * Get the skills associated with this species.
+     */
+    public function skills() {
+        return $this->hasMany(Skill::class);
+    }
+
+    /**
+     * Get all default skills associated with this species.
+     */
+    public function getDefaultSkills($showhidden = 0, $showBackend = 0) {
+        $defaultSkillCategories = SkillCategory::where('is_default', 1)->get();
+        $defaultSkills = [];
+        foreach ($defaultSkillCategories as $category) {
+            foreach ($category->skills as $skill){
+                if ($skill->species_id == $this->id || $skill->species_id == null){
+                    // This is messy but gets the job done.
+                    if ($skill->is_backend && $showBackend){
+                        $defaultSkills[] = $skill;
+                    } else if (!$skill->is_visible && $showhidden){
+                        $defaultSkills[] = $skill;
+                    } else if (!$skill->is_backend && $skill->is_visible){
+                        $defaultSkills[] = $skill;
+                    }
+                }
+            }
+        }
+        return $defaultSkills;
     }
 
     /**********************************************************************************************

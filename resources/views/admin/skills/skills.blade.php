@@ -70,6 +70,9 @@
                                     @if (!$skill->is_visible)
                                         <i class="fas fa-eye-slash mr-1"></i>
                                     @endif
+                                    @if ($skill->is_backend)
+                                        <i class="fas fa-key mr-1"></i>
+                                    @endif
                                     {!! $skill->displayName !!}
                                 </div>
                             </div>

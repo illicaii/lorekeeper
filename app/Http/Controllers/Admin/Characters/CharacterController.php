@@ -54,7 +54,7 @@ class CharacterController extends Controller {
             'specieses'   => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'    => ['0' => 'Pick a Species First'],
             'features'    => Feature::getDropdownItems(1),
-            'skills'      => Skill::getDropdownItems(1),
+            'skills'      => Skill::getDropdownItems(1,1),
             'isMyo'       => false,
         ]);
     }
@@ -71,7 +71,7 @@ class CharacterController extends Controller {
             'specieses'   => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'    => ['0' => 'Pick a Species First'],
             'features'    => Feature::getDropdownItems(1),
-            'skills'      => Skill::getDropdownItems(1),
+            'skills'      => Skill::getDropdownItems(1,1),
             'isMyo'       => true,
         ]);
     }

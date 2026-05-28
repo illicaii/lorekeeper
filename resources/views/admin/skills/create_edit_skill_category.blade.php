@@ -66,7 +66,7 @@
             {!! Form::label('Base XP') !!} {!! add_help('The XP needed to go from level 1 to level 2.') !!}
             {!! Form::number('level_base', $category->level_base ? $category->level_base : 10, ['class' => 'form-control', 'min' => 10]) !!}
             {!! Form::label('Multiplier') !!} {!! add_help('The multiplier used when determining how much XP is needed to get to the next level.') !!}
-            {!! Form::text('level_multiplier', $category->level_multiplier ? $category->level_multiplier : 1.0, ['class' => 'form-control', 'min' => 1.0]) !!}
+            {!! Form::text('level_multiplier', $category->level_multiplier ? $category->level_multiplier : 1.25, ['class' => 'form-control', 'min' => 1.0]) !!}
         </div>
         <div class="form-group">
             <h5>Level Limits</h5>

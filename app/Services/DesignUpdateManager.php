@@ -12,6 +12,7 @@ use App\Models\Currency\Currency;
 use App\Models\Feature\Feature;
 use App\Models\Rarity;
 use App\Models\Skill\Skill;
+use App\Models\Skill\SkillCategory;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
@@ -459,18 +460,19 @@ class DesignUpdateManager extends Service {
             // Attach skills
             $skills = Skill::whereIn('id', $data['skill_id'])->get()->keyBy('id');
             $species = $request->species_id;
+            $oldSkills = CharacterSkill::where('character_image_id', $request->character->image->id)->where('character_type', 'Character')
+                        ->get()->keyBy('skill_id')->toArray();
 
             foreach ($data['skill_id'] as $key => $skillId) {
                 if (!$skillId) {
                     continue;
                 }
 
-                // Skip the skill if it's not the correct species.
-                if (isset($skills[$skillId]->species_id) && $skills[$skillId]->species_id != $species) {
-                    continue;
+                if (isset($oldSkills[$skillId])){
+                    $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $oldSkills[$skillId]['xp'], 'character_type' => 'Update']);
+                } else {
+                    $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => 0, 'character_type' => 'Update']);
                 }
-
-                $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $data['skill_xp'][$key], 'character_type' => 'Update']);
             }
 
             // Update other stats
@@ -650,10 +652,15 @@ class DesignUpdateManager extends Service {
             // Shift the image features over to the new image
             $request->rawFeatures()->update(['character_image_id' => $image->id, 'character_type' => 'Character']);
 
-            // Add the compulsory skills
+            // Add the compulsory and basic skills
             if ($request->character->is_myo_slot) {
                 foreach ($request->character->image->skills as $skill) {
-                    CharacterSkills::create(['character_image_id' => $image->id, 'skill_id' => $skill->skill_id, 'data' => $skill->data, 'xp' => $skill->xp, 'character_type' => 'Character']);
+                    CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skill->skill_id, 'data' => $skill->data, 'xp' => $skill->xp, 'character_type' => 'Character']);
+                }
+
+                foreach (Species::where('id', $request->species_id)->first()->getDefaultSkills(1,1) as $skill){
+                    $startingXP = $skill->getRandomStartingLevel();
+                    CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skill->id, 'data' => $skill->data, 'xp' => $startingXP, 'character_type' => 'Character']);
                 }
             }
 

@@ -160,6 +160,9 @@ class SlotService extends Service {
                         $characterData['designer_url'][0] = null;
                         $characterData['feature_id'][0] = null;
                         $characterData['feature_data'][0] = null;
+                        $characterData['skill_id'][0] = null;
+                        $characterData['skill_data'][0] = null;
+                        $characterData['skill_xp'][0] = null;
 
                         // DB has 'true' and 'false' as strings, so need to set them to true/null
                         if ($stack->item->tag('slot')->data['is_sellable'] == 'true') {

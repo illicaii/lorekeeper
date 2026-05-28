@@ -191,6 +191,22 @@ class Skill extends Model {
         return $query->where('is_visible', 1);
     }
 
+    /**
+     * Scope a query to show only visible skills.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFrontEnd($query, $user = null) {
+        if ($user && $user->hasPower('edit_data')) {
+            return $query;
+        }
+
+        return $query->where('is_backend', 0);
+    }
+
     /**********************************************************************************************
 
         ACCESSORS
@@ -297,7 +313,10 @@ class Skill extends Model {
 
     **********************************************************************************************/
 
-    public static function getDropdownItems($withHidden = 0) {
+    /**
+     * Get the xp needed to reach given skill level.
+     */
+    public static function getDropdownItems($withHidden = 0, $withBackend = 0) {
         $visibleOnly = 1;
         if ($withHidden) {
             $visibleOnly = 0;
@@ -305,7 +324,7 @@ class Skill extends Model {
 
         $sorted_skill_categories = collect(SkillCategory::all()->where('is_visible', '>=', $visibleOnly)->sortBy('sort')->pluck('name')->toArray());
 
-        $grouped = self::where('is_visible', '>=', $visibleOnly)->select('name', 'id', 'skill_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
+        $grouped = self::where('is_visible', '>=', $visibleOnly)->where('is_backend', '<=', $withBackend)->select('name', 'id', 'skill_category_id')->with('category')->orderBy('name')->get()->keyBy('id')->groupBy('category.name', $preserveKeys = true)->toArray();
         if (isset($grouped[''])) {
             if (!$sorted_skill_categories->contains('Miscellaneous')) {
                 $sorted_skill_categories->push('Miscellaneous');
@@ -379,5 +398,17 @@ class Skill extends Model {
         }
 
         return $level;
+    }
+
+    /**
+     * Get starting XP for randomly generated level of the skill based on the category.
+     */
+    public function getRandomStartingLevel() {
+        if (isset($this->category) && $this->category->randomize_firstLevel){
+            $random_level = rand($this->category->random_level_min, $this->category->random_level_max);
+            return $this->getXpForLevel($random_level);
+        }
+
+        return 0;
     }
 }
