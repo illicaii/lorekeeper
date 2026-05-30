@@ -59,7 +59,7 @@
                                                 'class' => 'form-control character-table-id',
                                                 'placeholder' => 'Select Loot Table',
                                             ]) !!}</div>
-                                            <div class="character-skills  {{ $reward->rewardable_type == 'Skill' ? 'show' : 'hide'}}">{!! Form::select('character_rewardable_id['.$character->character_id.'][]', $skills, ($reward->rewardable_type == 'Skill' ? $reward->rewardable_id : null) , ['class' => 'form-control character-skill-id', 'placeholder' => 'Select Skill']) !!}</div>
+                                            <div class="character-skills  {{ $reward->rewardable_type == 'Skill' ? 'show' : 'hide' }}">{!! Form::select('character_rewardable_id[' . $character->character_id . '][]', $skills, $reward->rewardable_type == 'Skill' ? $reward->rewardable_id : null, ['class' => 'form-control character-skill-id', 'placeholder' => 'Select Skill']) !!}</div>
                                         </td>
                                     @else
                                         <td class="lootDivs">

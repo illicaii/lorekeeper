@@ -1,7 +1,7 @@
 <tr class="loot-row">
     <td>{!! Form::select(
         'rewardable_type[]',
-         Config::get('lorekeeper.extensions.item_entry_expansion.loot_tables.enable')
+        Config::get('lorekeeper.extensions.item_entry_expansion.loot_tables.enable')
             ? [
                 'Item' => 'Item',
                 'ItemRarity' => 'Item Rarity',
@@ -11,16 +11,17 @@
                 'ItemCategoryRarity' => 'Item Category (Conditional)',
                 'Skill' => 'Skill',
                 'None' => 'None',
-            ] : [
-                 'Item' => 'Item',
-                 'Currency' => 'Currency',
-                 'LootTable' => 'Loot Table',
-                 'ItemCategory' => 'Item Category',
-                 'None' => 'None'
+            ]
+            : [
+                'Item' => 'Item',
+                'Currency' => 'Currency',
+                'LootTable' => 'Loot Table',
+                'ItemCategory' => 'Item Category',
+                'None' => 'None',
             ],
-            $loot->rewardable_type,
-            ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type']
-        ) !!}
+        $loot->rewardable_type,
+        ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type'],
+    ) !!}
     </td>
     <td class="loot-row-select">
         @if ($loot->rewardable_type == 'Item')

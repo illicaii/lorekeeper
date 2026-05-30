@@ -54,10 +54,15 @@
 
             @if ($expanded_rewards)
                 <td>
-                    {!! Form::select('character_rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency'] + (isset($showLootTables) && $showLootTables ? ['LootTable' => 'Loot Table'] : []) + (isset($showSkills) && $showSkills ? ['Skill' => 'Skill'] : []), null, [
-                        'class' => 'form-control character-rewardable-type',
-                        'placeholder' => 'Select Reward Type',
-                    ]) !!}
+                    {!! Form::select(
+                        'character_rewardable_type[]',
+                        ['Item' => 'Item', 'Currency' => 'Currency'] + (isset($showLootTables) && $showLootTables ? ['LootTable' => 'Loot Table'] : []) + (isset($showSkills) && $showSkills ? ['Skill' => 'Skill'] : []),
+                        null,
+                        [
+                            'class' => 'form-control character-rewardable-type',
+                            'placeholder' => 'Select Reward Type',
+                        ],
+                    ) !!}
                 </td>
                 <td class="lootDivs">
                     <div class="character-currencies hide">{!! Form::select('character_currency_id[]', $characterCurrencies, 0, ['class' => 'form-control character-currency-id', 'placeholder' => 'Select Currency']) !!}</div>
@@ -65,7 +70,7 @@
                     @if (isset($showLootTables) && $showLootTables)
                         <div class="character-loots hide">{!! Form::select('character_rewardable_id[]', $tables, 0, ['class' => 'form-control character-rtable-id', 'placeholder' => 'Select Loot Table']) !!}</div>
                     @endif
-                    @if(isset($showSkills) && $showSkills)
+                    @if (isset($showSkills) && $showSkills)
                         <div class="character-skills hide">{!! Form::select('character_rewardable_id[]', $skills, 0, ['class' => 'form-control character-skill-id', 'placeholder' => 'Select Skill']) !!}</div>
                     @endif
                 </td>

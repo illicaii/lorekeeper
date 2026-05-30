@@ -1,10 +1,5 @@
 <tr class="sublist-row">
-    <td>{!! Form::select(
-            'sublist_criteria_type[]',
-            ['Skill' => 'Skill'],
-            $sublist['criteria_type'],
-            ['class' => 'form-control criteria-type', 'placeholder' => 'Select Criteria Type']
-        ) !!}
+    <td>{!! Form::select('sublist_criteria_type[]', ['Skill' => 'Skill'], $sublist['criteria_type'], ['class' => 'form-control criteria-type', 'placeholder' => 'Select Criteria Type']) !!}
     </td>
     <td class="sublist-row-select">
         @if ($sublist['criteria_type'] == 'Skill')

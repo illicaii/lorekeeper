@@ -52,8 +52,8 @@
             </tr>
         </thead>
         <tbody class="lootTableBody">
-            @if($table->id)
-                @foreach($table->loot()->whereNull('subtable_id')->get() as $loot)
+            @if ($table->id)
+                @foreach ($table->loot()->whereNull('subtable_id')->get() as $loot)
                     @include('admin.loot_tables._loot_entry')
                 @endforeach
             @endif
@@ -201,18 +201,13 @@
         {!! Form::select('rewardable_id[]', [1 => 'No reward given.'], null, ['class' => 'form-control none-select']) !!}
     </div>
 
-    <div  id="sublistRowData" class="hide">
+    <div id="sublistRowData" class="hide">
         <div id="sublistRow">
             <div class="sublist-row">
                 <table class="table table-sm">
                     <tbody>
                         <tr>
-                            <td>{!! Form::select(
-                                    'sublist_criteria_type[]',
-                                    ['Skill' => 'Skill'],
-                                    null,
-                                    ['class' => 'form-control criteria-type', 'placeholder' => 'Select Criteria Type']
-                                ) !!}
+                            <td>{!! Form::select('sublist_criteria_type[]', ['Skill' => 'Skill'], null, ['class' => 'form-control criteria-type', 'placeholder' => 'Select Criteria Type']) !!}
                             </td>
                             <td class="sublist-row-select"></td>
                             <td>{!! Form::select('sublist_criteria[]', ['=' => '=', '<' => '<', '>' => '>', '<=' => '<=', '>=' => '>='], null, ['class' => 'form-control', 'placeholder' => 'Select Condition', 'aria-label' => 'Criteria']) !!}</td>
