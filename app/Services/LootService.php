@@ -29,7 +29,7 @@ class LootService extends Service {
         DB::beginTransaction();
 
         try {
-            if (!isset($data['rewardable_type'])){
+            if (!isset($data['rewardable_type'])) {
                 throw new \Exception('At least one loot reward is required.');
             }
 
@@ -57,13 +57,13 @@ class LootService extends Service {
                 }
             }
 
-            if(isset($data['sublist_id'])) {
-                foreach($data['sublist_id'] as $key=>$id) {
+            if (isset($data['sublist_id'])) {
+                foreach ($data['sublist_id'] as $key=>$id) {
                     $data['data'][($key + 1)] = [
                         'criteria_type' => $data['sublist_criteria_type'][$key],
-                        'criteria_id' => $id,
-                        'criteria' => $data['sublist_criteria'][$key],
-                        'quantity' => $data['sublist_quantity'][$key],
+                        'criteria_id'   => $id,
+                        'criteria'      => $data['sublist_criteria'][$key],
+                        'quantity'      => $data['sublist_quantity'][$key],
                     ];
                 }
             }
@@ -92,7 +92,7 @@ class LootService extends Service {
         DB::beginTransaction();
 
         try {
-            if (!isset($data['rewardable_type'])){
+            if (!isset($data['rewardable_type'])) {
                 throw new \Exception('At least one loot reward is required.');
             }
 
@@ -120,13 +120,13 @@ class LootService extends Service {
                 }
             }
 
-            if(isset($data['sublist_id']) && $data['sublist_id'] != 0) {
-                foreach($data['sublist_id'] as $key=>$id) {
+            if (isset($data['sublist_id']) && $data['sublist_id'] != 0) {
+                foreach ($data['sublist_id'] as $key=>$id) {
                     $data['data'][($key + 1)] = [
                         'criteria_type' => $data['sublist_criteria_type'][$key],
-                        'criteria_id' => $id,
-                        'criteria' => $data['sublist_criteria'][$key],
-                        'quantity' => $data['sublist_quantity'][$key],
+                        'criteria_id'   => $id,
+                        'criteria'      => $data['sublist_criteria'][$key],
+                        'quantity'      => $data['sublist_quantity'][$key],
                     ];
                 }
             } else {

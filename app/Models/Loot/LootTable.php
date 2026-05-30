@@ -38,8 +38,8 @@ class LootTable extends Model {
      * @var array
      */
     public static $createRules = [
-        'name'         => 'required',
-        'display_name' => 'required',
+        'name'                => 'required',
+        'display_name'        => 'required',
         'subtable_criteria.*' => 'required_with:subtable_id.*',
         'subtable_quantity.*' => 'required_with:subtable_quantity.*',
     ];
@@ -50,8 +50,8 @@ class LootTable extends Model {
      * @var array
      */
     public static $updateRules = [
-        'name'         => 'required',
-        'display_name' => 'required',
+        'name'                => 'required',
+        'display_name'        => 'required',
         'subtable_criteria.*' => 'required_with:subtable_id.*',
         'subtable_quantity.*' => 'required_with:subtable_quantity.*',
     ];
@@ -120,56 +120,59 @@ class LootTable extends Model {
     /**
      * Rolls on the loot table and consolidates the rewards.
      *
-     * @param int $quantity
-     * @param  bool $isCharacter
-     * @param  \App\Models\Character\Character $character
+     * @param int                             $quantity
+     * @param bool                            $isCharacter
+     * @param \App\Models\Character\Character $character
+     *
      * @return \Illuminate\Support\Collection
      */
     public function roll($quantity = 1, $isCharacter = false, $character = null) {
         $rewards = createAssetsArray($isCharacter);
 
-        $loot = $this->loot()->where('subtable_id', null)->orWhere(function($query) use($isCharacter, $character) {
+        $loot = $this->loot()->where('subtable_id', null)->orWhere(function ($query) use ($isCharacter, $character) {
             $query = $query->where('loot_table_id', $this->id);
 
             // Collect any skill-specific rows
-            if($isCharacter && $character) {
+            if ($isCharacter && $character) {
                 // Check for sub-tables
-                if(isset($this->data) && count($this->data)) {
-
+                if (isset($this->data) && count($this->data)) {
                     $skills = $character->image->skills;
 
-                    if(count($skills)) {
+                    if (count($skills)) {
                         $querySuccess = false;
 
                         // Cycle through sub-tables checking for matching criteria
-                        foreach($this->data as $key=>$subtable) {
+                        foreach ($this->data as $key=>$subtable) {
                             switch ($subtable['criteria_type']) {
                                 case 'Skill':
                                     $skills = $character->image->skills;
                                     $skill = Skill::where('id', $subtable['criteria_id'])->first();
                                     $xp = $skill->getXpForLevel($subtable['quantity']);
 
-                                    if ($subtable['criteria'] === '='){
-                                    // Special equals case since DB stores XP not levels and we need to check the bounds
-                                        $upper_bound = $skill->getXpForLevel($subtable['quantity']+1);
-                                        if($skills->where('id', $subtable['criteria_id'])->where('xp', '>=', $xp)->where('xp', '<', $upper_bound)->count()) {
+                                    if ($subtable['criteria'] === '=') {
+                                        // Special equals case since DB stores XP not levels and we need to check the bounds
+                                        $upper_bound = $skill->getXpForLevel($subtable['quantity'] + 1);
+                                        if ($skills->where('id', $subtable['criteria_id'])->where('xp', '>=', $xp)->where('xp', '<', $upper_bound)->count()) {
                                             $query = $query->where('subtable_id', $key);
                                             $querySuccess = true;
                                         }
-                                    } else if ($skills->where('id', $subtable['criteria_id'])->where('xp', $subtable['criteria'], $xp)->count()) {
+                                    } elseif ($skills->where('id', $subtable['criteria_id'])->where('xp', $subtable['criteria'], $xp)->count()) {
                                         $query = $query->where('subtable_id', $key);
                                         $querySuccess = true;
                                     }
                                     break;
                             }
                         }
-                        if($querySuccess) return $query;
+                        if ($querySuccess) {
+                            return $query;
+                        }
                     }
                 }
 
                 // Otherwise use the fallback rows
                 return $query = $query->where('subtable_id', 0);
             }
+
             return $query;
         })->get();
 

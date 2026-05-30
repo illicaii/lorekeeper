@@ -398,7 +398,7 @@ class SubmissionController extends Controller {
             'item_filter'           => Item::orderBy('name')->released()->get()->keyBy('id'),
             'items'                 => Item::orderBy('name')->released()->pluck('name', 'id'),
             'inventory'             => $inventory,
-            'skills'              => Skill::orderBy('name')->pluck('name', 'id'),
+            'skills'                => Skill::orderBy('name')->pluck('name', 'id'),
             'raffles'               => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'page'                  => 'submission',
             'expanded_rewards'      => config('lorekeeper.extensions.character_reward_expansion.expanded'),

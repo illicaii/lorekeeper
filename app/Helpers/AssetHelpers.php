@@ -186,6 +186,7 @@ function createAssetsArray($isCharacter = false) {
  *
  * @param array $first
  * @param array $second
+ * @param mixed $isCharacter
  *
  * @return array
  */

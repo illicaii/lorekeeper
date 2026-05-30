@@ -7,8 +7,8 @@ use App\Models\Currency\Currency;
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Loot\LootTable;
-use App\Services\LootService;
 use App\Models\Skill\Skill;
+use App\Services\LootService;
 use Illuminate\Http\Request;
 
 class LootTableController extends Controller {
