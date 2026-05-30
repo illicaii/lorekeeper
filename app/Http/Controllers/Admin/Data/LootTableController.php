@@ -8,6 +8,7 @@ use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
 use App\Models\Loot\LootTable;
 use App\Services\LootService;
+use App\Models\Skill\Skill;
 use Illuminate\Http\Request;
 
 class LootTableController extends Controller {
@@ -45,6 +46,7 @@ class LootTableController extends Controller {
             'items'      => Item::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
+            'skills'     => Skill::orderBy('name')->pluck('name', 'id'),
             'tables'     => LootTable::orderBy('name')->pluck('name', 'id'),
             'rarities'   => array_filter($rarities),
         ]);
@@ -71,6 +73,7 @@ class LootTableController extends Controller {
             'items'      => Item::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
+            'skills'     => Skill::orderBy('name')->pluck('name', 'id'),
             'tables'     => LootTable::orderBy('name')->pluck('name', 'id'),
             'rarities'   => array_filter($rarities),
         ]);
@@ -87,8 +90,9 @@ class LootTableController extends Controller {
     public function postCreateEditLootTable(Request $request, LootService $service, $id = null) {
         $id ? $request->validate(LootTable::$updateRules) : $request->validate(LootTable::$createRules);
         $data = $request->only([
-            'name', 'display_name', 'rewardable_type', 'rewardable_id', 'quantity', 'weight',
-            'criteria', 'rarity',
+
+            'name', 'display_name', 'rewardable_type', 'rewardable_id', 'quantity', 'weight', 'subtable_id',
+            'criteria', 'rarity', 'sublist_criteria_type', 'sublist_id', 'sublist_criteria', 'sublist_quantity',
         ]);
         if ($id && $service->updateLootTable(LootTable::find($id), $data)) {
             flash('Loot table updated successfully.')->success();

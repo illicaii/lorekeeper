@@ -29,6 +29,10 @@ class LootService extends Service {
         DB::beginTransaction();
 
         try {
+            if (!isset($data['rewardable_type'])){
+                throw new \Exception('At least one loot reward is required.');
+            }
+
             // More specific validation
             foreach ($data['rewardable_type'] as $key => $type) {
                 if (!$type) {
@@ -53,9 +57,20 @@ class LootService extends Service {
                 }
             }
 
-            $table = LootTable::create(Arr::only($data, ['name', 'display_name']));
+            if(isset($data['sublist_id'])) {
+                foreach($data['sublist_id'] as $key=>$id) {
+                    $data['data'][($key + 1)] = [
+                        'criteria_type' => $data['sublist_criteria_type'][$key],
+                        'criteria_id' => $id,
+                        'criteria' => $data['sublist_criteria'][$key],
+                        'quantity' => $data['sublist_quantity'][$key],
+                    ];
+                }
+            }
 
-            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight', 'criteria', 'rarity']));
+            $table = LootTable::create(Arr::only($data, ['name', 'display_name', 'data']));
+
+            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight', 'criteria', 'rarity', 'subtable_id']));
 
             return $this->commitReturn($table);
         } catch (\Exception $e) {
@@ -77,6 +92,10 @@ class LootService extends Service {
         DB::beginTransaction();
 
         try {
+            if (!isset($data['rewardable_type'])){
+                throw new \Exception('At least one loot reward is required.');
+            }
+
             // More specific validation
             foreach ($data['rewardable_type'] as $key => $type) {
                 if (!$type) {
@@ -101,9 +120,22 @@ class LootService extends Service {
                 }
             }
 
-            $table->update(Arr::only($data, ['name', 'display_name']));
+            if(isset($data['sublist_id']) && $data['sublist_id'] != 0) {
+                foreach($data['sublist_id'] as $key=>$id) {
+                    $data['data'][($key + 1)] = [
+                        'criteria_type' => $data['sublist_criteria_type'][$key],
+                        'criteria_id' => $id,
+                        'criteria' => $data['sublist_criteria'][$key],
+                        'quantity' => $data['sublist_quantity'][$key],
+                    ];
+                }
+            } else {
+                $data['data'] = null;
+            }
 
-            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight', 'criteria', 'rarity']));
+            $table->update(Arr::only($data, ['name', 'display_name', 'data']));
+
+            $this->populateLootTable($table, Arr::only($data, ['rewardable_type', 'rewardable_id', 'quantity', 'weight', 'criteria', 'rarity', 'subtable_id']));
 
             return $this->commitReturn($table);
         } catch (\Exception $e) {
@@ -166,7 +198,8 @@ class LootService extends Service {
                 'rewardable_id'   => $data['rewardable_id'][$key] ?? 1,
                 'quantity'        => $data['quantity'][$key],
                 'weight'          => $data['weight'][$key],
-                'data'            => isset($lootData) ? json_encode($lootData) : null,
+                'data'            => $lootData ?? null,
+                'subtable_id'     => $data['subtable_id'][$key] != 'null' ? $data['subtable_id'][$key] : null,
             ]);
         }
     }

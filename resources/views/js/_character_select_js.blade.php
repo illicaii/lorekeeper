@@ -63,6 +63,9 @@
                 } else if (val == 'Currency') {
                     $cell.children('.character-currencies').addClass('show');
                     $cell.children('.character-currencies').removeClass('hide');
+                } else if (val == 'Skill') {
+                    $cell.children('.character-skills').addClass('show');
+                    $cell.children('.character-skills').removeClass('hide');
                 } else if (val == 'LootTable') {
                     $cell.children('.character-tables').addClass('show');
                     $cell.children('.character-tables').addClass('show');
@@ -77,6 +80,7 @@
             node.find('.character-currency-id').attr('name', 'character_rewardable_id[' + id + '][]');
             node.find('.character-item-id').attr('name', 'character_rewardable_id[' + id + '][]');
             node.find('.character-table-id').attr('name', 'character_rewardable_id[' + id + '][]');
+            node.find('.character-skill-id').attr('name', 'character_rewardable_id[' + id + '][]');
         }
 
     });

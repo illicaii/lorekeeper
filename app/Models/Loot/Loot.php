@@ -15,7 +15,7 @@ class Loot extends Model {
      */
     protected $fillable = [
         'loot_table_id', 'rewardable_type', 'rewardable_id',
-        'quantity', 'weight', 'data',
+        'quantity', 'weight', 'data', 'subtable_id'
     ];
 
     /**
@@ -71,6 +71,8 @@ class Loot extends Model {
                 return $this->belongsTo(ItemCategory::class, 'rewardable_id');
             case 'ItemCategoryRarity':
                 return $this->belongsTo(ItemCategory::class, 'rewardable_id');
+            case 'Skill':
+                return $this->belongsTo(Skill::class, 'rewardable_id');
             case 'None':
                 // Laravel requires a relationship instance to be returned (cannot return null), so returning one that doesn't exist here.
                 return $this->belongsTo(self::class, 'rewardable_id', 'loot_table_id')->whereNull('loot_table_id');
