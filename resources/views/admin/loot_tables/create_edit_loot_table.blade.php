@@ -176,14 +176,7 @@
                                 'SkillLevel' => 'Skill Level',
                                 'None' => 'None',
                             ]
-                            : ['Item' => 'Item',
-                                'Currency' => 'Currency',
-                                'LootTable' => 'Loot Table',
-                                'ItemCategory' => 'Item Category',
-                                'SkillGrant' => 'Skill Grant',
-                                'SkillXP' => 'Skill XP',
-                                'SkillLevel' => 'Skill Level',
-                                'None' => 'None'],
+                            : ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'SkillGrant' => 'Skill Grant', 'SkillXP' => 'Skill XP', 'SkillLevel' => 'Skill Level', 'None' => 'None'],
                         null,
                         ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type'],
                     ) !!}</td>
