@@ -401,24 +401,24 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
             $service = new App\Services\SkillManager;
             $i = 0;
             foreach ($contents as $asset) {
-                if (isset($lootRolls[1])){
+                if (isset($lootRolls[1])) {
                     // Submission Shenanigans
-                    if ($lootRolls[1][$i] == 'SkillGrant'){
+                    if ($lootRolls[1][$i] == 'SkillGrant') {
                         if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], 0)) {
                             return false;
                         }
-                    } else if ($lootRolls[1][$i] == 'SkillXP'){
+                    } elseif ($lootRolls[1][$i] == 'SkillXP') {
                         if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) {
                             return false;
                         }
-                    } else if ($lootRolls[1][$i] == 'SkillLevel'){
+                    } elseif ($lootRolls[1][$i] == 'SkillLevel') {
                         if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], true)) {
                             return false;
                         }
                     } else {
                         return false;
                     }
-                } else if (isset($data['is_revoke']) && $data['is_revoke']) {
+                } elseif (isset($data['is_revoke']) && $data['is_revoke']) {
                     if (!$service->revokeSkill($sender, $recipient, $logType, $data['data'], $asset['asset'])) {
                         return false;
                     }
