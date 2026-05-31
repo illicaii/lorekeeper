@@ -125,7 +125,7 @@ class SkillRevokeService extends Service {
 
         try {
             $firstData = $stacks->first()->item->tag('skill_revoke')->data;
-            $character = Character::where('id', $data['character_id'])->get()->first();
+            $character = Character::where('id', $data['skill_character_id'])->get()->first();
 
             // Check instant failures
             if (!isset($firstData['skills'])) {

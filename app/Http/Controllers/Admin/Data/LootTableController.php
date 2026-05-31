@@ -162,7 +162,8 @@ class LootTableController extends Controller {
         // the results of each roll individually on this page, we'll keep them separate
         $results = [];
         for ($i = 0; $i < $request->get('quantity'); $i++) {
-            $results[] = $table->roll();
+            $lootroll = $table->roll();
+            $results[] = $lootroll[0];
         }
 
         return view('admin.loot_tables._roll_loot_table', [

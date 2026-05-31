@@ -181,6 +181,7 @@ class LootTable extends Model {
             $totalWeight += $l->weight;
         }
 
+        $resultTypes = [];
         for ($i = 0; $i < $quantity; $i++) {
             $roll = mt_rand(0, $totalWeight - 1);
             $result = null;
@@ -202,18 +203,20 @@ class LootTable extends Model {
             if ($result) {
                 // If this is chained to another loot table, roll on that table
                 if ($result->rewardable_type == 'LootTable') {
-                    $rewards = mergeAssetsArrays($rewards, $result->reward->roll($result->quantity));
+                    $lootRoll = $result->reward->roll($result->quantity);
+                    $rewards = mergeAssetsArrays($rewards, $lootRoll[0]);
                 } elseif ($result->rewardable_type == 'ItemCategory' || $result->rewardable_type == 'ItemCategoryRarity') {
                     $rewards = mergeAssetsArrays($rewards, $this->rollCategory($result->rewardable_id, $result->quantity, ($result->data['criteria'] ?? null), ($result->data['rarity'] ?? null)));
                 } elseif ($result->rewardable_type == 'ItemRarity') {
                     $rewards = mergeAssetsArrays($rewards, $this->rollRarityItem($result->quantity, $result->data['criteria'], $result->data['rarity']));
                 } else {
                     addAsset($rewards, $result->reward, $result->quantity);
+                    $resultTypes[] = $result->rewardable_type;
                 }
             }
         }
 
-        return $rewards;
+        return [$rewards, $resultTypes];
     }
 
     /**

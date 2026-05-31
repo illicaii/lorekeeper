@@ -89,7 +89,7 @@ class SkillManager extends Service {
      *
      * @return bool
      */
-    public function creditSkill($sender, $recipient, $type, $data, $skill, $quantity, $is_lvl, $is_set, $random_level) {
+    public function creditSkill($sender, $recipient, $type, $data, $skill, $quantity, $is_lvl = false, $is_set = false, $random_level = false) {
         DB::beginTransaction();
         try {
             $recipient_stack = CharacterSkill::where([
@@ -106,9 +106,6 @@ class SkillManager extends Service {
                 }
                 $log_data = 'Learned '.$skill->displayName.' skill. '.($data ?? '');
 
-                if (!($type === 'Staff Grant')) {
-                    $type = 'Item based Redemption';
-                }
                 if (!$random_level && ($is_lvl || $is_set)) {
                     // Note: we don't need to do this when random_level is set because that already makes quantity the xp needed to get to the random_level
                     $quantity = $skill->getXpForLevel($quantity);

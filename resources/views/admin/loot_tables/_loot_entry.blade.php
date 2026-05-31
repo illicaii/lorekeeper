@@ -9,7 +9,9 @@
                 'LootTable' => 'Loot Table',
                 'ItemCategory' => 'Item Category',
                 'ItemCategoryRarity' => 'Item Category (Conditional)',
-                'Skill' => 'Skill',
+                'SkillGrant' => 'Skill Grant',
+                'SkillXP' => 'Skill XP',
+                'SkillLevel' => 'Skill Level',
                 'None' => 'None',
             ]
             : [
@@ -17,6 +19,9 @@
                 'Currency' => 'Currency',
                 'LootTable' => 'Loot Table',
                 'ItemCategory' => 'Item Category',
+                'SkillGrant' => 'Skill Grant',
+                'SkillXP' => 'Skill XP',
+                'SkillLevel' => 'Skill Level',
                 'None' => 'None',
             ],
         $loot->rewardable_type,
@@ -33,7 +38,7 @@
             </div>
         @elseif($loot->rewardable_type == 'Currency')
             {!! Form::select('rewardable_id[]', $currencies, $loot->rewardable_id, ['class' => 'form-control currency-select selectize', 'placeholder' => 'Select Currency']) !!}
-        @elseif($loot->rewardable_type == 'Skill')
+        @elseif($loot->rewardable_type == 'SkillGrant' || $loot->rewardable_type == 'SkillXP' || $loot->rewardable_type == 'SkillLevel')
             {!! Form::select('rewardable_id[]', $skills, $loot->rewardable_id, ['class' => 'form-control skill-select selectize', 'placeholder' => 'Select Skill']) !!}
         @elseif($loot->rewardable_type == 'LootTable')
             {!! Form::select('rewardable_id[]', $tables, $loot->rewardable_id, ['class' => 'form-control table-select selectize', 'placeholder' => 'Select Loot Table']) !!}

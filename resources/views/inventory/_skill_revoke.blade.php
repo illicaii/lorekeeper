@@ -8,8 +8,8 @@
             This item will reset the level of the selected character's skill(s). Consuming this item is not reversible.
         </p>
         <div class="form-group">
-            {!! Form::label('character_id', 'Characters') !!} {!! add_help('Select Character') !!}
-            {!! Form::select('character_id', $user->characters->pluck('fullName', 'id', 'image'), null, ['class' => 'form-control default skill-select']) !!}
+            {!! Form::label('skill_character_id', 'Characters') !!} {!! add_help('Select Character') !!}
+            {!! Form::select('skill_character_id', $user->characters->pluck('fullName', 'id', 'image'), null, ['class' => 'form-control default skill-select']) !!}
         </div>
 
         <!-- RESET Skill -->

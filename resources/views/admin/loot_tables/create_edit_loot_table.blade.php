@@ -64,6 +64,9 @@
         <div class="card-header h4">Skill Adjustments</div>
         <div class="card-body">
             <p>Here you can specify any conditional options for this loot table that are impacted by skills. Mind that this only applies when the loot table is being rolled for a specific character!</p>
+            <p>If a condition would be met by a single loot table roll (for example a skill used as a condition is increased during roll 1 of 10 rolls), that increase will not be considered for the next consecutive rolls.
+                This is because unlike items, loot table stacks are rolled all at once before crediting their reward.
+            </p>
             <h5>Standard Rows</h5>
             <p>These potential options will be added to the loot table if no other conditions are met (including if there are no additional rows specified in conditional section)</p>
             <div>
@@ -168,10 +171,19 @@
                                 'LootTable' => 'Loot Table',
                                 'ItemCategory' => 'Item Category',
                                 'ItemCategoryRarity' => 'Item Category (Conditional)',
-                                'Skill' => 'Skill',
+                                'SkillGrant' => 'Skill Grant',
+                                'SkillXP' => 'Skill XP',
+                                'SkillLevel' => 'Skill Level',
                                 'None' => 'None',
                             ]
-                            : ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'ItemCategory' => 'Item Category', 'Skill' => 'Skill', 'None' => 'None'],
+                            : ['Item' => 'Item',
+                                'Currency' => 'Currency',
+                                'LootTable' => 'Loot Table',
+                                'ItemCategory' => 'Item Category',
+                                'SkillGrant' => 'Skill Grant',
+                                'SkillXP' => 'Skill XP',
+                                'SkillLevel' => 'Skill Level',
+                                'None' => 'None'],
                         null,
                         ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type'],
                     ) !!}</td>
@@ -291,7 +303,9 @@
                 else if (val == 'ItemCategory') $clone = $categorySelect.clone();
                 else if (val == 'ItemCategoryRarity') $clone = $categoryRaritySelect.clone();
                 else if (val == 'LootTable') $clone = $tableSelect.clone();
-                else if (val == 'Skill') $clone = $skillSelect.clone();
+                else if (val == 'SkillGrant') $clone = $skillSelect.clone();
+                else if (val == 'SkillXP') $clone = $skillSelect.clone();
+                else if (val == 'SkillLevel') $clone = $skillSelect.clone();
                 else if (val == 'None') $clone = $noneSelect.clone();
 
                 $cell.html('');
@@ -317,7 +331,9 @@
                     else if (val == 'ItemCategoryRarity') $clone = $categoryRaritySelect.clone();
                     else if (val == 'Currency') $clone = $currencySelect.clone();
                     else if (val == 'LootTable') $clone = $tableSelect.clone();
-                    else if (val == 'Skill') $clone = $skillSelect.clone();
+                    else if (val == 'SkillGrant') $clone = $skillSelect.clone();
+                    else if (val == 'SkillXP') $clone = $skillSelect.clone();
+                    else if (val == 'SkillLevel') $clone = $skillSelect.clone();
                     else if (val == 'None') $clone = $noneSelect.clone();
 
                     $cell.html('');

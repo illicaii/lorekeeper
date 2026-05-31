@@ -132,10 +132,9 @@ class SkillGrantService extends Service {
      */
     public function act($stacks, $user, $data) {
         DB::beginTransaction();
-
         try {
             $firstData = $stacks->first()->item->tag('skill_grant')->data;
-            $character = Character::where('id', $data['character_id'])->get()->first();
+            $character = Character::where('id', $data['skill_character_id'])->get()->first();
 
             // Check instant failures
             if (!isset($firstData['skills'])) {

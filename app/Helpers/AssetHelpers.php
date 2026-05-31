@@ -305,7 +305,8 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
     // Roll on any loot tables
     if (isset($assets['loot_tables'])) {
         foreach ($assets['loot_tables'] as $table) {
-            $assets = mergeAssetsArrays($assets, $table['asset']->roll($table['quantity']));
+            $lootRolls = $table['asset']->roll($table['quantity']);
+            $assets = mergeAssetsArrays($assets, $lootRolls[0], true);
         }
         unset($assets['loot_tables']);
     }
@@ -375,7 +376,8 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
     // Roll on any loot tables
     if (isset($assets['loot_tables'])) {
         foreach ($assets['loot_tables'] as $table) {
-            $assets = mergeAssetsArrays($assets, $table['asset']->roll($table['quantity'], true, $recipient), true);
+            $lootRolls = $table['asset']->roll($table['quantity'], true, $recipient);
+            $assets = mergeAssetsArrays($assets, $lootRolls[0], true);
         }
         unset($assets['loot_tables']);
     }
@@ -397,8 +399,26 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
             }
         } elseif ($key == 'skills' && count($contents)) {
             $service = new App\Services\SkillManager;
+            $i = 0;
             foreach ($contents as $asset) {
-                if (isset($data['is_revoke']) && $data['is_revoke']) {
+                if (isset($lootRolls[1])){
+                    // Submission Shenanigans
+                    if ($lootRolls[1][$i] == 'SkillGrant'){
+                        if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], 0)) {
+                            return false;
+                        }
+                    } else if ($lootRolls[1][$i] == 'SkillXP'){
+                        if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) {
+                            return false;
+                        }
+                    } else if ($lootRolls[1][$i] == 'SkillLevel'){
+                        if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], true)) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else if (isset($data['is_revoke']) && $data['is_revoke']) {
                     if (!$service->revokeSkill($sender, $recipient, $logType, $data['data'], $asset['asset'])) {
                         return false;
                     }
@@ -407,6 +427,7 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
                         return false;
                     }
                 }
+                $i++;
             }
         }
     }
