@@ -181,7 +181,6 @@ class LootTable extends Model {
             $totalWeight += $l->weight;
         }
 
-        $resultTypes = [];
         for ($i = 0; $i < $quantity; $i++) {
             $roll = mt_rand(0, $totalWeight - 1);
             $result = null;
@@ -203,20 +202,24 @@ class LootTable extends Model {
             if ($result) {
                 // If this is chained to another loot table, roll on that table
                 if ($result->rewardable_type == 'LootTable') {
-                    $lootRoll = $result->reward->roll($result->quantity);
-                    $rewards = mergeAssetsArrays($rewards, $lootRoll[0]);
+                    $rewards = mergeAssetsArrays($rewards, $result->reward->roll($result->quantity));
                 } elseif ($result->rewardable_type == 'ItemCategory' || $result->rewardable_type == 'ItemCategoryRarity') {
                     $rewards = mergeAssetsArrays($rewards, $this->rollCategory($result->rewardable_id, $result->quantity, ($result->data['criteria'] ?? null), ($result->data['rarity'] ?? null)));
                 } elseif ($result->rewardable_type == 'ItemRarity') {
                     $rewards = mergeAssetsArrays($rewards, $this->rollRarityItem($result->quantity, $result->data['criteria'], $result->data['rarity']));
+                } elseif ($result->rewardable_type == 'SkillGrant') {
+                    addAsset($rewards, $result->reward, $result->quantity, 'skill_grants');
+                } elseif ($result->rewardable_type == 'SkillXP') {
+                    addAsset($rewards, $result->reward, $result->quantity, 'skill_xp');
+                } elseif ($result->rewardable_type == 'SkillLevel') {
+                    addAsset($rewards, $result->reward, $result->quantity, 'skill_levels');
                 } else {
                     addAsset($rewards, $result->reward, $result->quantity);
-                    $resultTypes[] = $result->rewardable_type;
                 }
             }
         }
 
-        return [$rewards, $resultTypes];
+        return $rewards;
     }
 
     /**

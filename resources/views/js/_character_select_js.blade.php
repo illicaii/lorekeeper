@@ -56,20 +56,27 @@
                 $cell.children().addClass('hide');
                 $cell.children().children().val(null);
 
-                if (val == 'Item') {
-                    $cell.children('.character-items').addClass('show');
-                    $cell.children('.character-items').removeClass('hide');
-                    $cell.children('.character-items');
-                } else if (val == 'Currency') {
-                    $cell.children('.character-currencies').addClass('show');
-                    $cell.children('.character-currencies').removeClass('hide');
-                } else if (val == 'Skill') {
-                    $cell.children('.character-skills').addClass('show');
-                    $cell.children('.character-skills').removeClass('hide');
-                } else if (val == 'LootTable') {
-                    $cell.children('.character-tables').addClass('show');
-                    $cell.children('.character-tables').addClass('show');
-                    $cell.children('.character-tables').removeClass('hide');
+                switch (val){
+                    case 'Item':
+                        $cell.children('.character-items').addClass('show');
+                        $cell.children('.character-items').removeClass('hide');
+                        $cell.children('.character-items');
+                        break
+                    case 'Currency':
+                        $cell.children('.character-currencies').addClass('show');
+                        $cell.children('.character-currencies').removeClass('hide');
+                        break
+                    case 'SkillGrant':
+                    case 'SkillXP':
+                    case 'SkillLevel':
+                        $cell.children('.character-skills').addClass('show');
+                        $cell.children('.character-skills').removeClass('hide');
+                        break
+                    case 'LootTable':
+                        $cell.children('.character-tables').addClass('show');
+                        $cell.children('.character-tables').addClass('show');
+                        $cell.children('.character-tables').removeClass('hide');
+                        break
                 }
             });
         }

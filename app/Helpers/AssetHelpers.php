@@ -74,7 +74,7 @@ function getAssetKeys($isCharacter = false) {
     if (!$isCharacter) {
         return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters'];
     } else {
-        return ['currencies', 'items', 'character_items', 'loot_tables', 'skills', 'character_skills'];
+        return ['currencies', 'items', 'character_items', 'loot_tables', 'skills', 'skill_grants', 'skill_xp', 'skill_levels', 'character_skills'];
     }
 }
 
@@ -144,8 +144,10 @@ function getAssetModelString($type, $namespaced = true) {
                 return 'CharacterItem';
             }
             break;
-
         case 'skills':
+        case 'skill_grants':
+        case 'skill_xp':
+        case 'skill_levels':
             if ($namespaced) {
                 return '\App\Models\Skill\Skill';
             } else {
@@ -190,11 +192,15 @@ function createAssetsArray($isCharacter = false) {
  *
  * @return array
  */
-function mergeAssetsArrays($first, $second, $isCharacter = false) {
+function mergeAssetsArrays($first, $second, $isCharacter = false, $overrideAssetType = false) {
     $keys = getAssetKeys($isCharacter);
     foreach ($keys as $key) {
         foreach ($second[$key] as $item) {
-            addAsset($first, $item['asset'], $item['quantity']);
+            if ($overrideAssetType){
+                addAsset($first, $item['asset'], $item['quantity'], $key);
+            } else {
+                addAsset($first, $item['asset'], $item['quantity']);
+            }
         }
     }
 
@@ -209,14 +215,19 @@ function mergeAssetsArrays($first, $second, $isCharacter = false) {
  * @param mixed $asset
  * @param int   $quantity
  */
-function addAsset(&$array, $asset, $quantity = 1) {
+function addAsset(&$array, $asset, $quantity = 1, $overriddenAssetType = null) {
     if (!$asset) {
         return;
     }
-    if (isset($array[$asset->assetType][$asset->id])) {
-        $array[$asset->assetType][$asset->id]['quantity'] += $quantity;
+    $type = $asset->assetType;
+    if($overriddenAssetType){
+        $type = $overriddenAssetType;
+    }
+
+    if (isset($array[$type][$asset->id])) {
+        $array[$type][$asset->id]['quantity'] += $quantity;
     } else {
-        $array[$asset->assetType][$asset->id] = ['asset' => $asset, 'quantity' => $quantity];
+        $array[$type][$asset->id] = ['asset' => $asset, 'quantity' => $quantity];
     }
 }
 
@@ -305,8 +316,7 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
     // Roll on any loot tables
     if (isset($assets['loot_tables'])) {
         foreach ($assets['loot_tables'] as $table) {
-            $lootRolls = $table['asset']->roll($table['quantity']);
-            $assets = mergeAssetsArrays($assets, $lootRolls[0], true);
+            $assets = mergeAssetsArrays($assets, $table['asset']->roll($table['quantity']), true);
         }
         unset($assets['loot_tables']);
     }
@@ -376,12 +386,10 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
     // Roll on any loot tables
     if (isset($assets['loot_tables'])) {
         foreach ($assets['loot_tables'] as $table) {
-            $lootRolls = $table['asset']->roll($table['quantity'], true, $recipient);
-            $assets = mergeAssetsArrays($assets, $lootRolls[0], true);
+            $assets = mergeAssetsArrays($assets, $table['asset']->roll($table['quantity'], true, $recipient), true, true);
         }
         unset($assets['loot_tables']);
     }
-
     foreach ($assets as $key => $contents) {
         if ($key == 'currencies' && count($contents)) {
             $service = new App\Services\CurrencyManager;
@@ -399,26 +407,8 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
             }
         } elseif ($key == 'skills' && count($contents)) {
             $service = new App\Services\SkillManager;
-            $i = 0;
             foreach ($contents as $asset) {
-                if (isset($lootRolls[1])) {
-                    // Submission Shenanigans
-                    if ($lootRolls[1][$i] == 'SkillGrant') {
-                        if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], 0)) {
-                            return false;
-                        }
-                    } elseif ($lootRolls[1][$i] == 'SkillXP') {
-                        if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) {
-                            return false;
-                        }
-                    } elseif ($lootRolls[1][$i] == 'SkillLevel') {
-                        if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], true)) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                } elseif (isset($data['is_revoke']) && $data['is_revoke']) {
+                if (isset($data['is_revoke']) && $data['is_revoke']) {
                     if (!$service->revokeSkill($sender, $recipient, $logType, $data['data'], $asset['asset'])) {
                         return false;
                     }
@@ -427,7 +417,27 @@ function fillCharacterAssets($assets, $sender, $recipient, $logType, $data, $sub
                         return false;
                     }
                 }
-                $i++;
+            }
+        } else if ($key == 'skill_grants' && count($contents)) {
+            $service = new App\Services\SkillManager;
+            foreach ($contents as $asset) {
+                if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], 0)) {
+                    return false;
+                }
+            }
+        } else if ($key == 'skill_xp' && count($contents)) {
+            $service = new App\Services\SkillManager;
+            foreach ($contents as $asset) {
+                if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'])) {
+                    return false;
+                }
+            }
+        } else if ($key == 'skill_levels' && count($contents)) {
+            $service = new App\Services\SkillManager;
+            foreach ($contents as $asset) {
+                if (!$service->creditSkill($sender, $recipient, $logType, $data['data'], $asset['asset'], $asset['quantity'], true)) {
+                    return false;
+                }
             }
         }
     }

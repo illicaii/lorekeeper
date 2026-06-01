@@ -18,10 +18,10 @@ Stats have the following features:
 - Skills not marked as default can be added to character uploads by staff or on MYO submissions by users.
 
 Skill Items/Grants
-- Skills can be awarded through Grants, Items, Claims/Prompts, Loot Tables, Researching
+- Skills can be awarded through Grants, Items, Submissions, Loot Tables, Researching
     - Staff Grants can award skills with levels above the max/min (this will set to the max or min automatically), but will error if parent skill/species requirements are not met.
     - Items will error upon attempting to set above or below the max/min respectively, or if character can not learn the skill, and can be configured to error if the character doesn't have the skill, or grant the character the skill instead.
-- Skills can gain xp or levels through Grants, Items, Claims/Prompts, Loot Tables, Training
+- Skills can gain xp or levels through Grants, Items, Submissions, Loot Tables, Training
 - Skill items have five types: Skill Grant, Add XP/Level, Set XP/Level, Reset XP/level, or Remove Skill which each have different functionality.
 - Skill Items can be configured to grant single, random or all skills from the skills in the item tag.
 
@@ -32,7 +32,7 @@ Activities
 ## Concerns
 - libskills will conflict with C&C, and may conflict with other existing skills extensions. I may open an interest form in the future for funding the adaptation of features for the C&C skill format if there is desire and its not done by someone else first, but at the time of writing this I have no intention to do so. You may adapt the work here to work with it on your own. a
 - This extension is untested with character transformations or other extensions which rely on using different character images for non-standard use. Its likely you'll have to do some work to get them to work properly. Similarly if you want to integrate skills in to other extensions you will have to do so yourself. I will not help you debug extension conflicts.
-- I tried to design the submission/loot table interaction in a way that the Status Effects extension could still be added in, though Status Effects will need to be adapted to use the new sub-table format.
+- I tried to design the submission/loot table interaction in a way that the Status Effects extension could still be added in, though Status Effects will need to be adapted to use the new, slightly modified sub-table format.
 - This extension is untested on LARGE databases. It should be fine, however if you encounter issues or slowness please reach out to Vilagyent on discord as this is something I'd want to address.
 
 # Lorekeeper

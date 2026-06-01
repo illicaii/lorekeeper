@@ -412,7 +412,9 @@ class SubmissionManager extends Service {
             $currencyIds = [];
             $itemIds = [];
             $tableIds = [];
-            $skillIds = [];
+            $grantSkillIds = [];
+            $xpSkillIds = [];
+            $lvlSkillIds = [];
             if (isset($data['character_currency_id'])) {
                 foreach ($data['character_currency_id'] as $c) {
                     foreach ($c as $currencyId) {
@@ -424,26 +426,40 @@ class SubmissionManager extends Service {
                 foreach ($data['character_rewardable_id'] as $ckey => $c) {
                     foreach ($c as $key                            => $id) {
                         switch ($data['character_rewardable_type'][$ckey][$key]) {
-                            case 'Currency': $currencyIds[] = $id;
+                            case 'Currency':
+                                $currencyIds[] = $id;
                                 break;
-                            case 'Item': $itemIds[] = $id;
+                            case 'Item':
+                                $itemIds[] = $id;
                                 break;
-                            case 'LootTable': $tableIds[] = $id;
+                            case 'LootTable':
+                                $tableIds[] = $id;
                                 break;
-                            case 'Skill': $skillIds[] = $id;
+                            case 'SkillGrant':
+                                $grantSkillIds[] = $id;
+                                break;
+                            case 'SkillXP':
+                                $xpSkillIds[] = $id;
+                                break;
+                            case 'SkillLevel':
+                                $lvlSkillIds[] = $id;
                                 break;
                         }
                     }
                 } // Expanded character rewards
             }
             array_unique($currencyIds);
-            array_unique($skillIds);
             array_unique($itemIds);
             array_unique($tableIds);
+            array_unique($grantSkillIds);
+            array_unique($xpSkillIds);
+            array_unique($lvlSkillIds);
             $currencies = Currency::whereIn('id', $currencyIds)->where('is_character_owned', 1)->get()->keyBy('id');
             $items = Item::whereIn('id', $itemIds)->get()->keyBy('id');
             $tables = LootTable::whereIn('id', $tableIds)->get()->keyBy('id');
-            $skills = Skill::whereIn('id', $skillIds)->get()->keyBy('id');
+            $grantSkills = Skill::whereIn('id', $grantSkillIds)->get()->keyBy('id');
+            $xpSkills = Skill::whereIn('id', $xpSkillIds)->get()->keyBy('id');
+            $lvlSkills = Skill::whereIn('id', $lvlSkillIds)->get()->keyBy('id');
 
             // We're going to remove all characters from the submission and reattach them with the updated data
             $submission->characters()->delete();
@@ -451,8 +467,7 @@ class SubmissionManager extends Service {
             // Distribute character rewards
             foreach ($characters as $c) {
                 // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
-                $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies, 'items' => $items, 'tables' => $tables, 'skills' => $skills], true);
-
+                $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies, 'items' => $items, 'tables' => $tables, 'skill_grants' => $grantSkills, 'skill_xp' => $xpSkills, 'skill_levels' => $lvlSkills], true);
                 if (!$assets = fillCharacterAssets($assets, $user, $c, $promptLogType, $promptData, $submission->user)) {
                     throw new \Exception('Failed to distribute rewards to character.');
                 }
@@ -578,7 +593,6 @@ class SubmissionManager extends Service {
     private function processRewards($data, $isCharacter, $isStaff = false, $isClaim = false) {
         if ($isCharacter) {
             $assets = createAssetsArray(true);
-
             if (isset($data['character_currency_id'][$data['character_id']]) && isset($data['character_quantity'][$data['character_id']])) {
                 foreach ($data['character_currency_id'][$data['character_id']] as $key => $currency) {
                     if ($data['character_quantity'][$data['character_id']][$key]) {
@@ -599,8 +613,14 @@ class SubmissionManager extends Service {
                         case 'LootTable': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
                             addAsset($assets, $data['tables'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
                         } break;
-                        case 'Skill': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
-                            addAsset($assets, $data['skills'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key]);
+                        case 'SkillGrant': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                            addAsset($assets, $data['skill_grants'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key], 'skill_grants');
+                        } break;
+                        case 'SkillXP': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                            addAsset($assets, $data['skill_xp'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key], 'skill_xp');
+                        } break;
+                        case 'SkillLevel': if ($data['character_rewardable_quantity'][$data['character_id']][$key]) {
+                            addAsset($assets, $data['skill_levels'][$reward], $data['character_rewardable_quantity'][$data['character_id']][$key], 'skill_levels');
                         } break;
                     }
                 }
@@ -766,7 +786,9 @@ class SubmissionManager extends Service {
         $currencyIds = [];
         $itemIds = [];
         $tableIds = [];
-        $skillIds = [];
+        $grantSkillIds = [];
+        $xpSkillIds = [];
+        $lvlSkillIds = [];
         if (isset($data['character_currency_id'])) {
             foreach ($data['character_currency_id'] as $c) {
                 foreach ($c as $currencyId) {
@@ -778,31 +800,45 @@ class SubmissionManager extends Service {
             foreach ($data['character_rewardable_id'] as $ckey => $c) {
                 foreach ($c as $key => $id) {
                     switch ($data['character_rewardable_type'][$ckey][$key]) {
-                        case 'Currency': $currencyIds[] = $id;
+                        case 'Currency':
+                            $currencyIds[] = $id;
                             break;
-                        case 'Item': $itemIds[] = $id;
+                        case 'Item':
+                            $itemIds[] = $id;
                             break;
-                        case 'LootTable': $tableIds[] = $id;
+                        case 'LootTable':
+                            $tableIds[] = $id;
                             break;
-                        case 'Skill': $skillIds[] = $id;
+                        case 'SkillGrant':
+                            $grantSkillIds[] = $id;
+                            break;
+                        case 'SkillXP':
+                            $xpSkillIds[] = $id;
+                            break;
+                        case 'SkillLevel':
+                            $lvlSkillIds[] = $id;
                             break;
                     }
                 }
             } // Expanded character rewards
         }
         array_unique($currencyIds);
-        array_unique($skillIds);
         array_unique($itemIds);
         array_unique($tableIds);
+        array_unique($grantSkillIds);
+        array_unique($xpSkillIds);
+        array_unique($lvlSkillIds);
         $currencies = Currency::whereIn('id', $currencyIds)->where('is_character_owned', 1)->get()->keyBy('id');
         $items = Item::whereIn('id', $itemIds)->get()->keyBy('id');
         $tables = LootTable::whereIn('id', $tableIds)->get()->keyBy('id');
-        $skills = Skill::whereIn('id', $skillIds)->get()->keyBy('id');
+        $grantSkills = Skill::whereIn('id', $grantSkillIds)->get()->keyBy('id');
+        $xpSkills = Skill::whereIn('id', $xpSkillIds)->get()->keyBy('id');
+        $lvlSkills = Skill::whereIn('id', $lvlSkillIds)->get()->keyBy('id');
 
         // Attach characters
         foreach ($characters as $c) {
             // Users might not pass in clean arrays (may contain redundant data) so we need to clean that up
-            $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies, 'items' => $items, 'tables' => $tables, 'skills' => $skills], true);
+            $assets = $this->processRewards($data + ['character_id' => $c->id, 'currencies' => $currencies, 'items' => $items, 'tables' => $tables, 'SkillGrant' => $grantSkills, 'SkillXP' => $xpSkills, 'SkillLevel' => $lvlSkills], true);
 
             // Now we have a clean set of assets (redundant data is gone, duplicate entries are merged)
             // so we can attach the character to the submission
