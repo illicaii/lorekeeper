@@ -91,7 +91,7 @@ class GrantController extends Controller {
      */
     public function getSkills() {
         return view('admin.grants.skills', [
-            'characters' => Character::orderBy('slug', 'ASC')->get()->pluck('fullName', 'id', 'slug'),
+            'characters' => Character::orderBy('slug', 'ASC')->whereNotNull('slug')->get()->pluck('fullName', 'id', 'slug'),
             'skills'     => Skill::orderBy('name')->pluck('name', 'id'),
         ]);
     }
