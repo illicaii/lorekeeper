@@ -56,7 +56,7 @@
                 $cell.children().addClass('hide');
                 $cell.children().children().val(null);
 
-                switch (val){
+                switch (val) {
                     case 'Item':
                         $cell.children('.character-items').addClass('show');
                         $cell.children('.character-items').removeClass('hide');
