@@ -1,6 +1,6 @@
 <div class="card h-100" data-id="{{ $skill->id }}" data-name="Collect from {{ $skill->name }}">
     <div class="row p-2 align-self-center justify-content-center h-100 w-100">
-         @if ($skill->has_image)
+        @if ($skill->has_image)
             <div class = "col-3 justify-content-center d-flex p-0 h-100">
                 <img src="{{ $skill->imageUrl }}" class="skill-image-compact">
             </div>
@@ -12,10 +12,10 @@
                     <p class="m-0">LV. {!! $ability->getlevel() !!} </p>
                 @endif
             </div>
-            <small class="ml-2 m-0"><strong>Resets:</strong>  20 hours from now! </small>
+            <small class="ml-2 m-0"><strong>Resets:</strong> 20 hours from now! </small>
             <p class="m-0 ml-2 mb-2"><strong>Energy:</strong> {!! $ability->getAvailableCharges() !!}/{!! $ability->getTotalCharges() !!}</p>
             @if (Auth::user())
-                {!! Form::open(['url' => 'character/'.$character->slug.'/skill-abilities/'.$skill->id.'/act']) !!}
+                {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id . '/act']) !!}
                 {!! Form::hidden('tag', $skill->tag('drop')->tag) !!}
                 {!! Form::hidden('skill_id', $skill->id) !!}
                 {!! Form::hidden('slug', $character->slug) !!}
@@ -24,5 +24,3 @@
         </div>
     </div>
 </div>
-
-

@@ -1,7 +1,7 @@
 <h3>Drops</h3>
 <p>This currently does nothing</p>
 <p>These are the rewards that will be distributed to the character when they use the skill action based on the skill level matching the breakpoints. The
-     box will only distribute rewards to the characters themselves - user-only rewards should not be added.</p>
+    box will only distribute rewards to the characters themselves - user-only rewards should not be added.</p>
 
 <div>
     <div class="card card-body">
@@ -56,16 +56,11 @@
                                 </tr>
                             </thead>
                             <tbody class="rewardTableBody">
-                                @if($sublist['rewards'])
+                                @if ($sublist['rewards'])
                                     @foreach ($sublist['rewards']['rewardable_type'] as $sub_key => $reward)
                                         <tr class="reward-row">
                                             <td>
-                                                {!! Form::select(
-                                                    'rewardable_type[]',
-                                                    ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table'],
-                                                    $reward,
-                                                    ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type',]
-                                                ) !!}
+                                                {!! Form::select('rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table'], $reward, ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type']) !!}
                                             </td>
                                             <td class="reward-row-select">
                                                 @if ($reward == 'Item')

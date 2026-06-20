@@ -25,9 +25,9 @@
         @if (count($abilities) > 0)
             @foreach ($abilities as $ability)
                 @if ($ability->skill->hasActiveTag())
-                <div class = "col-12 col-md-6 col-xl-4 pb-2 px-2">
-                    @include('skill_abilities._drop', ['skill' => $ability->skill, 'ability' => $ability, 'character' => $character])
-                </div>
+                    <div class = "col-12 col-md-6 col-xl-4 pb-2 px-2">
+                        @include('skill_abilities._drop', ['skill' => $ability->skill, 'ability' => $ability, 'character' => $character])
+                    </div>
                 @endif
             @endforeach
         @else
@@ -36,14 +36,14 @@
     </div>
 
     <!-- if (count($item->tags))
-            <div>
-                foreach ($item->tags as $tag)
-                    if ($tag->is_active)
-                         $tag->displayTag
-                    endif
-                endforeach
-            </div>
-        endif -->
+                <div>
+                    foreach ($item->tags as $tag)
+                        if ($tag->is_active)
+                             $tag->displayTag
+                        endif
+                    endforeach
+                </div>
+            endif -->
 
     <h3>Latest Activity</h3>
     <div class="mb-4 logs-table">
@@ -62,10 +62,10 @@
         </div>
         <div class="logs-table-body">
             <!-- foreach ($logs as $log)
-                <div class="logs-table-row">
-                    include('character._skill_abilities_log_row', ['log' => $log, 'owner' => $character])
-                </div>
-            endforeach -->
+                    <div class="logs-table-row">
+                        include('character._skill_abilities_log_row', ['log' => $log, 'owner' => $character])
+                    </div>
+                endforeach -->
         </div>
     </div>
     <div class="text-right">
