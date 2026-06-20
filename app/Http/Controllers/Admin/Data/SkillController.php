@@ -285,4 +285,157 @@ class SkillController extends Controller {
 
         return redirect()->to('admin/data/skills');
     }
+
+    /**********************************************************************************************
+
+        SKILL TAGS
+
+    **********************************************************************************************/
+
+    /**
+     * Gets the tag addition page.
+     *
+     * @param App\Services\SkillService $service
+     * @param int                       $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getAddSkillTag(SkillService $service, $id) {
+        $skill = Skill::find($id);
+
+        return view('admin.skills.add_tag', [
+            'skill' => $skill,
+            'tags' => array_diff($service->getSkillTags(), $skill->tags()->pluck('tag')->toArray()),
+        ]);
+    }
+
+    /**
+     * Adds a tag to an skill.
+     *
+     * @param App\Services\SkillService $service
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postAddSkillTag(Request $request, SkillService $service, $id) {
+        $skill = Skill::find($id);
+        $tag = $request->get('tag');
+        if ($tag = $service->addSkillTag($skill, $tag, Auth::user())) {
+            flash('Tag added successfully.')->success();
+
+            return redirect()->to($tag->adminUrl);
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Gets the tag editing page.
+     *
+     * @param int   $id
+     * @param mixed $tag
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getEditSkillTag(SkillService $service, $id, $tag) {
+        $skill = Skill::find($id);
+        $tag = $skill->tags()->where('tag', $tag)->first();
+        if (!$skill || !$tag) {
+            abort(404);
+        }
+
+        return view('admin.skills.edit_tag', [
+            'skill' => $skill,
+            'tag'  => $tag,
+            'data' => $tag->service->getTagData($tag),
+        ] + $tag->getEditData());
+    }
+
+    /**
+     * Edits tag data for an skill.
+     *
+     * @param App\Services\SkillService $service
+     * @param int                      $id
+     * @param string                   $tag
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditSkillTag(Request $request, SkillService $service, $id, $tag) {
+        $skill = Skill::find($id);
+        if ($service->editSkillTag($skill, $tag, $request->all(), Auth::user())) {
+            flash('Tag edited successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Gets the skill tag deletion modal.
+     *
+     * @param int    $id
+     * @param string $tag
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeleteSkillTag($id, $tag) {
+        $skill = Skill::find($id);
+        $tag = $skill->tags()->where('tag', $tag)->first();
+
+        return view('admin.skills._delete_skill_tag', [
+            'skill' => $skill,
+            'tag'  => $tag,
+        ]);
+    }
+
+    /**
+     * Deletes a tag from an skill.
+     *
+     * @param App\Services\SkillService $service
+     * @param int                      $id
+     * @param string                   $tag
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postDeleteSkillTag(Request $request, SkillService $service, $id, $tag) {
+        $skill = Skill::find($id);
+        if ($service->deleteSkillTag($skill, $tag, Auth::user())) {
+            flash('Tag deleted successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->to('admin/data/skills/edit/'.$skill->id);
+    }
+
+    /**
+     * Acts on a skill based on the skill's tag.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postAct(Request $request) {
+        $learned_skill = CharacterSkill::with('skill')->find($request->get('ids'));
+        $tag = $request->get('tag');
+        $service = $learned_skill->first()->skill->hasTag($tag) ? $learned_skill->first()->skill->tag($tag)->service : null;
+        if ($service && $service->act($learned_skill, Auth::user(), $request->all())) {
+            flash('Skill used successfully.')->success();
+        } elseif (!$learned_skill->first()->skill->hasTag($tag)) {
+            flash('Invalid action selected.')->error();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
 }

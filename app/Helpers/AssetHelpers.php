@@ -74,7 +74,7 @@ function getAssetKeys($isCharacter = false) {
     if (!$isCharacter) {
         return ['items', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'characters'];
     } else {
-        return ['currencies', 'items', 'character_items', 'loot_tables', 'skills', 'skill_grants', 'skill_xp', 'skill_levels', 'character_skills'];
+        return ['currencies', 'items', 'character_items', 'loot_tables', 'skills', 'character_skills', 'skill_grants', 'skill_xp', 'skill_levels',];
     }
 }
 

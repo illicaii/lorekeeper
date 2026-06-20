@@ -79,8 +79,42 @@ class CharacterSkill extends Model {
      * Get the level of this skill.
      */
     public function getlevel() {
-        $skill = $this->belongsTo(Skill::class, 'skill_id')->get()[0];
+        $skill = $this->skill()->get()[0];
 
         return $skill->getlevel($this->xp);
+    }
+
+    /**
+     * Get the max level of this skill. This just calls the skill get max levels function.
+     */
+    public function getMaxlevel() {
+        $skill = $this->skill()->get()[0];
+
+        return $skill->getMaxlevels();
+    }
+
+    /**
+     * Get the max charges of this skill. This just calls the skill get max charges function.
+     */
+    public function getTotalCharges() {
+        $skill = $this->skill()->get()[0];
+
+        return ($skill->getMaxCharges() | 1);
+    }
+
+    /**
+     * Get the charges left for this skill.
+     */
+    public function getAvailableCharges() {
+        $skill = $this->skill()->get()[0];
+
+        $max_charges = $skill->getMaxCharges();
+        $max_levels = $skill->getMaxLevels();
+        if ($max_levels === 0){
+            return ($max_charges | 1);
+        }
+
+        $character_level = $skill->getlevel($this->xp);
+        return ceil(($max_charges/$max_levels )*($character_level | 1));
     }
 }

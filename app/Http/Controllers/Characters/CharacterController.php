@@ -21,6 +21,7 @@ use App\Services\CurrencyManager;
 use App\Services\DesignUpdateManager;
 use App\Services\InventoryManager;
 use Illuminate\Http\Request;
+use App\Models\Skill\Skill;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Route;
@@ -259,6 +260,24 @@ class CharacterController extends Controller {
             'itemOptions' => $itemOptions->pluck('name', 'id'),
             'page'        => 'character',
         ] : []));
+    }
+
+    /**
+     * Shows a character's skill abilities.
+     *
+     * @param string $slug
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterSkillAbilities($slug) {
+        $skills_with_abilities = Skill::where('is_visible', 1)->where('is_backend', 0)->whereHas('tags')->pluck('id')->toArray();
+        $character_skills = $this->character->image->skills()->whereIn('skill_id', $skills_with_abilities)->get();
+
+        return view('character.skill_abilities', [
+            'user'                  => Auth::check() ? Auth::user() : null,
+            'character'             => $this->character,
+            'abilities'             => $character_skills,
+        ]);
     }
 
     /**

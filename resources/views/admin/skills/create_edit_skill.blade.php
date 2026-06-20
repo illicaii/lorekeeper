@@ -108,6 +108,32 @@
     {!! Form::close() !!}
 
     @if ($skill->id)
+        <h3>Skill Tags</h3>
+        <p>Skill tags indicate extra functionality for the skill. Click on the edit button to edit the specific skill tag's data.</p>
+        @if (count($skill->tags))
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tag</th>
+                        <th>Active?</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @foreach ($skill->tags as $tag)
+                    <tr>
+                        <td>{!! $tag->displayTag !!}</td>
+                        <td class="{{ $tag->is_active ? 'text-success' : 'text-danger' }}">{{ $tag->is_active ? 'Yes' : 'No' }}</td>
+                        <td class="text-right"><a href="{{ url('admin/data/skills/tag/' . $skill->id . '/' . $tag->tag) }}" class="btn btn-outline-primary">Edit</a></td>
+                    </tr>
+                @endforeach
+            </table>
+        @else
+            <p>No skill tags attached to this skill.</p>
+        @endif
+        <div class="text-right">
+            <a href="{{ url('admin/data/skills/tag/' . $skill->id) }}" class="btn btn-outline-primary">Add a Tag</a>
+        </div>
+
         <h3>Preview</h3>
         <div class="card mb-3">
             <div class="card-body">

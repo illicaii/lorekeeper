@@ -26,6 +26,15 @@ class Skill extends Model {
     protected $table = 'skills';
 
     /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = [
+        'tags',
+    ];
+
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -91,6 +100,13 @@ class Skill extends Model {
      */
     public function parent() {
         return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    /**
+     * Get the skill's tags.
+     */
+    public function tags() {
+        return $this->hasMany(SkillTag::class, 'skill_id');
     }
 
     /**
@@ -314,7 +330,7 @@ class Skill extends Model {
     **********************************************************************************************/
 
     /**
-     * Get the xp needed to reach given skill level.
+     * Get skills for display in dropdowns.
      *
      * @param mixed $withHidden
      * @param mixed $withBackend
@@ -351,38 +367,69 @@ class Skill extends Model {
         return $skills_by_category;
     }
 
+    /* Skill Ability Tags ************************************************************************/
+
     /**
-     * Get the xp needed to reach given skill level.
+     * Checks if the skill has any active tag.
      *
-     * @param mixed $level
+     * @param mixed $tag
+     *
+     * @return bool
      */
-    public function getXpForLevel($level) {
+    public function hasActiveTag() {
+        return $this->tags()->where('is_active', 1)->exists();
+    }
+
+    /**
+     * Checks if the skill has a particular tag.
+     *
+     * @param mixed $tag
+     *
+     * @return bool
+     */
+    public function hasTag($tag) {
+        return $this->tags()->where('tag', $tag)->where('is_active', 1)->exists();
+    }
+
+    /**
+     * Gets a particular tag attached to the skill.
+     *
+     * @param mixed $tag
+     *
+     * @return ItemTag
+     */
+    public function tag($tag) {
+        return $this->tags()->where('tag', $tag)->where('is_active', 1)->first();
+    }
+
+    /* Level and XP ******************************************************************************/
+
+    /**
+     * Get the max level for this skill.
+     */
+    public function getMaxLevels() {
         $skill = $this;
+        $r = 0;
         if ($skill->override_default_caps) {
-            $max_level = $skill->ovr_level_cap;
+            $r = $skill->ovr_level_cap;
         } elseif (isset($skill->category->max_level)) {
-            $max_level = $skill->category->max_level;
-        } else {
-            $max_level = 0;
+            $r = $skill->category->max_level;
         }
-        if ($level > $max_level) {
-            $level = $max_level;
-        } elseif ($level <= 0) {
-            $level = 1;
+        return $r;
+    }
+
+    /**
+     * Get the max number of charges for this skill.
+     */
+    public function getMaxCharges() {
+        $skill = $this;
+        $r = 0;
+        if ($skill->override_default_caps) {
+            $r = $skill->ovr_charge_cap;
+        } elseif (isset($skill->category->max_charge)) {
+            $r = $skill->category->max_charge;
         }
-
-        // Default level curve if category is not defined
-        $xp_base = 100.0;
-        $multiplier = 1.25;
-        // Override default with category defined level curve
-        if (isset($this->category)) {
-            $xp_base = $this->category->level_base;
-            $multiplier = $this->category->level_multiplier;
-        }
-
-        $xp = floor(($level - 1) * ($xp_base * $multiplier));
-
-        return $xp;
+        return $r;
     }
 
     /**
@@ -415,6 +462,40 @@ class Skill extends Model {
         }
 
         return $level;
+    }
+
+    /**
+     * Get the xp needed to reach given skill level.
+     *
+     * @param mixed $level
+     */
+    public function getXpForLevel($level) {
+        $skill = $this;
+        if ($skill->override_default_caps) {
+            $max_level = $skill->ovr_level_cap;
+        } elseif (isset($skill->category->max_level)) {
+            $max_level = $skill->category->max_level;
+        } else {
+            $max_level = 0;
+        }
+        if ($level > $max_level) {
+            $level = $max_level;
+        } elseif ($level <= 0) {
+            $level = 1;
+        }
+
+        // Default level curve if category is not defined
+        $xp_base = 100.0;
+        $multiplier = 1.25;
+        // Override default with category defined level curve
+        if (isset($this->category)) {
+            $xp_base = $this->category->level_base;
+            $multiplier = $this->category->level_multiplier;
+        }
+
+        $xp = floor(($level - 1) * ($xp_base * $multiplier));
+
+        return $xp;
     }
 
     /**

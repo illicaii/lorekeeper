@@ -15,7 +15,7 @@ class SkillManager extends Service {
     | Skill Manager
     |--------------------------------------------------------------------------
     |
-    | Handles modification of user-owned skills.
+    | Handles modification of character-owned skills.
     |
     */
 
@@ -245,4 +245,6 @@ class SkillManager extends Service {
             ]
         );
     }
+
+
 }

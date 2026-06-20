@@ -36,6 +36,17 @@
                     <p><strong>Parent:</strong> {!! $skill->parent->displayname !!}</p>
                 </div>
             @endif
+            <div class="col-md-6 col-md">
+                <div class="row">
+                    @foreach ($skill->tags as $tag)
+                        @if ($tag->is_active)
+                            <div class="col">
+                                {!! $tag->displayTag !!}
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
         </div>
         @if (isset($skill->parent_id) && $skill->parent)
             <div class="row">

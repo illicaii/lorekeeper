@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Skill\Skill;
 use App\Models\Skill\SkillCategory;
+use App\Models\Skill\SkillTag;
 use App\Models\Species\Species;
 use DB;
 
@@ -390,5 +391,145 @@ class SkillService extends Service {
         }
 
         return $data;
+    }
+
+    /**********************************************************************************************
+
+        SKILL TAGS
+
+    **********************************************************************************************/
+
+    /**
+     * Gets a list of skill tags for selection.
+     *
+     * @return array
+     */
+    public function getSkillTags() {
+        $tags = config('lorekeeper.skill_tags');
+        $result = [];
+        foreach ($tags as $tag => $tagData) {
+            $result[$tag] = $tagData['name'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Adds an skill tag to an skill.
+     *
+     * @param Skill   $skill
+     * @param string $tag
+     * @param mixed  $user
+     *
+     * @return bool|string
+     */
+    public function addSkillTag($skill, $tag, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (!$skill) {
+                throw new \Exception('Invalid skill selected.');
+            }
+            if ($skill->tags()->where('tag', $tag)->exists()) {
+                throw new \Exception('This skill already has this tag attached to it.');
+            }
+            if (!$tag) {
+                throw new \Exception('No tag selected.');
+            }
+
+            if (!$this->logAdminAction($user, 'Added Skill Tag', 'Added '.$tag.' tag to '.$skill->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            $tag = SkillTag::create([
+                'skill_id' => $skill->id,
+                'tag'     => $tag,
+            ]);
+
+            return $this->commitReturn($tag);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Edits the data associated with an skill tag on an skill.
+     *
+     * @param Skill   $skill
+     * @param string $tag
+     * @param array  $data
+     * @param mixed  $user
+     *
+     * @return bool|string
+     */
+    public function editSkillTag($skill, $tag, $data, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (!$skill) {
+                throw new \Exception('Invalid skill selected.');
+            }
+            if (!$skill->tags()->where('tag', $tag)->exists()) {
+                throw new \Exception('This skill does not have this tag attached to it.');
+            }
+
+            if (!$this->logAdminAction($user, 'Edited Skill Tag', 'Edited '.$tag.' tag on '.$skill->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            $tag = $skill->tags()->where('tag', $tag)->first();
+
+            $service = $tag->service;
+            if (!$service->updateData($tag, $data)) {
+                $this->setErrors($service->errors());
+                throw new \Exception('Failed to update tag data.');
+            }
+
+            // Update the tag's active setting
+            $tag->is_active = isset($data['is_active']);
+            $tag->save();
+
+            return $this->commitReturn($tag);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Removes an skill tag from an skill.
+     *
+     * @param Skill   $skill
+     * @param string $tag
+     * @param mixed  $user
+     *
+     * @return bool|string
+     */
+    public function deleteSkillTag($skill, $tag, $user) {
+        DB::beginTransaction();
+
+        try {
+            if (!$skill) {
+                throw new \Exception('Invalid skill selected.');
+            }
+            if (!$skill->tags()->where('tag', $tag)->exists()) {
+                throw new \Exception('This skill does not have this tag attached to it.');
+            }
+
+            if (!$this->logAdminAction($user, 'Deleted Skill Tag', 'Deleted '.$tag.' tag on '.$skill->displayName)) {
+                throw new \Exception('Failed to log admin action.');
+            }
+
+            $skill->tags()->where('tag', $tag)->delete();
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
     }
 }
