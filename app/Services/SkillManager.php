@@ -245,6 +245,4 @@ class SkillManager extends Service {
             ]
         );
     }
-
-
 }

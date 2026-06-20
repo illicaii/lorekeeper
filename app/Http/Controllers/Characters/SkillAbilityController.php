@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SkillAbilityController extends Controller {
-
     /**
      * Handles skill ability processing.
      *
@@ -44,7 +43,7 @@ class SkillAbilityController extends Controller {
         $tag = $request->get('tag');
         $service = $ability->skill->hasTag($tag) ? $ability->skill->tag($tag)->service : null;
 
-        if ($ability->charges >= $ability->skill->getMaxCharges()){
+        if ($ability->charges >= $ability->skill->getMaxCharges()) {
             flash('Skill ability has no more uses.')->success();
         } elseif ($service && $service->act($ability, Auth::user(), $character, $ability->skill->tag($tag))) {
             flash('Skill ability used successfully.')->success();

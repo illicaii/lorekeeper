@@ -305,7 +305,7 @@ class SkillController extends Controller {
 
         return view('admin.skills.add_tag', [
             'skill' => $skill,
-            'tags' => array_diff($service->getSkillTags(), $skill->tags()->pluck('tag')->toArray()),
+            'tags'  => array_diff($service->getSkillTags(), $skill->tags()->pluck('tag')->toArray()),
         ]);
     }
 
@@ -313,7 +313,7 @@ class SkillController extends Controller {
      * Adds a tag to an skill.
      *
      * @param App\Services\SkillService $service
-     * @param int                      $id
+     * @param int                       $id
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -350,8 +350,8 @@ class SkillController extends Controller {
 
         return view('admin.skills.edit_tag', [
             'skill' => $skill,
-            'tag'  => $tag,
-            'data' => $tag->service->getTagData($tag),
+            'tag'   => $tag,
+            'data'  => $tag->service->getTagData($tag),
         ] + $tag->getEditData());
     }
 
@@ -359,8 +359,8 @@ class SkillController extends Controller {
      * Edits tag data for an skill.
      *
      * @param App\Services\SkillService $service
-     * @param int                      $id
-     * @param string                   $tag
+     * @param int                       $id
+     * @param string                    $tag
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -391,7 +391,7 @@ class SkillController extends Controller {
 
         return view('admin.skills._delete_skill_tag', [
             'skill' => $skill,
-            'tag'  => $tag,
+            'tag'   => $tag,
         ]);
     }
 
@@ -399,8 +399,8 @@ class SkillController extends Controller {
      * Deletes a tag from an skill.
      *
      * @param App\Services\SkillService $service
-     * @param int                      $id
-     * @param string                   $tag
+     * @param int                       $id
+     * @param string                    $tag
      *
      * @return \Illuminate\Http\RedirectResponse
      */

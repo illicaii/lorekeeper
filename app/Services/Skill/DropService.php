@@ -3,8 +3,8 @@
 namespace App\Services\Skill;
 
 use App\Models\Currency\Currency;
-use App\Models\Loot\LootTable;
 use App\Models\Item\Item;
+use App\Models\Loot\LootTable;
 use App\Models\Skill\Skill;
 use App\Services\Service;
 use Illuminate\Support\Facades\DB;
@@ -27,9 +27,9 @@ class DropService extends Service {
     public function getEditData() {
         return [
             'currencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
-            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
-            'skills' => Skill::orderBy('id')->pluck('name', 'id'),
+            'items'      => Item::orderBy('name')->pluck('name', 'id'),
+            'tables'     => LootTable::orderBy('name')->pluck('name', 'id'),
+            'skills'     => Skill::orderBy('id')->pluck('name', 'id'),
         ];
     }
 
@@ -62,19 +62,19 @@ class DropService extends Service {
         try {
             if (isset($data['breakpoint_id']) && $data['breakpoint_id'] != 0) {
                 foreach ($data['breakpoint_id'] as $key=>$id) {
-                    if ($id == null){
-                        //large number temp key. this will cause problems if you have 9999 or more breakpoints but also thats a lot of level breakpoints what are you doing
+                    if ($id == null) {
+                        // large number temp key. this will cause problems if you have 9999 or more breakpoints but also thats a lot of level breakpoints what are you doing
                         $id = 9999;
                     }
                     $rewards = [
                         'rewardable_type' => [],
-                        'rewardable_id' => [],
-                        'quantity' => [],
-                        'charges' => [],
+                        'rewardable_id'   => [],
+                        'quantity'        => [],
+                        'charges'         => [],
                     ];
-                    if (isset($data['sublist_id'])){
-                        foreach ($data['sublist_id'] as $sub_key => $r){
-                            if (isset($data['rewardable_type'][$sub_key]) && $data['sublist_id'][$sub_key] == $id){
+                    if (isset($data['sublist_id'])) {
+                        foreach ($data['sublist_id'] as $sub_key => $r) {
+                            if (isset($data['rewardable_type'][$sub_key]) && $data['sublist_id'][$sub_key] == $id) {
                                 $rewards['rewardable_type'][] = $data['rewardable_type'][$sub_key];
                                 $rewards['rewardable_id'][] = $data['rewardable_id'][$sub_key];
                                 $rewards['quantity'][] = $data['quantity'][$sub_key];
@@ -106,7 +106,10 @@ class DropService extends Service {
     /**
      * Acts upon the skill when used.
      *
-     * @param array                     $data
+     * @param mixed $ability
+     * @param mixed $user
+     * @param mixed $character
+     * @param mixed $tag
      *
      * @return bool
      */
@@ -115,24 +118,23 @@ class DropService extends Service {
 
         try {
             // Check to make sure the user clicking the button is the owner of the character
-            if ($character->user_id != $user->id){
+            if ($character->user_id != $user->id) {
                 throw new \Exception('This character does not belong to you.');
             }
 
-            //Check if character skill has charges available
+            // Check if character skill has charges available
             $usableCharges = $ability->getTotalCharges() - $ability->charges;
             $characterLevel = $ability->getlevel();
             if ($usableCharges > 0) {
-                //Calculate reward pool
+                // Calculate reward pool
                 $rewards = $this->getDropRewards($usableCharges, $characterLevel, $tag->data);
 
-                //Distribute rewards and increase charge count
+                // Distribute rewards and increase charge count
                 // if (!$rewards = fillCharacterAssets(parseAssetData($rewards), $user, $character, 'Skill Drop', [
                 //     'data' => 'Received drop from'. $character->name,
                 // ])) {
                 //     throw new \Exception('Failed to use ability');
                 // }
-
             }
 
             return $this->commitReturn(true);
@@ -144,9 +146,11 @@ class DropService extends Service {
     }
 
     /**
-     * Calculates what rewards should be dropped
+     * Calculates what rewards should be dropped.
      *
-     * @param array $rewards
+     * @param mixed $charges
+     * @param mixed $level
+     * @param mixed $data
      *
      * @return string
      */
@@ -154,10 +158,10 @@ class DropService extends Service {
         $rewards = [];
         $rewardBatch = [];
         $cost = 0;
-        //figure out what breakpoint the character meets
-        foreach ($data as $breakpoint){
-            if($level >= $breakpoint['min_level'] && $level < $breakpoint['max_level'] ){
-                $cost += 1; //todo make every cost 1 just to test
+        // figure out what breakpoint the character meets
+        foreach ($data as $breakpoint) {
+            if ($level >= $breakpoint['min_level'] && $level < $breakpoint['max_level']) {
+                $cost += 1; // todo make every cost 1 just to test
             }
             $rewardBatch += $breakpoint['rewards'];
         }
@@ -170,13 +174,13 @@ class DropService extends Service {
             $i -= $cost;
         } while ($i > 0);
 
-        //clean rewards array
+        // clean rewards array
 
         return $rewards;
     }
 
     /**
-     * Acts upon the skill when used
+     * Acts upon the skill when used.
      *
      * @param array $rewards
      *

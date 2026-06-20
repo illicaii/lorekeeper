@@ -99,7 +99,7 @@ class CharacterSkill extends Model {
     public function getTotalCharges() {
         $skill = $this->skill()->get()[0];
 
-        return ($skill->getMaxCharges() | 1);
+        return $skill->getMaxCharges() | 1;
     }
 
     /**
@@ -110,11 +110,12 @@ class CharacterSkill extends Model {
 
         $max_charges = $skill->getMaxCharges();
         $max_levels = $skill->getMaxLevels();
-        if ($max_levels === 0){
-            return ($max_charges | 1);
+        if ($max_levels === 0) {
+            return $max_charges | 1;
         }
 
         $character_level = $skill->getlevel($this->xp);
-        return ceil(($max_charges/$max_levels )*($character_level | 1));
+
+        return ceil(($max_charges / $max_levels) * ($character_level | 1));
     }
 }

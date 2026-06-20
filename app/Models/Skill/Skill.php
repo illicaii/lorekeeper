@@ -367,12 +367,10 @@ class Skill extends Model {
         return $skills_by_category;
     }
 
-    /* Skill Ability Tags ************************************************************************/
+    /* Skill Ability Tags *********************************************************************** */
 
     /**
      * Checks if the skill has any active tag.
-     *
-     * @param mixed $tag
      *
      * @return bool
      */
@@ -402,7 +400,7 @@ class Skill extends Model {
         return $this->tags()->where('tag', $tag)->where('is_active', 1)->first();
     }
 
-    /* Level and XP ******************************************************************************/
+    /* Level and XP ***************************************************************************** */
 
     /**
      * Get the max level for this skill.
@@ -415,6 +413,7 @@ class Skill extends Model {
         } elseif (isset($skill->category->max_level)) {
             $r = $skill->category->max_level;
         }
+
         return $r;
     }
 
@@ -429,6 +428,7 @@ class Skill extends Model {
         } elseif (isset($skill->category->max_charge)) {
             $r = $skill->category->max_charge;
         }
+
         return $r;
     }
 
