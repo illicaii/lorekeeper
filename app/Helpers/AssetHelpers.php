@@ -223,7 +223,7 @@ function addAsset(&$array, $asset, $quantity = 1, $overriddenAssetType = null) {
     }
     $type = $asset->assetType;
     if ($overriddenAssetType) {
-        $type = $overriddenAssetType;
+        $type = $overriddengetAssetKeysAssetType;
     }
 
     if (isset($array[$type][$asset->id])) {
@@ -285,8 +285,8 @@ function getDataReadyAssets($array, $isCharacter = false) {
  *
  * @return array
  */
-function parseAssetData($array) {
-    $assets = createAssetsArray();
+function parseAssetData($array, $isCharacter = false) {
+    $assets = createAssetsArray($isCharacter);
     foreach ($array as $key => $contents) {
         $model = getAssetModelString($key);
         if ($model) {

@@ -38,15 +38,16 @@ class SkillAbilityController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     private function postAbilityAct(Request $request) {
+        dd($request);
         $character = Character::where('slug', $request->get('slug'))->get()->first();
         $ability = $character->image->skills->where('skill_id', $request->get('skill_id'))->first();
         $tag = $request->get('tag');
         $service = $ability->skill->hasTag($tag) ? $ability->skill->tag($tag)->service : null;
 
-        if ($ability->charges >= $ability->skill->getMaxCharges()) {
-            flash('Skill ability has no more uses.')->success();
-        } elseif ($service && $service->act($ability, Auth::user(), $character, $ability->skill->tag($tag))) {
-            flash('Skill ability used successfully.')->success();
+        if ($ability->charges >= $ability->getAvailableCharges()) {
+            flash('Skill ability has no more uses.')->error();
+        } elseif ($service && $rewardString = $service->act($ability, Auth::user(), $character, $ability->skill->tag($tag))) {
+            flash('Skill ability used successfully. '. $rewardString)->success();
         } elseif (!$ability->skill->hasTag($tag)) {
             flash('Invalid action selected.')->error();
         } else {

@@ -8,7 +8,6 @@
                 ]) !!}</td>
                 <td class="reward-row-select"></td>
                 <td>{!! Form::text('quantity[]', 1, ['class' => 'form-control']) !!}</td>
-                <td>{!! Form::text('charges[]', 1, ['class' => 'form-control']) !!}</td>
                 {!! Form::hidden('sublist_id[]', null, ['class' => 'subtable-id']) !!}
                 <td class="text-right"><a href="#" class="btn btn-danger remove-reward-button">Remove</a></td>
             </tr>
@@ -27,6 +26,7 @@
                     <tr>
                         <td>{!! Form::text('min_lvl[]', 1, ['class' => 'form-control']) !!}</td>
                         <td>{!! Form::text('max_lvl[]', 1, ['class' => 'form-control']) !!}</td>
+                        <td>{!! Form::number('charges[]', 0, ['class' => 'form-control']) !!}</td>
                         <td>{!! Form::hidden('breakpoint_id[]', null, ['class' => 'subtable-id']) !!}</td>
                         <td class="text-right"><a href="#" class="btn btn-danger remove-sublist" id="button-addon2">Remove</a></td>
                     </tr>
