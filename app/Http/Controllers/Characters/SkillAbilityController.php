@@ -47,7 +47,7 @@ class SkillAbilityController extends Controller {
         if ($ability->charges >= $ability->getAvailableCharges()) {
             flash('Skill ability has no more uses.')->error();
         } elseif ($service && $rewardString = $service->act($ability, Auth::user(), $character, $ability->skill->tag($tag))) {
-            flash('Skill ability used successfully. '. $rewardString)->success();
+            flash('Skill ability used successfully. '.$rewardString)->success();
         } elseif (!$ability->skill->hasTag($tag)) {
             flash('Invalid action selected.')->error();
         } else {

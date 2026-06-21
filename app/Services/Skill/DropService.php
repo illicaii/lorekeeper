@@ -2,11 +2,11 @@
 
 namespace App\Services\Skill;
 
+use App\Models\Character\CharacterSkill;
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
 use App\Models\Loot\LootTable;
 use App\Models\Skill\Skill;
-use App\Models\Character\CharacterSkill;
 use App\Services\Service;
 use Illuminate\Support\Facades\DB;
 
@@ -46,7 +46,7 @@ class DropService extends Service {
             return null;
         }
         $data = [];
-        foreach ($tag->data as $breakpoint){
+        foreach ($tag->data as $breakpoint) {
             $rewards = [];
             $assets = parseAssetData($breakpoint['rewards']);
             foreach ($assets as $type => $a) {
@@ -65,8 +65,9 @@ class DropService extends Service {
                 'max_lvl'      => $breakpoint['max_lvl'],
                 'charges'      => $breakpoint['charges'],
                 'rewards'      => $rewards,
-                ];
+            ];
         }
+
         return $data;
     }
 
@@ -91,9 +92,9 @@ class DropService extends Service {
                     // The data will be stored as an asset table, json_encoded.
                     // First build the asset table, then prepare it for storage.
                     $assets = createAssetsArray();
-                    if (isset($data['sublist_id'])){
-                        foreach ($data['sublist_id'] as $sub_key => $r){
-                            if (isset($data['rewardable_type'][$sub_key]) && $data['sublist_id'][$sub_key] == $id){
+                    if (isset($data['sublist_id'])) {
+                        foreach ($data['sublist_id'] as $sub_key => $r) {
+                            if (isset($data['rewardable_type'][$sub_key]) && $data['sublist_id'][$sub_key] == $id) {
                                 switch ($data['rewardable_type'][$sub_key]) {
                                     case 'Item':
                                         $type = 'App\Models\Item\Item';
@@ -161,25 +162,25 @@ class DropService extends Service {
                 ['skill_id', '=', $ability->skill->id],
             ])->first();
 
-            //Check if character skill has charges available
+            // Check if character skill has charges available
             $usableCharges = $ability->getAvailableCharges() - $ability->charges;
             $characterLevel = $ability->getlevel();
             if ($usableCharges > 0) {
                 // Calculate reward pool
                 $rewards = $this->getDropRewards($usableCharges, $characterLevel, $tag->data);
 
-                //Distribute rewards and increase charge count
+                // Distribute rewards and increase charge count
                 if (!$rewards = fillCharacterAssets($rewards, $user, $character, 'Skill Drop', [
-                    'data' => 'Received drop from '. $ability->skill->name,
+                    'data' => 'Received drop from '.$ability->skill->name,
                 ])) {
                     throw new \Exception('Failed to use ability');
                 }
                 $recipient_stack->charges = $ability->getAvailableCharges();
                 $recipient_stack->save();
-
             }
             DB::commit();
-            return $this->getDropRewardsString(isset($rewards) ? $rewards : null);
+
+            return $this->getDropRewardsString($rewards ?? null);
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
@@ -188,7 +189,7 @@ class DropService extends Service {
     }
 
     /**
-     * Calculates what rewards should be dropped. This will always award 1 set of rewards (this is intentional)
+     * Calculates what rewards should be dropped. This will always award 1 set of rewards (this is intentional).
      *
      * @param mixed $charges
      * @param mixed $level
@@ -200,9 +201,9 @@ class DropService extends Service {
         $rewards = createAssetsArray(true);
         $rewardBatch = createAssetsArray(true);
         $cost = 0;
-        //figure out what breakpoint the character meets
-        foreach ($data as $breakpoint){
-            if($level >= $breakpoint['min_lvl'] && $level < $breakpoint['max_lvl'] ){
+        // figure out what breakpoint the character meets
+        foreach ($data as $breakpoint) {
+            if ($level >= $breakpoint['min_lvl'] && $level < $breakpoint['max_lvl']) {
                 $cost += $breakpoint['charges'];
                 $rewardBatch = mergeAssetsArrays($rewardBatch, parseAssetData($breakpoint['rewards'], true), true);
             }
@@ -225,10 +226,10 @@ class DropService extends Service {
      * @return string
      */
     private function getDropRewardsString($rewards) {
-        if ($rewards == null){
+        if ($rewards == null) {
             return 'Character has received: Nothing';
-
         }
+
         return 'Character has received: '.createRewardsString($rewards);
     }
 }

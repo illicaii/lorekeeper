@@ -282,6 +282,7 @@ function getDataReadyAssets($array, $isCharacter = false) {
  * Use the data attribute after json_decode()ing it.
  *
  * @param array $array
+ * @param mixed $isCharacter
  *
  * @return array
  */
