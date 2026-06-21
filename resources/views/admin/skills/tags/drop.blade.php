@@ -58,16 +58,11 @@
                             </thead>
                             <tbody class="rewardTableBody">
 
-                                @if($sublist['rewards'])
+                                @if ($sublist['rewards'])
                                     @foreach ($sublist['rewards'] as $reward)
                                         <tr class="reward-row">
                                             <td>
-                                                {!! Form::select(
-                                                    'rewardable_type[]',
-                                                    ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table'],
-                                                    $reward->rewardable_type,
-                                                    ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type',]
-                                                ) !!}
+                                                {!! Form::select('rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table'], $reward->rewardable_type, ['class' => 'form-control reward-type', 'placeholder' => 'Select Reward Type']) !!}
                                             </td>
                                             <td class="reward-row-select">
                                                 @if ($reward->rewardable_type == 'Item')
