@@ -27,7 +27,7 @@
                 @foreach ($ability->skill->tags as $tag)
                     @if ($ability->skill->hasActiveTag() && View::exists('skill_abilities._' . $tag->tag))
                         <div class = "col-12 col-md-6 col-xl-4 pb-2 px-2">
-                            @include('skill_abilities._'. $tag->tag, ['skill' => $ability->skill, 'ability' => $ability, 'character' => $character])
+                            @include('skill_abilities._' . $tag->tag, ['skill' => $ability->skill, 'ability' => $ability, 'character' => $character])
                         </div>
                     @endif
                 @endforeach
@@ -54,10 +54,10 @@
         </div>
         <div class="logs-table-body">
             <!-- foreach ($logs as $log)
-                        <div class="logs-table-row">
-                            include('character._skill_abilities_log_row', ['log' => $log, 'owner' => $character])
-                        </div>
-                    endforeach -->
+                            <div class="logs-table-row">
+                                include('character._skill_abilities_log_row', ['log' => $log, 'owner' => $character])
+                            </div>
+                        endforeach -->
         </div>
     </div>
     <div class="text-right">

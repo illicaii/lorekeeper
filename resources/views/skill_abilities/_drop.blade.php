@@ -16,7 +16,7 @@
             <p class="m-0 ml-2 mb-2"><strong>Energy:</strong> {!! $ability->getAvailableCharges() !!}/{!! $ability->getTotalCharges() !!}</p>
             @if (Auth::user())
                 @csrf
-                {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id ]) !!}
+                {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id]) !!}
                 {!! Form::hidden('tag', $skill->tag('drop')->tag) !!}
                 {!! Form::hidden('skill_id', $skill->id) !!}
                 {!! Form::hidden('slug', $character->slug) !!}
