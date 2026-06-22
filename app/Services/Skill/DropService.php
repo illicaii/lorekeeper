@@ -221,8 +221,8 @@ class DropService extends Service {
 
         return [
             'rewards' => $rewards,
-            'cost'    => max($cost* $count, 1),
-            ];
+            'cost'    => max($cost * $count, 1),
+        ];
     }
 
     /**

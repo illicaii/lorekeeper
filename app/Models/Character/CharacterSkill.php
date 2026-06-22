@@ -114,6 +114,7 @@ class CharacterSkill extends Model {
             return max($max_charges, 1);
         }
         $character_level = $skill->getlevel($this->xp);
+
         return max(ceil(($max_charges / $max_levels) * (max($character_level, 1))), 1);
     }
 
