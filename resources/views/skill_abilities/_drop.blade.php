@@ -15,11 +15,13 @@
             <small class="ml-2 m-0"><strong>Resets:</strong> 20 hours from now! </small>
             <p class="m-0 ml-2 mb-2"><strong>Energy:</strong> {!! $ability->getAvailableCharges() !!}/{!! $ability->getTotalCharges() !!}</p>
             @if (Auth::user())
-                {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id . '/act']) !!}
+                @csrf
+                {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id ]) !!}
                 {!! Form::hidden('tag', $skill->tag('drop')->tag) !!}
                 {!! Form::hidden('skill_id', $skill->id) !!}
                 {!! Form::hidden('slug', $character->slug) !!}
-                {!! Form::button('Collect', ['class' => 'btn btn-secondary btn-sm btn-collect w-100', 'name' => 'action', 'value' => 'act', 'type' => 'submit']) !!}
+                <button class="btn btn-primary btn-sm btn-collect w-100" name="action" value="act" @if ($ability->getAvailableCharges() <= 0) disabled @endif>Collect</button>
+                {{ Form::close() }}
             @endif
         </div>
     </div>

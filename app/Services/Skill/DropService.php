@@ -168,6 +168,8 @@ class DropService extends Service {
             if ($usableCharges > 0) {
                 // Calculate reward pool
                 $rewards = $this->getDropRewards($usableCharges, $characterLevel, $tag->data);
+                $cost = $rewards['cost'];
+                $rewards = $rewards['rewards'];
 
                 // Distribute rewards and increase charge count
                 if (!$rewards = fillCharacterAssets($rewards, $user, $character, 'Skill Drop', [
@@ -175,7 +177,7 @@ class DropService extends Service {
                 ])) {
                     throw new \Exception('Failed to use ability');
                 }
-                $recipient_stack->charges = $ability->getAvailableCharges();
+                $recipient_stack->charges = $recipient_stack->charges + $cost;
                 $recipient_stack->save();
             }
             DB::commit();
@@ -210,12 +212,17 @@ class DropService extends Service {
         }
         // Duplicate reward string based on charges.
         $i = $charges;
+        $count = 0;
         do {
             $rewards = mergeAssetsArrays($rewards, $rewardBatch, true);
             $i -= $cost;
-        } while ($i > 0);
+            $count += 1;
+        } while ($i > 0 && $cost > 0);
 
-        return $rewards;
+        return [
+            'rewards' => $rewards,
+            'cost'    => max($cost* $count, 1),
+            ];
     }
 
     /**

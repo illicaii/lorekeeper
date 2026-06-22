@@ -38,7 +38,6 @@ class SkillAbilityController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     private function postAbilityAct(Request $request) {
-        dd($request);
         $character = Character::where('slug', $request->get('slug'))->get()->first();
         $ability = $character->image->skills->where('skill_id', $request->get('skill_id'))->first();
         $tag = $request->get('tag');

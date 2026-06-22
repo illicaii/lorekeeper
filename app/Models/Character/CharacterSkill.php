@@ -96,14 +96,29 @@ class CharacterSkill extends Model {
     /**
      * Get the max charges of this skill. This just calls the skill get max charges function.
      */
-    public function getTotalCharges() {
+    public function getMaxCharges() {
         $skill = $this->skill()->get()[0];
 
         return max($skill->getMaxCharges(), 1);
     }
 
     /**
-     * Get the charges left for this skill.
+     * Get the max charges the character has at their current level.
+     */
+    public function getTotalCharges() {
+        $skill = $this->skill()->get()[0];
+
+        $max_charges = $skill->getMaxCharges();
+        $max_levels = $skill->getMaxLevels();
+        if ($max_levels === 0) {
+            return max($max_charges, 1);
+        }
+        $character_level = $skill->getlevel($this->xp);
+        return max(ceil(($max_charges / $max_levels) * (max($character_level, 1))), 1);
+    }
+
+    /**
+     * Get the number of charges the character has left to use for this skill.
      */
     public function getAvailableCharges() {
         $charges_before_use = 0;
@@ -113,13 +128,11 @@ class CharacterSkill extends Model {
         $max_levels = $skill->getMaxLevels();
         if ($max_levels === 0) {
             $charges_before_use = (max($max_charges, 1));
-
-            return $charges_before_use - $this->charges;
+        } else {
+            $character_level = $skill->getlevel($this->xp);
+            $charges_before_use = max(ceil(($max_charges / $max_levels) * (max($character_level, 1))), 1);
         }
 
-        $character_level = $skill->getlevel($this->xp);
-        $charges_before_use = max(ceil(($max_charges / $max_levels) * (max($character_level, 1))), 1);
-
-        return $charges_before_use - $this->charges;
+        return max($charges_before_use - $this->charges, 0);
     }
 }

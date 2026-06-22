@@ -5,23 +5,22 @@ This extension is still a heavy WIP. Most of the features listed below DO NOT EX
 ## Features
 Skills function similarly to traits and are assigned to the active image of an uploaded character. This makes it possible to have different images preserve their stats independently (when reverting an image you can choose to carry over the newer stats).
 Stats have the following features:
-- Can create Skills, Skill Categories, Skill Tags, Researching Tasks
+- Can create Skills, Skill Categories, Skill Tags
 - Skill Categories can be marked as default which allows them to be auto added to MYOs or new character with the set level (or random level range)
 - Skill Categories can define skill cap, skill charges (uses), random initial level range and variables related to the level curve (xp base and multiplier)
 - Skills can be set to override Skill Category defaults for skill max level and skill charges (uses)
 - Skills can be marked as backend meaning they wont show up in public facing pages regardless of visibility. These are meant to be used for backend RNG chance calculation.
-- Skills can be given three skill tags: Cosmetic, Consumable, Item Granter
-    - Cosmetic: Mostly for RP but may also be used for RNG events or as parent skills for other skills
+- Skills can be given two skill tags: Consumable, Drop
     - Consumable: Has a set number of charges which can be linked to activities like prompt entry (think Stamina). These skills can be set to reset hourly/daily/monthly/yearly/never and store charges equal to the max level a character has in that skill.
-    -   Item Granter: Can be used to grant the user 'x' items where 'x' is some modifier 'y' multiplied by the level of the skill. This action can be set to reset hourly/daily/monthly/yearly/never.
+    -   Item Granter: Can be used to grant the user 'x' items per reset period based on configured breakpoints. This action can be set to reset hourly/daily/monthly/yearly/never.
 - Skills can be reset, added, or removed by staff with character editing privileges on a per character basis from the skill edit menu on the character page
 - Skills not marked as default can be added to character uploads by staff or on MYO submissions by users.
 
 Skill Items/Grants
-- Skills can be awarded through Grants, Items, Submissions, Loot Tables, Researching
-    - Staff Grants can award skills with levels above the max/min (this will set to the max or min automatically), but will error if parent skill/species requirements are not met.
+- Skills can be awarded through Grants, Items, Submissions, Loot Tables, Skill Tag "Drop"
+    - Staff Grants can award skills with levels above the max/min (this will set to the max or min automatically), and will not error if parent skill/species requirements are not met.
     - Items will error upon attempting to set above or below the max/min respectively, or if character can not learn the skill, and can be configured to error if the character doesn't have the skill, or grant the character the skill instead.
-- Skills can gain xp or levels through Grants, Items, Submissions, Loot Tables, Training
+- Skills can gain xp or levels through Grants, Items, Submissions, Loot Tables, Skill Tag "Drop"
 - Skill items have five types: Skill Grant, Add XP/Level, Set XP/Level, Reset XP/level, or Remove Skill which each have different functionality.
 - Skill Items can be configured to grant single, random or all skills from the skills in the item tag.
 
@@ -30,7 +29,7 @@ Activities
 - Training is a new activity where you can assign characters to a slot for x amount of time to earn y amount of xp, levels, items, or currency. Amount of free training slots and purchasable training slots can be set in site settings. (Training slots are awarded through slot items or manual grants) This is built off the extension: Assignable Character Slots (which does not exist yet)
 
 ## Concerns
-- libskills will conflict with C&C, and may conflict with other existing skills extensions. I may open an interest form in the future for funding the adaptation of features for the C&C skill format if there is desire and its not done by someone else first, but at the time of writing this I have no intention to do so. You may adapt the work here to work with it on your own. a
+- libskills will conflict with C&C, and may conflict with other existing skills extensions. I may open an interest form in the future for funding the adaptation of features for the C&C skill format if there is desire and its not done by someone else first, but at the time of writing this I have no intention to do so. You may adapt the work here to work with it on your own.
 - This extension is untested with character transformations or other extensions which rely on using different character images for non-standard use. Its likely you'll have to do some work to get them to work properly. Similarly if you want to integrate skills in to other extensions you will have to do so yourself. I will not help you debug extension conflicts.
 - I tried to design the submission/loot table interaction in a way that the Status Effects extension could still be added in, though Status Effects will need to be adapted to use the new, slightly modified sub-table format.
 - This extension is untested on LARGE databases. It should be fine, however if you encounter issues or slowness please reach out to Vilagyent on discord as this is something I'd want to address.

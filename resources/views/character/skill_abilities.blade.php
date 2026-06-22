@@ -24,26 +24,18 @@
     <div class="row mb-4">
         @if (count($abilities) > 0)
             @foreach ($abilities as $ability)
-                @if ($ability->skill->hasActiveTag())
-                    <div class = "col-12 col-md-6 col-xl-4 pb-2 px-2">
-                        @include('skill_abilities._drop', ['skill' => $ability->skill, 'ability' => $ability, 'character' => $character])
-                    </div>
-                @endif
+                @foreach ($ability->skill->tags as $tag)
+                    @if ($ability->skill->hasActiveTag() && View::exists('skill_abilities._' . $tag->tag))
+                        <div class = "col-12 col-md-6 col-xl-4 pb-2 px-2">
+                            @include('skill_abilities._'. $tag->tag, ['skill' => $ability->skill, 'ability' => $ability, 'character' => $character])
+                        </div>
+                    @endif
+                @endforeach
             @endforeach
         @else
             Character has no abilities
         @endif
     </div>
-
-    <!-- if (count($item->tags))
-                    <div>
-                        foreach ($item->tags as $tag)
-                            if ($tag->is_active)
-                                 $tag->displayTag
-                            endif
-                        endforeach
-                    </div>
-                endif -->
 
     <h3>Latest Activity</h3>
     <div class="mb-4 logs-table">
