@@ -54,10 +54,10 @@
         </div>
         <div class="logs-table-body">
             <!-- foreach ($logs as $log)
-                                <div class="logs-table-row">
-                                    include('character._skill_abilities_log_row', ['log' => $log, 'owner' => $character])
-                                </div>
-                            endforeach -->
+                                    <div class="logs-table-row">
+                                        include('character._skill_abilities_log_row', ['log' => $log, 'owner' => $character])
+                                    </div>
+                                endforeach -->
         </div>
     </div>
     <div class="text-right">

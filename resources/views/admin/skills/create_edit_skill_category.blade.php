@@ -90,7 +90,9 @@
         {!! Form::label('Max Charges') !!} {!! add_help('The max level of charges skills in this category can have. Leave this blank for categories with no charges') !!}
         {!! Form::number('max_charge', $category->max_charge ? $category->max_charge : 0, ['class' => 'form-control mb-2', 'min' => 0]) !!}
 
-        {!! Form::label('Reset Frequency') !!} {!! add_help("Used in conjunction with reset period to determine when the skill charges are reset. For example, when frequency is set to 4 and period is set to Day then the skill charges in this category will reset ever 4 days. Leave this blank for categories with no charges") !!}
+        {!! Form::label('Reset Frequency') !!} {!! add_help(
+            'Used in conjunction with reset period to determine when the skill charges are reset. For example, when frequency is set to 4 and period is set to Day then the skill charges in this category will reset ever 4 days. Leave this blank for categories with no charges',
+        ) !!}
         {!! Form::number('reset_frequency', $category->reset_frequency ? $category->reset_frequency : 1, ['class' => 'form-control mb-2', 'min' => 0]) !!}
         {!! Form::label('Reset Period') !!} {!! add_help("The duration of time before the charges of skills in this category will be reset. Leave this as 'Never' for categories with no charges") !!}
         {!! Form::select('reset_period', [null => 'Never', 'hour' => 'Hour', 'day' => 'Day', 'month' => 'Month', 'year' => 'Year'], $category->reset_frequency ? $category->reset_frequency : null, ['class' => 'form-control']) !!}

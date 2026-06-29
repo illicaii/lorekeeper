@@ -12,7 +12,7 @@
                     <p class="m-0">LV. {!! $ability->getlevel() !!} </p>
                 @endif
             </div>
-            <small class="ml-2 m-0"><strong>Resets:</strong>  {!! pretty_date($ability->reset_time) !!} </small>
+            <small class="ml-2 m-0"><strong>Resets:</strong> {!! pretty_date($ability->reset_time) !!} </small>
             <p class="m-0 ml-2 mb-2"><strong>Energy:</strong> {!! $ability->getAvailableCharges() !!}/{!! $ability->getTotalCharges() !!}</p>
             @if (Auth::user())
                 {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id]) !!}
