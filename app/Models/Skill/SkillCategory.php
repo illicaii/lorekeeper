@@ -12,8 +12,8 @@ class SkillCategory extends Model {
      */
     protected $fillable = [
         'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_default', 'is_visible', 'is_levelable',
-        'hash', 'max_level', 'max_charge', 'level_base', 'level_multiplier', 'randomize_firstLevel', 'random_level_min',
-        'random_level_max',
+        'hash', 'max_level', 'max_charge', 'reset_period', 'reset_frequency', 'level_base', 'level_multiplier',
+        'randomize_firstLevel', 'random_level_min', 'random_level_max',
     ];
 
     /**
@@ -34,6 +34,8 @@ class SkillCategory extends Model {
         'image'             => 'mimes:jpeg,jpg,png|max:2048',
         'max_level'         => 'integer|min:0',
         'max_charge'        => 'integer|min:0',
+        'reset_period'      => 'required',
+        'reset_frequency'   => 'required',
         'level_base'        => 'integer|min:10',
         'level_multiplier'  => 'decimal:1,4|min:1.0',
         'random_level_min'  => 'integer|min:0',
@@ -51,6 +53,8 @@ class SkillCategory extends Model {
         'image'             => 'mimes:jpeg,jpg,png|max:2048',
         'max_level'         => 'integer|min:0',
         'max_charge'        => 'integer|min:0',
+        'reset_period'      => 'required',
+        'reset_frequency'   => 'required',
         'level_base'        => 'integer|min:10',
         'level_multiplier'  => 'decimal:1,4|min:1.0',
         'random_level_min'  => 'integer|min:0',

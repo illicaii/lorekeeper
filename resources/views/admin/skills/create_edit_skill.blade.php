@@ -82,7 +82,12 @@
         </div>
         <div class="form-group">
             {!! Form::label('Max Charges (Optional)') !!} {!! add_help('The max level of charges skills in this category can have. Leave this blank for categories with no charges') !!}
-            {!! Form::number('ovr_charge_cap', $skill->ovr_charge_cap ? $skill->ovr_charge_cap : 0, ['class' => 'form-control', 'min' => 0]) !!}
+            {!! Form::number('ovr_charge_cap', $skill->ovr_charge_cap ? $skill->ovr_charge_cap : 0, ['class' => 'form-control mb-2', 'min' => 0]) !!}
+
+            {!! Form::label('Reset Frequency') !!} {!! add_help("Used in conjunction with reset period to determine when the skill charges are reset. For example, when frequency is set to 4 and period is set to Day, then the skill's charges will reset every 4 days.") !!}
+            {!! Form::number('ovr_reset_frequency', $skill->ovr_reset_frequency ? $skill->ovr_reset_frequency : 1, ['class' => 'form-control mb-2', 'placeholder' => 'Reset Frequency', 'min' => 0]) !!}
+            {!! Form::label('Reset Period') !!} {!! add_help('The duration of time before the charges of this skill will be reset. Leave this as Never for skills with no charges') !!}
+            {!! Form::select('ovr_reset_period', [null => 'Never', 'hour' => 'Hour', 'day' => 'Day', 'month' => 'Month', 'year' => 'Year'], $skill->ovr_reset_period ? $skill->ovr_reset_period : null, ['class' => 'form-control']) !!}
         </div>
     </div>
 

@@ -7,12 +7,12 @@ Skills function similarly to traits and are assigned to the active image of an u
 Stats have the following features:
 - Can create Skills, Skill Categories, Skill Tags
 - Skill Categories can be marked as default which allows them to be auto added to MYOs or new character with the set level (or random level range)
-- Skill Categories can define skill cap, skill charges (uses), random initial level range and variables related to the level curve (xp base and multiplier)
-- Skills can be set to override Skill Category defaults for skill max level and skill charges (uses)
-- Skills can be marked as backend meaning they wont show up in public facing pages regardless of visibility. These are meant to be used for backend RNG chance calculation.
-- Skills can be given two skill tags: Consumable, Drop
-    - Consumable: Has a set number of charges which can be linked to activities like prompt entry (think Stamina). These skills can be set to reset hourly/daily/monthly/yearly/never and store charges equal to the max level a character has in that skill.
-    -   Item Granter: Can be used to grant the user 'x' items per reset period based on configured breakpoints. This action can be set to reset hourly/daily/monthly/yearly/never.
+- Skill Categories can define skill cap, skill charges (uses), random initial level range, charge reset period/frequency and variables related to the level curve (xp base and multiplier)
+- Skills can be set to override Skill Category defaults for skill max level, skill charges (uses), and charge reset period/frequency
+- Skills can be marked as backend meaning they wont show up in public facing pages regardless of visibility. These are meant to be used for backend RNG chance calculation and can earn XP. These differ from skills which are not visible, as skills marked not visible can not interact with game systems.
+- Skills can be given two skill tags which consume charges in different ways: Consumable, Drop
+    -   Consumable: Can be linked to activities like prompt entry (think Stamina) and consume charges upon completion of said activity. These skills use charges equal to the max level a character has in that skill.
+    -   Drop: Can be used to grant the user items per reset period based on configured breakpoints.
 - Skills can be reset, added, or removed by staff with character editing privileges on a per character basis from the skill edit menu on the character page
 - Skills not marked as default can be added to character uploads by staff or on MYO submissions by users.
 

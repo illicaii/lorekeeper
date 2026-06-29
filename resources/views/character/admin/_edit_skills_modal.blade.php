@@ -10,6 +10,8 @@
                 {!! Form::text('skill_data[]', $skill->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                 {!! Form::number('skill_xp[]', $skill->xp ? $skill->xp : 0, ['class' => 'form-control mr-2', 'placeholder' => 'Manual XP level (Defaults to 0)']) !!}
                 <a href="#" class="remove-skill btn btn-danger mb-2">×</a>
+                {!! Form::hidden('skill_charges[]', $skill->charges) !!}
+                {!! Form::hidden('skill_reset_time[]', $skill->reset_time) !!}
             </div>
         @endforeach
     </div>
@@ -17,6 +19,8 @@
         {!! Form::select('skill_id[]', $skills, null, ['class' => 'form-control mr-2 skill-select', 'placeholder' => 'Select Skill']) !!}
         {!! Form::text('skill_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
         {!! Form::number('skill_xp[]', 0, ['class' => 'form-control mr-2', 'placeholder' => 'Manual XP level (Defaults to 0)']) !!}
+        {!! Form::hidden('skill_charges[]', 0) !!}
+        {!! Form::hidden('skill_reset_time[]', null) !!}
         <a href="#" class="remove-skill btn btn-danger mb-2">×</a>
     </div>
 </div>

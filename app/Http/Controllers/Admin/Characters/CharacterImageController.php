@@ -177,8 +177,8 @@ class CharacterImageController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postEditImageSkills(Request $request, CharacterManager $service, $id) {
-        $data = $request->only(['skill_id', 'skill_data', 'skill_xp']);
         $image = CharacterImage::find($id);
+        $data = $request->only(['skill_id', 'skill_data', 'skill_xp', 'skill_charges', 'skill_reset_time']);
         if (!$image) {
             abort(404);
         }

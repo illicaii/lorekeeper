@@ -725,7 +725,14 @@ class CharacterManager extends Service {
             // Attach skills
             foreach ($data['skill_id'] as $key => $skillId) {
                 if ($skillId) {
-                    $skill = CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $data['skill_xp'][$key]]);
+                    $skill = CharacterSkill::create([
+                        'character_image_id' => $image->id,
+                        'skill_id' => $skillId,
+                        'data' => $data['skill_data'][$key],
+                        'xp' => $data['skill_xp'][$key],
+                        'charges' => $data['skill_xp'][$key],
+                        'reset_time' => Carbon::now(), //todo
+                        ]);
                 }
             }
 

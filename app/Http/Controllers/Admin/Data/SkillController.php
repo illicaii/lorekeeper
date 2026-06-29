@@ -79,8 +79,8 @@ class SkillController extends Controller {
         $id ? $request->validate(SkillCategory::$updateRules) : $request->validate(SkillCategory::$createRules);
         $data = $request->only([
             'name', 'description', 'image', 'remove_image', 'is_default', 'is_visible', 'is_levelable',
-            'max_level', 'max_charge', 'level_base', 'level_multiplier', 'randomize_firstLevel', 'random_level_min',
-            'random_level_max',
+            'max_level', 'max_charge', 'reset_period', 'reset_frequency', 'level_base', 'level_multiplier',
+            'randomize_firstLevel', 'random_level_min', 'random_level_max',
         ]);
         if ($id && $service->updateSkillCategory(SkillCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
@@ -234,7 +234,7 @@ class SkillController extends Controller {
         $data = $request->only([
             'name', 'skill_abrv', 'description', 'skill_category_id', 'species_id', 'image', 'remove_image',
             'is_visible', 'skill_type', 'parent_id', 'parent_level', 'is_backend',
-            'override_default_caps', 'ovr_level_cap', 'ovr_charge_cap',
+            'override_default_caps', 'ovr_level_cap', 'ovr_charge_cap', 'ovr_reset_period', 'ovr_reset_frequency',
         ]);
         if ($id && $service->updateSkill(Skill::find($id), $data, Auth::user())) {
             flash('Skill updated successfully.')->success();

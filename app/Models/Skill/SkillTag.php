@@ -12,7 +12,7 @@ class SkillTag extends Model {
      * @var array
      */
     protected $fillable = [
-        'skill_id', 'tag', 'data', 'is_active', 'reset_period',
+        'skill_id', 'tag', 'data', 'is_active',
     ];
 
     /**

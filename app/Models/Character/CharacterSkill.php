@@ -4,6 +4,8 @@ namespace App\Models\Character;
 
 use App\Models\Model;
 use App\Models\Skill\Skill;
+use App\Models\Skill\SkillTag;
+use Carbon\Carbon;
 
 class CharacterSkill extends Model {
     /**
@@ -12,7 +14,7 @@ class CharacterSkill extends Model {
      * @var array
      */
     protected $fillable = [
-        'character_image_id', 'skill_id', 'data', 'character_type', 'xp', 'charges', 'is_active',
+        'character_image_id', 'skill_id', 'data', 'character_type', 'xp', 'charges', 'reset_time',
     ];
 
     /**
@@ -49,6 +51,15 @@ class CharacterSkill extends Model {
         'charges'        => 'integer|min:0',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'reset_time' => 'datetime',
+    ];
+
     /**********************************************************************************************
 
         RELATIONS
@@ -67,6 +78,23 @@ class CharacterSkill extends Model {
      */
     public function skill() {
         return $this->belongsTo(Skill::class, 'skill_id');
+    }
+
+    /**********************************************************************************************
+
+        SCOPES
+
+    **********************************************************************************************/
+
+    /**
+     * Scope a query to only include skills that require updating.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRequiresUpdate($query) {
+        return $query->whereIn('skill_id', Skill::whereIn('id', SkillTag::where('is_active', 1)->pluck('skill_id')->toArray())->pluck('id')->toArray())->where('reset_time', '<', Carbon::now());
     }
 
     /**********************************************************************************************
