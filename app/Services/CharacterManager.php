@@ -727,12 +727,12 @@ class CharacterManager extends Service {
                 if ($skillId) {
                     $skill = CharacterSkill::create([
                         'character_image_id' => $image->id,
-                        'skill_id' => $skillId,
-                        'data' => $data['skill_data'][$key],
-                        'xp' => $data['skill_xp'][$key],
-                        'charges' => $data['skill_xp'][$key],
-                        'reset_time' => Carbon::now(), //todo
-                        ]);
+                        'skill_id'           => $skillId,
+                        'data'               => $data['skill_data'][$key],
+                        'xp'                 => $data['skill_xp'][$key],
+                        'charges'            => $data['skill_xp'][$key],
+                        'reset_time'         => Carbon::now(), // todo
+                    ]);
                 }
             }
 

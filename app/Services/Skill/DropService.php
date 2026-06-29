@@ -8,8 +8,8 @@ use App\Models\Item\Item;
 use App\Models\Loot\LootTable;
 use App\Models\Skill\Skill;
 use App\Services\Service;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DropService extends Service {
     /*
@@ -180,9 +180,9 @@ class DropService extends Service {
                 }
                 $recipient_stack->charges = $recipient_stack->charges + $cost;
                 $recipient_stack->reset_time = Carbon::now()->add(
-                        $ability->skill->reset_frequency(),
-                        $ability->skill->reset_period(),
-                    )->startOf($ability->skill->reset_period());
+                    $ability->skill->reset_frequency(),
+                    $ability->skill->reset_period(),
+                )->startOf($ability->skill->reset_period());
                 $recipient_stack->save();
             }
             DB::commit();

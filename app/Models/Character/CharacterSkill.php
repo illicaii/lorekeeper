@@ -32,6 +32,15 @@ class CharacterSkill extends Model {
     protected $with = ['skill'];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'reset_time' => 'datetime',
+    ];
+
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -49,15 +58,6 @@ class CharacterSkill extends Model {
     public static $updateRules = [
         'xp'             => 'integer|min:0',
         'charges'        => 'integer|min:0',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'reset_time' => 'datetime',
     ];
 
     /**********************************************************************************************
