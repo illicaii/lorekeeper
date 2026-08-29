@@ -164,7 +164,7 @@ class DropService extends Service {
             ])->first();
 
             // Check if character skill has charges available
-            $usableCharges = $ability->getAvailableCharges() - $ability->charges;
+            $usableCharges = $ability->getAvailableCharges();
             $characterLevel = $ability->getlevel();
             if ($usableCharges > 0) {
                 // Calculate reward pool
@@ -196,7 +196,7 @@ class DropService extends Service {
     }
 
     /**
-     * Calculates what rewards should be dropped. This will always award 1 set of rewards (this is intentional).
+     * Calculates what rewards should be dropped consuming a single charge cost. This will always award 1 set of rewards (this is intentional).
      *
      * @param mixed $charges
      * @param mixed $level
@@ -205,6 +205,34 @@ class DropService extends Service {
      * @return string
      */
     private function getDropRewards($charges, $level, $data) {
+        $rewards = createAssetsArray(true);
+        $rewardBatch = createAssetsArray(true);
+        $cost = 0;
+        // figure out what breakpoint the character meets
+        foreach ($data as $breakpoint) {
+            if ($level >= $breakpoint['min_lvl'] && $level < $breakpoint['max_lvl']) {
+                $cost += $breakpoint['charges'];
+                $rewardBatch = mergeAssetsArrays($rewardBatch, parseAssetData($breakpoint['rewards'], true), true);
+            }
+        }
+        $rewards = mergeAssetsArrays($rewards, $rewardBatch, true);
+
+        return [
+            'rewards' => $rewards,
+            'cost'    => max($cost, 1),
+        ];
+    }
+
+    /**
+     * Calculates what rewards should be dropped consuming all charges. This will always award 1 set of rewards (this is intentional).
+     *
+     * @param mixed $charges
+     * @param mixed $level
+     * @param mixed $data
+     *
+     * @return string
+     */
+    private function getAllDropRewards($charges, $level, $data) {
         $rewards = createAssetsArray(true);
         $rewardBatch = createAssetsArray(true);
         $cost = 0;

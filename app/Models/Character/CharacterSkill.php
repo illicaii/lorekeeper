@@ -147,6 +147,22 @@ class CharacterSkill extends Model {
     }
 
     /**
+     * Get the charge cost for the skill at the character's current level.
+     */
+    public function getChargesOnSingleUse($tag) {
+        $skill = $this->skill()->get()[0];
+        $character_level = $skill->getlevel($this->xp);
+
+        foreach ($skill->tag($tag)->data as $breakpoint){
+            if ($character_level >= $breakpoint['min_lvl'] && $character_level < $breakpoint['max_lvl']) {
+                $charge = $breakpoint['charges'];
+            }
+        }
+
+        return max($charge, 1);
+    }
+
+    /**
      * Get the number of charges the character has left to use for this skill.
      */
     public function getAvailableCharges() {
