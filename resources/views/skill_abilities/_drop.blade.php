@@ -12,7 +12,13 @@
                     <p class="m-0">LV. {!! $ability->getlevel() !!} </p>
                 @endif
             </div>
-            <small class="ml-2 m-0"><strong>Resets:</strong> @if ($ability->reset_time) {!! pretty_date($ability->reset_time) !!} @else --- (click Collect) @endif</small>
+            <small class="ml-2 m-0"><strong>Resets:</strong>
+                @if ($ability->reset_time)
+                    {!! pretty_date($ability->reset_time) !!}
+                @else
+                    --- (click Collect)
+                @endif
+            </small>
             <p class="m-0 ml-2 mb-2"><strong>Energy:</strong> {!! $ability->getAvailableCharges() !!}/{!! $ability->getTotalCharges() !!}</p>
             @if (Auth::user())
                 {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id]) !!}
@@ -24,7 +30,7 @@
             @endif
             <div class="w-100 text-center">
                 @if ($ability->getAvailableCharges() > 0)
-                    <small>Consumes x{!! min($ability->getChargesOnSingleUse($skill->tag('drop')->tag),$ability->getTotalCharges()) !!} Energy!</small>
+                    <small>Consumes x{!! min($ability->getChargesOnSingleUse($skill->tag('drop')->tag), $ability->getTotalCharges()) !!} Energy!</small>
                 @else
                     <small>{!! $character->displayname !!} is too tired.</small>
                 @endif
