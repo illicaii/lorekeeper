@@ -40,9 +40,10 @@ class SkillAbilityController extends Controller {
     private function postAbilityAct(Request $request) {
         $character = Character::where('slug', $request->get('slug'))->get()->first();
         $ability = $character->image->skills->where('skill_id', $request->get('skill_id'))->first();
-        if (!$ability){
-            //if somehow the user tries to click on a skill ability the character no longer has
-            flash("Character does not have this skill anymore.")->error();
+        if (!$ability) {
+            // if somehow the user tries to click on a skill ability the character no longer has
+            flash('Character does not have this skill anymore.')->error();
+
             return redirect()->back();
         }
 
