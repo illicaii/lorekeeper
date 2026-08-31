@@ -16,11 +16,13 @@
                 @if ($ability->reset_time)
                     {!! pretty_date($ability->reset_time) !!}
                 @else
-                    --- @if (Auth::user() && ($character->user_id == $user->id))(click Collect)@endif
+                    --- @if (Auth::user() && $character->user_id == $user->id)
+                        (click Collect)
+                    @endif
                 @endif
             </small>
             <p class="m-0 ml-2 mb-2"><strong>Energy:</strong> {!! $ability->getAvailableCharges() !!}/{!! $ability->getTotalCharges() !!}</p>
-            @if (Auth::user() && ($character->user_id == $user->id))
+            @if (Auth::user() && $character->user_id == $user->id)
                 {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id]) !!}
                 {!! Form::hidden('tag', $skill->tag('drop')->tag) !!}
                 {!! Form::hidden('skill_id', $skill->id) !!}
