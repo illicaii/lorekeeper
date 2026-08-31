@@ -33,9 +33,9 @@
                 @endforeach
             @endforeach
         @else
-        <div class="col">
-            Character currently has no abilities
-        </div>
+            <div class="col">
+                Character currently has no abilities
+            </div>
         @endif
     </div>
 
