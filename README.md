@@ -10,9 +10,9 @@ Stats have the following features:
 - Skill Categories can define skill cap, skill charges (uses), random initial level range, charge reset period/frequency and variables related to the level curve (xp base and multiplier)
 - Skills can be set to override Skill Category defaults for skill max level, skill charges (uses), and charge reset period/frequency
 - Skills can be marked as backend meaning they wont show up in public facing pages regardless of visibility. These are meant to be used for backend RNG chance calculation and can earn XP. These differ from skills which are not visible, as skills marked not visible can not interact with game systems.
-- Skills can be given two skill tags which consume charges in different ways: Consumable, Drop
+- Skills can be given two skill tags which consume charges in different ways: Consumable, Item Drop
     -   Consumable: Can be linked to activities like prompt entry (think Stamina) and consume charges upon completion of said activity. These skills use charges equal to the max level a character has in that skill.
-    -   Drop: Can be used to grant the user items per reset period based on configured breakpoints.
+    -   Item Drop: Can be used to grant the user items per reset period based on configured breakpoints.
 - Skills can be reset, added, or removed by staff with character editing privileges on a per character basis from the skill edit menu on the character page
 - Skills not marked as default can be added to character uploads by staff or on MYO submissions by users.
 
@@ -24,7 +24,7 @@ Skill Items/Grants
 - Skill items have five types: Skill Grant, Add XP/Level, Set XP/Level, Reset XP/level, or Remove Skill which each have different functionality.
 - Skill Items can be configured to grant single, random or all skills from the skills in the item tag.
 
-Activities
+Activities (moving these to personal site only, skills with drop tag can be created for training)
 - Researching is a new activity where you can assign characters to it for x amount of time to learn y skill. Researching tasks can be set up by admin with duration and reward. These can also be used to award items/currency/loot tables (or possibly linked to other extensions to award themes, recipes, achievements). Research Tasks can be given level, item, or cost requirements. Number of concurrent researches can be set in the site settings.
 - Training is a new activity where you can assign characters to a slot for x amount of time to earn y amount of xp, levels, items, or currency. Amount of free training slots and purchasable training slots can be set in site settings. (Training slots are awarded through slot items or manual grants) This is built off the extension: Assignable Character Slots (which does not exist yet)
 

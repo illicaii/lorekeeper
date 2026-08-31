@@ -223,7 +223,7 @@ function addAsset(&$array, $asset, $quantity = 1, $overriddenAssetType = null) {
     }
     $type = $asset->assetType;
     if ($overriddenAssetType) {
-        $type = $overriddengetAssetKeysAssetType;
+        $type = $overriddenAssetType;
     }
 
     if (isset($array[$type][$asset->id])) {

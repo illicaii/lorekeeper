@@ -1,5 +1,4 @@
 <h3>Drops</h3>
-<p>This currently does nothing</p>
 <p>These are the rewards that will be distributed to the character when they use the skill action based on the skill level matching the breakpoints. The
     box will only distribute rewards to the characters themselves - user-only rewards should not be added.</p>
 

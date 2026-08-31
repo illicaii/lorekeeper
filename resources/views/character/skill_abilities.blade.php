@@ -33,9 +33,9 @@
                 @endforeach
             @endforeach
         @else
-            <div class="col">
-                Character has no abilities
-            </div>
+        <div class="col">
+            Character currently has no abilities
+        </div>
         @endif
     </div>
 
@@ -63,6 +63,6 @@
         </div>
     </div>
     <div class="text-right">
-        <a href="{{ url($character->url . '/skill-abilities-logs') }}">View all...</a>
+        <a href="{{ url($character->url . '/skill-ability-logs') }}">View all...</a>
     </div>
 @endsection

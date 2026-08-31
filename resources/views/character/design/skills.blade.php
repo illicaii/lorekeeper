@@ -18,7 +18,6 @@
         {!! Form::open(['url' => 'designs/' . $request->id . '/skills']) !!}
 
         <div class="form-group">
-            {!! Form::label('Skills') !!}
             <div><a href="#" class="btn btn-primary mb-2" id="add-skill">Add Skill</a></div>
             <div id="skillList">
                 {{-- Add in the compulsory skills for MYO slots --}}
@@ -73,7 +72,6 @@
         </div>
         {!! Form::close() !!}
     @else
-        <h5>Skills</h5>
         <div>
             @if ($request->character && $request->character->is_myo_slot)
                 @if ($request->character->image->skills)
