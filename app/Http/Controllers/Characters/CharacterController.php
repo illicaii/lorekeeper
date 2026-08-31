@@ -274,9 +274,9 @@ class CharacterController extends Controller {
         $character_skills = $this->character->image->skills()->whereIn('skill_id', $skills_with_abilities)->get();
 
         return view('character.skill_abilities', [
-            'user'                  => Auth::check() ? Auth::user() : null,
-            'character'             => $this->character,
-            'abilities'             => $character_skills,
+            'user'                   => Auth::check() ? Auth::user() : null,
+            'character'              => $this->character,
+            'abilities'              => $character_skills,
             'logs'                   => $this->character->getSkillAbilityLogs(),
         ]);
     }

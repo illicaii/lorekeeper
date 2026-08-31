@@ -787,12 +787,12 @@ class CharacterManager extends Service {
                 if ($skill) {
                     $reskill = CharacterSkill::create([
                         'character_image_id' => $image->id,
-                        'skill_id' => $skill->id,
-                        'data' => $skill->data,
-                        'xp' => 0,
-                        'charges' => $skill->charges,
-                        'reset_time' => $skill->reset_time,
-                        ]);
+                        'skill_id'           => $skill->id,
+                        'data'               => $skill->data,
+                        'xp'                 => 0,
+                        'charges'            => $skill->charges,
+                        'reset_time'         => $skill->reset_time,
+                    ]);
                 }
             }
 
@@ -2202,11 +2202,11 @@ class CharacterManager extends Service {
                 if ($skillId) {
                     $skill = CharacterSkill::create([
                         'character_image_id' => $image->id,
-                        'skill_id' => $skillId,
-                        'data' => $data['skill_data'][$key],
-                        'xp' => $data['skill_xp'][$key],
-                        'charges' => $data['skill_charges'][$key],
-                        'reset_time' => $data['skill_reset_time'][$key],
+                        'skill_id'           => $skillId,
+                        'data'               => $data['skill_data'][$key],
+                        'xp'                 => $data['skill_xp'][$key],
+                        'charges'            => $data['skill_charges'][$key],
+                        'reset_time'         => $data['skill_reset_time'][$key],
                     ]);
                 }
             }

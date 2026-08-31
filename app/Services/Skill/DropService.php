@@ -187,10 +187,10 @@ class DropService extends Service {
             }
 
             $log_cost = $cost;
-            if ($cost > $ability->getTotalCharges()){
+            if ($cost > $ability->getTotalCharges()) {
                 $log_cost = $ability->getTotalCharges();
             }
-            $this->createLog($character->id, $user->id, $ability->skill->id, "Drop", 'Consumed '.$log_cost.' energy to use '.$ability->skill->displayName.' ability.');
+            $this->createLog($character->id, $user->id, $ability->skill->id, 'Drop', 'Consumed '.$log_cost.' energy to use '.$ability->skill->displayName.' ability.');
             DB::commit();
 
             return $this->getDropRewardsString($rewards ?? null);
@@ -202,9 +202,32 @@ class DropService extends Service {
     }
 
     /**
+     * Creates a log for the ability use.
+     *
+     * @param int    $skillId
+     * @param int    $senderId
+     * @param string $type
+     * @param string $data
+     * @param mixed  $characterId
+     */
+    public function createLog($characterId, $senderId, $skillId, $type, $data) {
+        return DB::table('skill_ability_log')->insert(
+            [
+                'character_id' => $characterId,
+                'sender_id'    => $senderId,
+                'skill_id'     => $skillId,
+                'log'          => $type,
+                'log_type'     => $type,
+                'data'         => $data,
+                'created_at'   => Carbon::now(),
+                'updated_at'   => Carbon::now(),
+            ]
+        );
+    }
+
+    /**
      * Calculates what rewards should be dropped consuming a single charge cost. This will always award 1 set of rewards (this is intentional).
      *
-     * @param mixed $charges
      * @param mixed $level
      * @param mixed $data
      *
@@ -231,7 +254,7 @@ class DropService extends Service {
 
     /**
      * Calculates what rewards should be dropped consuming all charges. This will always award 1 set of rewards (this is intentional).
-     * Currently not used yet
+     * Currently not used yet.
      *
      * @param mixed $charges
      * @param mixed $level
@@ -250,8 +273,8 @@ class DropService extends Service {
                 $rewardBatch = mergeAssetsArrays($rewardBatch, parseAssetData($breakpoint['rewards'], true), true);
             }
         }
-        //Cost must be min 1 for drop skills so catch the 0 or negative cost skills
-        if ($cost <= 0){
+        // Cost must be min 1 for drop skills so catch the 0 or negative cost skills
+        if ($cost <= 0) {
             $cost = 1;
         }
 
@@ -283,28 +306,5 @@ class DropService extends Service {
         }
 
         return 'Character has received: '.createRewardsString($rewards);
-    }
-
-    /**
-     * Creates a log for the ability use.
-     *
-     * @param int    $skillId
-     * @param int    $senderId
-     * @param string $type
-     * @param string $data
-     */
-    public function createLog($characterId, $senderId, $skillId, $type, $data) {
-        return DB::table('skill_ability_log')->insert(
-            [
-                'character_id' => $characterId,
-                'sender_id'    => $senderId,
-                'skill_id' => $skillId,
-                'log'          => $type,
-                'log_type'     => $type,
-                'data'         => $data,
-                'created_at'   => Carbon::now(),
-                'updated_at'   => Carbon::now(),
-            ]
-        );
     }
 }
