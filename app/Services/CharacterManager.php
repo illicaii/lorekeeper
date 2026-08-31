@@ -730,8 +730,8 @@ class CharacterManager extends Service {
                         'skill_id'           => $skillId,
                         'data'               => $data['skill_data'][$key],
                         'xp'                 => $data['skill_xp'][$key],
-                        'charges'            => $data['skill_xp'][$key],
-                        'reset_time'         => Carbon::now(), // todo
+                        'charges'            => $data['skill_charges'][$key],
+                        'reset_time'         => $data['skill_reset_time'][$key],
                     ]);
                 }
             }
@@ -785,7 +785,14 @@ class CharacterManager extends Service {
             // Attach skills
             foreach ($data as $skill) {
                 if ($skill) {
-                    $reskill = CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skill->id, 'data' => $skill->data, 'xp' => 0]);
+                    $reskill = CharacterSkill::create([
+                        'character_image_id' => $image->id,
+                        'skill_id' => $skill->id,
+                        'data' => $skill->data,
+                        'xp' => 0,
+                        'charges' => $skill->charges,
+                        'reset_time' => $skill->reset_time,
+                        ]);
                 }
             }
 
@@ -2193,7 +2200,14 @@ class CharacterManager extends Service {
             // Attach skills
             foreach ($data['skill_id'] as $key => $skillId) {
                 if ($skillId) {
-                    $skill = CharacterSkill::create(['character_image_id' => $image->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $data['skill_xp'][$key]]);
+                    $skill = CharacterSkill::create([
+                        'character_image_id' => $image->id,
+                        'skill_id' => $skillId,
+                        'data' => $data['skill_data'][$key],
+                        'xp' => $data['skill_xp'][$key],
+                        'charges' => $data['skill_charges'][$key],
+                        'reset_time' => $data['skill_reset_time'][$key],
+                    ]);
                 }
             }
 

@@ -16,25 +16,26 @@
                 @if ($ability->reset_time)
                     {!! pretty_date($ability->reset_time) !!}
                 @else
-                    --- (click Collect)
+                    --- @if (Auth::user() && ($character->user_id == $user->id))(click Collect)@endif
                 @endif
             </small>
             <p class="m-0 ml-2 mb-2"><strong>Energy:</strong> {!! $ability->getAvailableCharges() !!}/{!! $ability->getTotalCharges() !!}</p>
-            @if (Auth::user())
+            @if (Auth::user() && ($character->user_id == $user->id))
                 {!! Form::open(['url' => 'character/' . $character->slug . '/skill-abilities/' . $skill->id]) !!}
                 {!! Form::hidden('tag', $skill->tag('drop')->tag) !!}
                 {!! Form::hidden('skill_id', $skill->id) !!}
                 {!! Form::hidden('slug', $character->slug) !!}
                 <button class="btn btn-primary btn-sm btn-collect w-100" name="action" value="act" @if ($ability->getAvailableCharges() <= 0) disabled @endif>Collect</button>
                 {{ Form::close() }}
+
+                <div class="w-100 text-center">
+                    @if ($ability->getAvailableCharges() > 0)
+                        <small>Consumes x{!! min($ability->getChargesOnSingleUse($skill->tag('drop')->tag), $ability->getTotalCharges()) !!} Energy!</small>
+                    @else
+                        <small>{!! $character->displayname !!} is too tired.</small>
+                    @endif
+                </div>
             @endif
-            <div class="w-100 text-center">
-                @if ($ability->getAvailableCharges() > 0)
-                    <small>Consumes x{!! min($ability->getChargesOnSingleUse($skill->tag('drop')->tag), $ability->getTotalCharges()) !!} Energy!</small>
-                @else
-                    <small>{!! $character->displayname !!} is too tired.</small>
-                @endif
-            </div>
         </div>
     </div>
 </div>

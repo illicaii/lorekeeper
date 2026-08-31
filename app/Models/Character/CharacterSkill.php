@@ -155,6 +155,7 @@ class CharacterSkill extends Model {
         $skill = $this->skill()->get()[0];
         $character_level = $skill->getlevel($this->xp);
 
+        $charge = 0;
         foreach ($skill->tag($tag)->data as $breakpoint) {
             if ($character_level >= $breakpoint['min_lvl'] && $character_level < $breakpoint['max_lvl']) {
                 $charge = $breakpoint['charges'];

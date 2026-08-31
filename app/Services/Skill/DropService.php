@@ -168,7 +168,7 @@ class DropService extends Service {
             $characterLevel = $ability->getlevel();
             if ($usableCharges > 0) {
                 // Calculate reward pool
-                $rewards = $this->getDropRewards($usableCharges, $characterLevel, $tag->data);
+                $rewards = $this->getDropRewards($characterLevel, $tag->data);
                 $cost = $rewards['cost'];
                 $rewards = $rewards['rewards'];
 
@@ -185,6 +185,12 @@ class DropService extends Service {
                 )->startOf($ability->skill->reset_period());
                 $recipient_stack->save();
             }
+
+            $log_cost = $cost;
+            if ($cost > $ability->getTotalCharges()){
+                $log_cost = $ability->getTotalCharges();
+            }
+            $this->createLog($character->id, $user->id, $ability->skill->id, "Drop", 'Consumed '.$log_cost.' energy to use '.$ability->skill->displayName.' ability.');
             DB::commit();
 
             return $this->getDropRewardsString($rewards ?? null);
@@ -204,7 +210,7 @@ class DropService extends Service {
      *
      * @return string
      */
-    private function getDropRewards($charges, $level, $data) {
+    private function getDropRewards($level, $data) {
         $rewards = createAssetsArray(true);
         $rewardBatch = createAssetsArray(true);
         $cost = 0;
@@ -225,6 +231,7 @@ class DropService extends Service {
 
     /**
      * Calculates what rewards should be dropped consuming all charges. This will always award 1 set of rewards (this is intentional).
+     * Currently not used yet
      *
      * @param mixed $charges
      * @param mixed $level
@@ -243,6 +250,11 @@ class DropService extends Service {
                 $rewardBatch = mergeAssetsArrays($rewardBatch, parseAssetData($breakpoint['rewards'], true), true);
             }
         }
+        //Cost must be min 1 for drop skills so catch the 0 or negative cost skills
+        if ($cost <= 0){
+            $cost = 1;
+        }
+
         // Duplicate reward string based on charges.
         $i = $charges;
         $count = 0;
@@ -271,5 +283,28 @@ class DropService extends Service {
         }
 
         return 'Character has received: '.createRewardsString($rewards);
+    }
+
+    /**
+     * Creates a log for the ability use.
+     *
+     * @param int    $skillId
+     * @param int    $senderId
+     * @param string $type
+     * @param string $data
+     */
+    public function createLog($characterId, $senderId, $skillId, $type, $data) {
+        return DB::table('skill_ability_log')->insert(
+            [
+                'character_id' => $characterId,
+                'sender_id'    => $senderId,
+                'skill_id' => $skillId,
+                'log'          => $type,
+                'log_type'     => $type,
+                'data'         => $data,
+                'created_at'   => Carbon::now(),
+                'updated_at'   => Carbon::now(),
+            ]
+        );
     }
 }

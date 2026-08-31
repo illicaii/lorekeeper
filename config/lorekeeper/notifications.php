@@ -439,14 +439,14 @@ return [
     ],
 
     // SKILL_GRANT
-    602 => [
+    2000 => [
         'name'    => 'Skill Grant',
         'message' => '{character_name} has learned or been awarded additional levels to {skill_name}. (<a href="{url}">View Character</a>)',
         'url'     => 'character/{character_slug}',
     ],
 
     // XP_GRANT
-    603 => [
+    2001 => [
         'name'    => 'XP Grant',
         'message' => '{character_name} has received {xp_amount} xp for {skill_name}. (<a href="{url}">View Character</a>)',
         'url'     => 'character/{character_slug}',

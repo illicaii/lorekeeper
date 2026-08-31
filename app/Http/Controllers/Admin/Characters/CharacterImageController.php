@@ -75,7 +75,7 @@ class CharacterImageController extends Controller {
      */
     public function postNewImage(Request $request, CharacterManager $service, $slug) {
         $request->validate(CharacterImage::$createRules);
-        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_id', 'designer_url', 'designer_id', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'skill_id', 'skill_data', 'skill_xp', 'is_valid', 'is_visible']);
+        $data = $request->only(['image', 'thumbnail', 'x0', 'x1', 'y0', 'y1', 'use_cropper', 'artist_url', 'artist_id', 'designer_url', 'designer_id', 'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'skill_id', 'skill_data', 'skill_xp', 'skill_charges', 'skill_reset_time', 'is_valid', 'is_visible']);
         $this->character = Character::where('slug', $slug)->first();
         if (!$this->character) {
             abort(404);

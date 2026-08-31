@@ -106,7 +106,8 @@ class CharacterController extends Controller {
             'x0', 'x1', 'y0', 'y1',
             'designer_id', 'designer_url',
             'artist_id', 'artist_url',
-            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'skill_id', 'skill_data', 'skill_xp',
+            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
+            'skill_id', 'skill_data', 'skill_xp', 'skill_charges', 'skill_reset_time',
             'image', 'thumbnail', 'image_description',
         ]);
         if ($character = $service->createCharacter($data, Auth::user())) {
@@ -138,7 +139,8 @@ class CharacterController extends Controller {
             'x0', 'x1', 'y0', 'y1',
             'designer_id', 'designer_url',
             'artist_id', 'artist_url',
-            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data', 'skill_id', 'skill_data', 'skill_xp',
+            'species_id', 'subtype_id', 'rarity_id', 'feature_id', 'feature_data',
+            'skill_id', 'skill_data', 'skill_xp',
             'image', 'thumbnail',
         ]);
         if ($character = $service->createCharacter($data, Auth::user(), true)) {

@@ -277,6 +277,7 @@ class CharacterController extends Controller {
             'user'                  => Auth::check() ? Auth::user() : null,
             'character'             => $this->character,
             'abilities'             => $character_skills,
+            'logs'                   => $this->character->getSkillAbilityLogs(),
         ]);
     }
 
@@ -416,6 +417,21 @@ class CharacterController extends Controller {
             'character'             => $this->character,
             'extPrevAndNextBtnsUrl' => '/skill-logs',
             'logs'                  => $this->character->getSkillLogs(0),
+        ]);
+    }
+
+    /**
+     * Shows a character's ability logs.
+     *
+     * @param mixed $slug
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCharacterSkillAbilityLogs($slug) {
+        return view('character.skill_ability_logs', [
+            'character'             => $this->character,
+            'extPrevAndNextBtnsUrl' => '/skill-ability-logs',
+            'logs'                  => $this->character->getSkillAbilityLogs(0),
         ]);
     }
 

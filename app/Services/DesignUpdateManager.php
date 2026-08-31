@@ -468,7 +468,7 @@ class DesignUpdateManager extends Service {
                 }
 
                 if (isset($oldSkills[$skillId])) {
-                    $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $oldSkills[$skillId]['xp'], 'character_type' => 'Update']);
+                    $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $oldSkills[$skillId]['xp'], 'charges' => $oldSkills[$skillId]['charges'], 'reset_time' => $oldSkills[$skillId]['reset_time'], 'character_type' => 'Update']);
                 } else {
                     $startingXP = $skills[$skillId]->getRandomStartingLevel();
                     $skill = CharacterSkill::create(['character_image_id' => $request->id, 'skill_id' => $skillId, 'data' => $data['skill_data'][$key], 'xp' => $startingXP, 'character_type' => 'Update']);

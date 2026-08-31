@@ -11,6 +11,7 @@ use App\Models\Item\ItemLog;
 use App\Models\Model;
 use App\Models\Rarity;
 use App\Models\Skill\SkillLog;
+use App\Models\Skill\SkillAbilityLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Trade;
@@ -484,6 +485,25 @@ class Character extends Model {
         $character = $this;
 
         $query = SkillLog::with('sender.rank')->where('character_id', $this->id)->orderBy('id', 'DESC');
+
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+    }
+
+    /**
+     * Get the character's skill ability logs.
+     *
+     * @param int $limit
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Support\Collection
+     */
+    public function getSkillAbilityLogs($limit = 10) {
+        $character = $this;
+
+        $query = SkillAbilityLog::with('sender.rank')->where('character_id', $this->id)->orderBy('id', 'DESC');
 
         if ($limit) {
             return $query->take($limit)->get();
