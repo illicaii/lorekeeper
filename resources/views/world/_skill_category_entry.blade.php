@@ -11,20 +11,6 @@
                 <a href="{{ $searchUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>
             @endif
         </h3>
-        @if ((isset($category->max_level) && $category->max_level != 0) || (isset($category->max_charge) && $category->max_charge != 0))
-            <div class="row">
-                @if (isset($category->max_level) && $category->max_level != 0)
-                    <div class="col-md">
-                        <p><strong>Max Level:</strong> {!! $category->max_level !!}</p>
-                    </div>
-                @endif
-                @if (isset($category->max_charge) && $category->max_charge != 0)
-                    <div class="col-md">
-                        <p><strong>Max Charges:</strong> {!! $category->max_charge !!}</p>
-                    </div>
-                @endif
-            </div>
-        @endif
         <div class="world-entry-text">
             {!! $description !!}
         </div>

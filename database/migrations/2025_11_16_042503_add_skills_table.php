@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->integer('species_id')->unsigned()->nullable()->default(null);
             $table->integer('parent_id')->unsigned()->nullable()->default(null);
             $table->integer('parent_level')->unsigned()->nullable()->default(null);
-            $table->integer('skill_type')->unsigned()->nullable()->default(null);
             $table->boolean('has_image')->default(0);
             $table->boolean('is_visible')->default(0);
             $table->boolean('is_backend')->default(0);

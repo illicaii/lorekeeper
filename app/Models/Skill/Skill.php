@@ -14,7 +14,7 @@ class Skill extends Model {
      */
     protected $fillable = [
         'name', 'skill_abrv', 'description', 'parsed_description', 'skill_category_id', 'species_id',
-        'has_image', 'hash', 'is_visible', 'is_backend', 'skill_type', 'parent_id', 'parent_level',
+        'has_image', 'hash', 'is_visible', 'is_backend', 'parent_id', 'parent_level',
         'override_default_caps', 'ovr_level_cap', 'ovr_charge_cap', 'ovr_reset_period', 'ovr_reset_frequency',
     ];
 

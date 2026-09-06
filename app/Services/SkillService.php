@@ -268,7 +268,7 @@ class SkillService extends Service {
                 throw new \Exception('The selected skill category is invalid.');
             }
 
-            $data = $this->populateData($data);
+            $data = $this->populateData($data, $skill);
 
             $image = null;
             if (isset($data['image']) && $data['image']) {
@@ -518,14 +518,17 @@ class SkillService extends Service {
         if (!isset($data['is_visible'])) {
             $data['is_visible'] = 0;
         }
+        if (!isset($data['is_backend'])) {
+            $data['is_backend'] = 0;
+        }
         if (!isset($data['override_default_caps'])) {
             $data['override_default_caps'] = 0;
         }
 
         if (isset($data['remove_image'])) {
-            if ($feature && $feature->has_image && $data['remove_image']) {
+            if ($skill && $skill->has_image && $data['remove_image']) {
                 $data['has_image'] = 0;
-                $this->deleteImage($feature->imagePath, $feature->imageFileName);
+                $this->deleteImage($skill->imagePath, $skill->imageFileName);
             }
             unset($data['remove_image']);
         }

@@ -193,8 +193,6 @@ class SkillController extends Controller {
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'skills'     => ['none' => 'No Parent'] + Skill::orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
-            'skill_types'=> [SkillType::COSMETIC->value => 'Cosmetic', SkillType::CONSUMABLE->value => 'Consumable',
-                SkillType::ITEM_GRANTER->value          => 'Item Granter'],
         ]);
     }
 
@@ -216,8 +214,6 @@ class SkillController extends Controller {
             'species'    => ['none' => 'No restriction'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'skills'     => ['none' => 'No Parent'] + Skill::where('id', '!=', $skill->id)->orderBy('name', 'ASC')->pluck('name', 'id')->toArray(),
             'categories' => ['none' => 'No Category'] + SkillCategory::pluck('name', 'id', 'max_level', 'max_charge')->toArray(),
-            'skill_types'=> [SkillType::COSMETIC->value => 'Cosmetic', SkillType::CONSUMABLE->value => 'Consumable',
-                SkillType::ITEM_GRANTER->value          => 'Item Granter'],
         ]);
     }
 
@@ -233,7 +229,7 @@ class SkillController extends Controller {
         $id ? $request->validate(Skill::$updateRules) : $request->validate(Skill::$createRules);
         $data = $request->only([
             'name', 'skill_abrv', 'description', 'skill_category_id', 'species_id', 'image', 'remove_image',
-            'is_visible', 'skill_type', 'parent_id', 'parent_level', 'is_backend',
+            'is_visible', 'parent_id', 'parent_level', 'is_backend',
             'override_default_caps', 'ovr_level_cap', 'ovr_charge_cap', 'ovr_reset_period', 'ovr_reset_frequency',
         ]);
         if ($id && $service->updateSkill(Skill::find($id), $data, Auth::user())) {

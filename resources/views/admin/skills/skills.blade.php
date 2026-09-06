@@ -83,22 +83,24 @@
                                 <div class="logs-table-cell">{{ $skill->species ? $skill->species->name : '---' }}</div>
                             </div>
                             <div class="col-6 col-md-2">
-                                @if ($skill->override_default_caps && isset($skill->ovr_level_cap))
-                                    <div class="logs-table-cell">*{{ $skill->ovr_level_cap }}</div>
-                                @elseif (isset($skill->category->max_level))
-                                    <div class="logs-table-cell">{{ $skill->category->max_level }}</div>
+                                <div class="logs-table-cell">
+                                @if ($skill->getMaxLevels() != 0)
+                                    @if ($skill->override_default_caps)*@endif
+                                    {{ $skill->getMaxLevels() }}
                                 @else
-                                    <div class="logs-table-cell">---</div>
+                                    ---
                                 @endif
+                                </div>
                             </div>
                             <div class="col-6 col-md-2">
-                                @if ($skill->override_default_caps && isset($skill->ovr_charge_cap))
-                                    <div class="logs-table-cell">*{{ $skill->ovr_charge_cap }}</div>
-                                @elseif (isset($skill->category->max_charge))
-                                    <div class="logs-table-cell">{{ $skill->category->max_charge }}</div>
+                                <div class="logs-table-cell">
+                                @if ($skill->getMaxCharges() != 0)
+                                    @if ($skill->override_default_caps)*@endif
+                                    {{ $skill->getMaxCharges() }}
                                 @else
-                                    <div class="logs-table-cell">---</div>
+                                    ---
                                 @endif
+                                </div>
                             </div>
                             <div class="col-12 col-md-1">
                                 <div class="logs-table-cell">

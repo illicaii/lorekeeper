@@ -22,6 +22,14 @@
     <div id="sublistRow">
         <div class="sublist-row">
             <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th width="40%">Min Level (Inclusive)</th>
+                        <th width="40%">Max Level (Exclusive)</th>
+                        <th width="40%">Cost (Charges Consumed)</th>
+                        <th width="10%"></th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <td>{!! Form::text('min_lvl[]', 0, ['class' => 'form-control']) !!}</td>

@@ -20,77 +20,57 @@
             <strong>!! This is a backend skill. Regular users will not be able to see this skill regardless of visibility !!</strong>
             <hr>
         @endif
+        <div class="row float-right">
+            @foreach ($skill->tags as $tag)
+                @if ($tag->is_active)
+                    <div class="col">
+                        {!! $tag->displayTag !!}
+                    </div>
+                @endif
+            @endforeach
+        </div>
         <div class="row">
             @if (isset($skill->category) && $skill->category)
-                <div class="col-md">
+                <div class="col-md-3">
                     <p><strong>Category:</strong> {!! $skill->category->displayname !!}</p>
                 </div>
             @endif
             @if ($skill->species_id)
-                <div class="col-md">
+                <div class="col-md-3">
                     <p><strong>Species:</strong> {!! $skill->species->displayName !!}</p>
                 </div>
             @endif
-            @if (isset($skill->parent_id) && $skill->parent)
-                <div class="col-md">
-                    <p><strong>Parent:</strong> {!! $skill->parent->displayname !!}</p>
-                </div>
-            @endif
-            <div class="col-md-6 col-md">
-                <div class="row">
-                    @foreach ($skill->tags as $tag)
-                        @if ($tag->is_active)
-                            <div class="col">
-                                {!! $tag->displayTag !!}
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
         </div>
         @if (isset($skill->parent_id) && $skill->parent)
-            <div class="row">
-                <div class="col-md">
-                    <p><strong>Parent Skill:</strong> {!! $skill->parent->displayname !!}</p>
-                </div>
-                <div class="col-md">
-                    <p><strong>Unlocks at:</strong> {!! $skill->parent->name !!}(lv.{!! $skill->parent_level !!})</p>
-                </div>
+        <div class="row">
+            <div class="col">
+                <p><strong>Unlockable at:</strong> {!! $skill->parent->displayname !!}(lv.{!! $skill->parent_level !!})</p>
             </div>
+        </div>
         @endif
         <div class="world-entry-text">
             {!! $description !!}
         </div>
 
-        @if (isset($skill->override_default_caps) && ((isset($skill->ovr_level_cap) && $skill->ovr_level_cap != 0) || (isset($skill->ovr_charge_cap) && $skill->ovr_charge_cap != 0)))
-            <hr>
-            <div class="row">
-                @if (isset($skill->ovr_level_cap) && $skill->ovr_level_cap != 0)
-                    <div class="col-md">
-                        <p><strong>Max Level:</strong> {!! $skill->ovr_level_cap !!}</p>
-                    </div>
-                @endif
-                @if (isset($skill->ovr_charge_cap) && $skill->ovr_charge_cap != 0)
-                    <div class="col-md">
-                        <p><strong>Max Charges:</strong> {!! $skill->ovr_charge_cap !!}</p>
-                    </div>
-                @endif
-            </div>
-        @elseif((isset($skill->category->max_level) && $skill->category->max_level != 0) || (isset($skill->category->max_charge) && $skill->category->max_charge != 0))
-            <hr>
-            <div class="row">
-                @if (isset($skill->category->max_level) && $skill->category->max_level != 0)
-                    <div class="col-md">
-                        <p><strong>Max Level:</strong> {!! $skill->category->max_level !!}</p>
-                    </div>
-                @endif
-                @if (isset($skill->category->max_charge) && $skill->category->max_charge != 0)
-                    <div class="col-md">
-                        <p><strong>Max Charges:</strong> {!! $skill->category->max_charge !!}</p>
-                    </div>
-                @endif
-            </div>
-        @endif
+        <hr>
+        <div class="row">
+            @if ($skill->getMaxLevels() && $skill->getMaxLevels() != 0)
+                <div class="col-md">
+                    <p><strong>Max Level:</strong> {!! $skill->getMaxLevels() !!}</p>
+                </div>
+            @endif
+            @if ($skill->getMaxCharges() != 0)
+                <div class="col-md">
+                    <p><strong>Max Energy:</strong> {!! $skill->getMaxCharges() !!} <small>
+                        @if ($skill->reset_period() != null)
+                            (per {!! $skill->reset_period() !!})
+                        @else
+                            (lifetime)
+                        @endif</small>
+                    </p>
+                </div>
+            @endif
+        </div>
 
 
     </div>

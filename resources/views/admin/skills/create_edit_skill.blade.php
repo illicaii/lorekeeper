@@ -35,11 +35,6 @@
             {!! Form::select('species_id', $species, $skill->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
         </div>
     </div>
-    <div class="form-group">
-        <p>This needs to be removed when skill tags are implemented</p>
-        {!! Form::label('skill_type', 'Select Skill Item Type') !!}
-        {!! Form::select('skill_type', $skill_types, isset($skill->skill_type) ? $skill->skill_type : '0', ['class' => 'form-control skill-select selectize']) !!}
-    </div>
 
     <div class="form-group">
         {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
@@ -62,7 +57,7 @@
     </div>
 
     <div class="form-group">
-        {!! Form::checkbox('is_visible', 1, $skill->is_visible ? $skill->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+        {!! Form::checkbox('is_visible', 1, $skill->is_visible ? 1: $skill->is_visible, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
         {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the trait will not be visible in the trait list or available for selection in search and design updates. Permissioned staff will still be able to add them to characters, however.') !!}
     </div>
     <div class="form-group">

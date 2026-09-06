@@ -142,6 +142,7 @@
                                 ->get()
                                 ->groupBy('skill_category_id');
                         @endphp
+                        <div class="row float-right"> <div class="col text-right"><u>Level</u></div></div>
                         @if ($image->skills()->count())
                             @foreach ($skillgroup as $key => $group)
                                 <div class="mb-2">
@@ -161,16 +162,11 @@
                                                         ({{ $skill->data }})
                                                     @endif
                                                 </div>
-                                                @if (isset($skill->xp) && (($skill->skill->override_default_caps && $skill->skill->ovr_level_cap > 0) || $skill->skill->category->is_levelable))
-                                                    <div class="col text-right"> LV. </div>
-                                                    <div class="col-3 col-md-3 col-lg-2 text-right">{{ $skill->getlevel() }}/
-                                                        @if ($skill->skill->override_default_caps)
-                                                            {{ $skill->skill->ovr_level_cap }}
-                                                        @elseif (isset($skill->skill->category->max_level))
-                                                            {{ $skill->skill->category->max_level }}
-                                                        @endif
-                                                    </div>
+                                                <div class="col-6 col-md-5 col-lg-4 text-right">
+                                                @if (isset($skill->xp) && ($skill->getMaxLevel() > 0))
+                                                   {{ $skill->getlevel() }}/{{ $skill->getMaxlevel() }}
                                                 @endif
+                                                </div>
                                             </div>
                                         @endif
                                     @endforeach

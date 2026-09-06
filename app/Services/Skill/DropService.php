@@ -179,10 +179,14 @@ class DropService extends Service {
                     throw new \Exception('Failed to use ability');
                 }
                 $recipient_stack->charges = $recipient_stack->charges + $cost;
-                $recipient_stack->reset_time = Carbon::now()->add(
-                    $ability->skill->reset_frequency(),
-                    $ability->skill->reset_period(),
-                )->startOf($ability->skill->reset_period());
+
+                if ($ability->skill->reset_period() != null){
+                    $recipient_stack->reset_time = Carbon::now()->add(
+                        $ability->skill->reset_frequency(),
+                        $ability->skill->reset_period(),
+                    )->startOf($ability->skill->reset_period());
+                }
+
                 $recipient_stack->save();
             }
 
