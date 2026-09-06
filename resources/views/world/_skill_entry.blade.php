@@ -42,11 +42,11 @@
             @endif
         </div>
         @if (isset($skill->parent_id) && $skill->parent)
-        <div class="row">
-            <div class="col">
-                <p><strong>Unlockable at:</strong> {!! $skill->parent->displayname !!}(lv.{!! $skill->parent_level !!})</p>
+            <div class="row">
+                <div class="col">
+                    <p><strong>Unlockable at:</strong> {!! $skill->parent->displayname !!}(lv.{!! $skill->parent_level !!})</p>
+                </div>
             </div>
-        </div>
         @endif
         <div class="world-entry-text">
             {!! $description !!}
@@ -62,11 +62,12 @@
             @if ($skill->getMaxCharges() != 0)
                 <div class="col-md">
                     <p><strong>Max Energy:</strong> {!! $skill->getMaxCharges() !!} <small>
-                        @if ($skill->reset_period() != null)
-                            (per {!! $skill->reset_period() !!})
-                        @else
-                            (lifetime)
-                        @endif</small>
+                            @if ($skill->reset_period() != null)
+                                (per {!! $skill->reset_period() !!})
+                            @else
+                                (lifetime)
+                            @endif
+                        </small>
                     </p>
                 </div>
             @endif

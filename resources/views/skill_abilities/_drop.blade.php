@@ -8,7 +8,7 @@
         <div class = "col p-2 align-self-center justify-content-center ">
             <div class="row ml-1 mr-2 d-flex justify-content-between">
                 <h5 class="mb-1">{!! $skill->displayName !!}</h5>
-                @if (isset($ability->xp) && (($skill->getMaxLevels() > 0)))
+                @if (isset($ability->xp) && $skill->getMaxLevels() > 0)
                     <p class="m-0">LV. {!! $ability->getlevel() !!} </p>
                 @endif
             </div>

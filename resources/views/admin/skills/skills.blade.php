@@ -84,22 +84,26 @@
                             </div>
                             <div class="col-6 col-md-2">
                                 <div class="logs-table-cell">
-                                @if ($skill->getMaxLevels() != 0)
-                                    @if ($skill->override_default_caps)*@endif
-                                    {{ $skill->getMaxLevels() }}
-                                @else
-                                    ---
-                                @endif
+                                    @if ($skill->getMaxLevels() != 0)
+                                        @if ($skill->override_default_caps)
+                                            *
+                                        @endif
+                                        {{ $skill->getMaxLevels() }}
+                                    @else
+                                        ---
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-6 col-md-2">
                                 <div class="logs-table-cell">
-                                @if ($skill->getMaxCharges() != 0)
-                                    @if ($skill->override_default_caps)*@endif
-                                    {{ $skill->getMaxCharges() }}
-                                @else
-                                    ---
-                                @endif
+                                    @if ($skill->getMaxCharges() != 0)
+                                        @if ($skill->override_default_caps)
+                                            *
+                                        @endif
+                                        {{ $skill->getMaxCharges() }}
+                                    @else
+                                        ---
+                                    @endif
                                 </div>
                             </div>
                             <div class="col-12 col-md-1">

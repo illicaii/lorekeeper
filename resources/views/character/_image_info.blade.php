@@ -142,7 +142,9 @@
                                 ->get()
                                 ->groupBy('skill_category_id');
                         @endphp
-                        <div class="row float-right"> <div class="col text-right"><u>Level</u></div></div>
+                        <div class="row float-right">
+                            <div class="col text-right"><u>Level</u></div>
+                        </div>
                         @if ($image->skills()->count())
                             @foreach ($skillgroup as $key => $group)
                                 <div class="mb-2">
@@ -163,9 +165,9 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-6 col-md-5 col-lg-4 text-right">
-                                                @if (isset($skill->xp) && ($skill->getMaxLevel() > 0))
-                                                   {{ $skill->getlevel() }}/{{ $skill->getMaxlevel() }}
-                                                @endif
+                                                    @if (isset($skill->xp) && $skill->getMaxLevel() > 0)
+                                                        {{ $skill->getlevel() }}/{{ $skill->getMaxlevel() }}
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endif
