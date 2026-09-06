@@ -135,17 +135,30 @@
                         <h5>Skills</h5>
                     </div>
                     <div>
-                        @php
-                            $skillgroup = $image
-                                ->skills()
-                                ->where('skills.is_visible', 1)
-                                ->get()
-                                ->groupBy('skill_category_id');
-                        @endphp
-                        <div class="row float-right">
-                            <div class="col text-right"><u>Level</u></div>
-                        </div>
-                        @if ($image->skills()->count())
+                        @if (Auth::check() && Auth::user()->hasPower('manage_characters'))
+                            @php
+                                $skillgroup = $image
+                                    ->skills()
+                                    ->orderBy('skill_category_id')
+                                    ->get()
+                                    ->groupBy('skill_category_id');
+                            @endphp
+                        @else
+                            @php
+                                $skillgroup = $image
+                                    ->skills()
+                                    ->where('skills.is_visible', 1)
+                                    ->where('skills.is_backend', 0)
+                                    ->orderBy('skill_category_id')
+                                    ->get()
+                                    ->groupBy('skill_category_id');
+                            @endphp
+                        @endif
+
+                        @if (count($skillgroup) > 0)
+                            <div class="row float-right">
+                                <div class="col text-right"><u>Level</u></div>
+                            </div>
                             @foreach ($skillgroup as $key => $group)
                                 <div class="mb-2">
                                     @if ($key)
@@ -154,23 +167,22 @@
                                         <strong>Miscellaneous:</strong>
                                     @endif
                                     @foreach ($group as $skill)
-                                        @if (!$skill->is_backend || (Auth::check() && Auth::user()->hasPower('manage_characters')))
-                                            <div class="row ml-md-2 w-100">
-                                                <div class="col">
-                                                    @if ($skill->is_backend)
-                                                        <i class="fas fa-key mr-1"></i>
-                                                    @endif
-                                                    {!! $skill->skill->displayName !!} @if ($skill->data)
-                                                        ({{ $skill->data }})
-                                                    @endif
-                                                </div>
-                                                <div class="col-6 col-md-5 col-lg-4 text-right">
-                                                    @if (isset($skill->xp) && $skill->getMaxLevel() > 0)
-                                                        {{ $skill->getlevel() }}/{{ $skill->getMaxlevel() }}
-                                                    @endif
-                                                </div>
+                                        <div class="row ml-md-2 w-100">
+                                            <div class="col">
+                                                @if ($skill->is_backend)
+                                                    <i class="fas fa-key mr-1"></i>
+                                                @endif
+                                                @if (!$skill->is_visible)
+                                                    <i class="fas fa-eye-slash mr-1"></i>
+                                                @endif
+                                                {!! $skill->skill->displayName !!} @if($skill->data)({{ $skill->data }})@endif
                                             </div>
-                                        @endif
+                                            <div class="col-6 col-md-5 col-lg-4 text-right">
+                                                @if (isset($skill->xp) && $skill->getMaxLevel() > 0)
+                                                    {{ $skill->getlevel() }}/{{ $skill->getMaxlevel() }}
+                                                @endif
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </div>
                             @endforeach
