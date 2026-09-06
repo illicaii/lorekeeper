@@ -6,7 +6,6 @@ use App\Models\Model;
 use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
-use App\Models\Skill\SkillCategory;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
