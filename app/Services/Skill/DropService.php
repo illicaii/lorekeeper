@@ -180,7 +180,7 @@ class DropService extends Service {
                 }
                 $recipient_stack->charges = $recipient_stack->charges + $cost;
 
-                if ($ability->skill->reset_period() != null){
+                if ($ability->skill->reset_period() != null) {
                     $recipient_stack->reset_time = Carbon::now()->add(
                         $ability->skill->reset_frequency(),
                         $ability->skill->reset_period(),

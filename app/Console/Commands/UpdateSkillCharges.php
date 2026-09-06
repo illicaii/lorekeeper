@@ -37,7 +37,7 @@ class UpdateSkillCharges extends Command {
         //
         $updateAbilities = CharacterSkill::requiresUpdate()->get();
         foreach ($updateAbilities as $ability) {
-            if ($ability->skill->reset_period() != null){
+            if ($ability->skill->reset_period() != null) {
                 $ability->update([
                     'charges'           => 0,
                     'reset_time'        => Carbon::now()->add(

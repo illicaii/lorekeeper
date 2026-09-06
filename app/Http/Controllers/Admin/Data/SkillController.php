@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Data;
 
-use App\Enums\Skill\SkillType;
 use App\Http\Controllers\Controller;
 use App\Models\Skill\Skill;
 use App\Models\Skill\SkillCategory;
