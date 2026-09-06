@@ -175,7 +175,9 @@
                                                 @if (!$skill->is_visible)
                                                     <i class="fas fa-eye-slash mr-1"></i>
                                                 @endif
-                                                {!! $skill->skill->displayName !!} @if($skill->data)({{ $skill->data }})@endif
+                                                {!! $skill->skill->displayName !!} @if ($skill->data)
+                                                    ({{ $skill->data }})
+                                                @endif
                                             </div>
                                             <div class="col-6 col-md-5 col-lg-4 text-right">
                                                 @if (isset($skill->xp) && $skill->getMaxLevel() > 0)
