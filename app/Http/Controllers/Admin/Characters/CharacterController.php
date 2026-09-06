@@ -97,7 +97,7 @@ class CharacterController extends Controller {
      */
     public function getCreateCharacterMyoDefaultSkills(Request $request) {
         $species = Species::where('id', $request->input('species'))->first();
-        if ($species != null){
+        if ($species != null) {
             $skill_list = $species->getDefaultSkills(1, 1);
         } else {
             $skill_list = [];
@@ -105,7 +105,7 @@ class CharacterController extends Controller {
 
         return view('admin.masterlist._create_character_default_skills', [
             'default_skills' => $skill_list,
-            'isMyo'    => $request->input('myo'),
+            'isMyo'          => $request->input('myo'),
         ]);
     }
 

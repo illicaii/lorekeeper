@@ -2215,9 +2215,9 @@ class CharacterManager extends Service {
                 $startingXP = $skill->getRandomStartingLevel();
                 CharacterSkill::create([
                     'character_image_id' => $image->id,
-                    'skill_id' => $skill->id,
-                    'data' => null,
-                    'xp' => $startingXP,
+                    'skill_id'           => $skill->id,
+                    'data'               => null,
+                    'xp'                 => $startingXP,
                 ]);
             }
 
