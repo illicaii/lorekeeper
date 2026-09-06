@@ -91,6 +91,25 @@ class CharacterController extends Controller {
     }
 
     /**
+     * Shows the basic skills for the chosen species.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getCreateCharacterMyoDefaultSkills(Request $request) {
+        $species = Species::where('id', $request->input('species'))->first();
+        if ($species != null){
+            $skill_list = $species->getDefaultSkills(1, 1);
+        } else {
+            $skill_list = [];
+        }
+
+        return view('admin.masterlist._create_character_default_skills', [
+            'default_skills' => $skill_list,
+            'isMyo'    => $request->input('myo'),
+        ]);
+    }
+
+    /**
      * Creates a character.
      *
      * @param App\Services\CharacterManager $service

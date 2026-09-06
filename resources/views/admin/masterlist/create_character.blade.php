@@ -267,12 +267,15 @@
                 {!! add_help('These skills will be listed as required skills for the slot. The user will still be able to add on more skills, but not be able to remove these.') !!}
             @endif
             <div><a href="#" class="btn btn-primary mb-2" id="add-skill">Add Skill</a></div>
+            <div id="default_skills"></div>
             <div id="skillList">
             </div>
             <div class="skill-row hide mb-2">
                 {!! Form::select('skill_id[]', $skills, null, ['class' => 'form-control mr-2 skill-select', 'placeholder' => 'Select Skill']) !!}
                 {!! Form::text('skill_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                 {!! Form::number('skill_xp[]', 0, ['class' => 'form-control mr-2', 'placeholder' => 'Manual XP level (Defaults to 0)']) !!}
+                {!! Form::hidden('skill_charges[]', 0) !!}
+                {!! Form::hidden('skill_reset_time[]', null) !!}
                 <a href="#" class="remove-skill btn btn-danger mb-2">×</a>
             </div>
         </div>
@@ -298,12 +301,25 @@
         $("#species").change(function() {
             var species = $('#species').val();
             var myo = '<?php echo $isMyo; ?>';
+
+            // Subtype
             $.ajax({
                 type: "GET",
                 url: "{{ url('admin/masterlist/check-subtype') }}?species=" + species + "&myo=" + myo,
                 dataType: "text"
             }).done(function(res) {
                 $("#subtypes").html(res);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert("AJAX call failed: " + textStatus + ", " + errorThrown);
+            });
+
+            // Default Skill List
+            $.ajax({
+                type: "GET",
+                url: "{{ url('admin/masterlist/check-default-skills') }}?species=" + species + "&myo=" + myo,
+                dataType: "text"
+            }).done(function(res) {
+                $("#default_skills").html(res);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert("AJAX call failed: " + textStatus + ", " + errorThrown);
             });

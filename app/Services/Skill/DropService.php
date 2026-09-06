@@ -173,7 +173,7 @@ class DropService extends Service {
                 $rewards = $rewards['rewards'];
 
                 // Distribute rewards and increase charge count
-                if (!$rewards = fillCharacterAssets($rewards, $user, $character, 'Skill Drop', [
+                if (!$rewards = fillCharacterAssets($rewards, null, $character, 'Skill Drop', [
                     'data' => 'Received drop from '.$ability->skill->name,
                 ])) {
                     throw new \Exception('Failed to use ability');

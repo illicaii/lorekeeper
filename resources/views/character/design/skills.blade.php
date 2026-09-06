@@ -87,7 +87,7 @@
                         </div>
                     @endforeach
                 @endif
-                @if ($request->character->image->species->getDefaultSkills())
+                @if ($request->character->image->species->getDefaultSkills(1,1))
                     @foreach ($request->character->image->species->getDefaultSkills(1, 1) as $skill)
                         @if (!$skill->is_backend || (Auth::check() && Auth::user()->hasPower('manage_characters')))
                             <div>

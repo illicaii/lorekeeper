@@ -14,6 +14,7 @@ use App\Models\Character\CharacterImage;
 use App\Models\Character\CharacterSkill;
 use App\Models\Character\CharacterTransfer;
 use App\Models\Sales\SalesCharacter;
+use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
 use Carbon\Carbon;
@@ -512,7 +513,7 @@ class CharacterManager extends Service {
                     'sender_id'     => $senderId,
                     'log'           => $type.($data ? ' ('.$data.')' : ''),
                     'log_type'      => $type,
-                    'data'          => 'Manual Edit',
+                    'data'          => 'Staff Edit',
                     'created_at'    => Carbon::now(),
                     'updated_at'    => Carbon::now(),
                 ]
@@ -2209,6 +2210,15 @@ class CharacterManager extends Service {
                         'reset_time'         => $data['skill_reset_time'][$key],
                     ]);
                 }
+            }
+            foreach (Species::where('id', $data['species_id'])->first()->getDefaultSkills(1, 1) as $skill) {
+                $startingXP = $skill->getRandomStartingLevel();
+                CharacterSkill::create([
+                    'character_image_id' => $image->id,
+                    'skill_id' => $skill->id,
+                    'data' => null,
+                    'xp' => $startingXP,
+                ]);
             }
 
             return $image;
